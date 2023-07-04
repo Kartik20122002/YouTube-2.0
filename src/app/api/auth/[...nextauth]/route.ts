@@ -1,13 +1,13 @@
 import { oauth2client } from '@/utils/auth/youtube';
 import { clientId, clientSecret, scopesStr, secret } from '@/utils/secrets/secrets';
-import NextAuth from 'next-auth';
+import NextAuth, { AuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
 
 const refreshedToken = async (token : any)=>{
   return token;
 }
 
-export const authOptions = {
+export const authOptions : AuthOptions = {
     providers: [
       Google({
         clientId: clientId as string,
