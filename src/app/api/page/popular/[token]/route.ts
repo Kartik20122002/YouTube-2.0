@@ -40,7 +40,7 @@ export async function GET(req : any , {params} :any ) {
 }
 catch(err){
     console.log('fetch error' , err);
-    return NextResponse.json('error');
+    return NextResponse.json(err);
 
 }
 }
