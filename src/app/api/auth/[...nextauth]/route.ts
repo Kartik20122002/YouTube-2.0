@@ -7,7 +7,7 @@ const refreshedToken = async (token : any)=>{
   return token;
 }
 
-export const authOptions : NextAuthOptions = {
+const authOptions : NextAuthOptions = {
     providers: [
       Google({
         clientId: clientId as string,
