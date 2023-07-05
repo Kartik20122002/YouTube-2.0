@@ -67,10 +67,7 @@ const Sidebar = ({isLarge } : any )=>{
      if(status == 'authenticated'){
         const fun = async ()=>{
         try{
-          const res = await fetch('/api/subs', {
-            next : {revalidate: 60},
-            cache : 'force-cache'
-          });
+          const res = await fetch('/api/subs');
           const {subs,ptoken,ntoken} = await res.json();
           setSubs(subs);
         }

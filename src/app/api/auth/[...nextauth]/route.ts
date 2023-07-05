@@ -15,7 +15,6 @@ const authOptions : NextAuthOptions = {
         authorization:{
           params:{
             scope: scopesStr as string,
-            // prompt: 'consent',
             access_type : 'offline',
             response_type : 'code',
           }
@@ -28,6 +27,8 @@ const authOptions : NextAuthOptions = {
     callbacks: {
       jwt: ({token , account } : any)=> {
 
+        try {
+          
         if (account && account?.access_token) {
           token.access_token = account.access_token;
           token.expires_at = Date.now() + account.expires_at*1000;
@@ -40,6 +41,10 @@ const authOptions : NextAuthOptions = {
         return token;
 
         return refreshedToken(token);
+        } catch (error) {
+          return refreshedToken(token);
+        }
+
       },
     },
   }
