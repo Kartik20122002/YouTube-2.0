@@ -6,7 +6,7 @@ import { AiFillHome , AiOutlineHome , AiFillLike , AiOutlineLike } from "react-i
 import { MdLibraryAdd , MdOutlineLibraryAdd } from 'react-icons/md';
 import { useSession } from "next-auth/react";
 
-export const dynamic = 'force-static'
+export const dynamic = 'force-dynamic'
 
 const links = [
   {
