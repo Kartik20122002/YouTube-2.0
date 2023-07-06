@@ -15,6 +15,8 @@ import { motion } from 'framer-motion'
 
 export const isLargeContext = createContext(true);
 
+export const slideContext = createContext(-1);
+
 
 export default function RootLayout({
   children,
@@ -23,9 +25,14 @@ export default function RootLayout({
 }) {
   
   const [isLarge , setIsLarge ] = useState(true);
+  const [slide,setSlide] = useState(-1);
   
   function toggle(){
     setIsLarge(!isLarge);
+  }
+
+  function setslide(val : any){
+    setSlide(val)
   }
 
   return (
@@ -33,11 +40,13 @@ export default function RootLayout({
       <body className='w-screen h-screen'>
       <SessionProvider>
         <isLargeContext.Provider value={isLarge}>
+        <slideContext.Provider value={{slide , setslide} as any}>
         <Header isLarge={isLarge} change={toggle}/>
         <Sidebar isLarge={isLarge}/>
         <motion.div layout transition={{duration : 0.5}} className={`${isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-20 fixed h-full `}>
         {children}
         </motion.div>
+        </slideContext.Provider>
         </isLargeContext.Provider>
 
       </SessionProvider>

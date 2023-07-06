@@ -1,10 +1,11 @@
 import Image from "next/legacy/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AiFillHome , AiOutlineHome , AiFillLike , AiOutlineLike } from "react-icons/ai";
 import { MdLibraryAdd , MdOutlineLibraryAdd } from 'react-icons/md';
 import { useSession } from "next-auth/react";
+import { slideContext } from "@/app/layout";
 
 export const dynamic = 'force-dynamic'
 
@@ -40,11 +41,13 @@ const Sub = ({item , isLarge}:any)=>{
     </motion.div>
 }
 
-const SideLinks = ({item , isLarge , index , clicked , changeLink } : any) =>{
+const SideLinks = ({item , isLarge , index} : any) =>{
+  const {slide , setslide} = useContext(slideContext) as any;
+
   return <Link 
-  onClick={()=>changeLink(index)} 
+  onClick={()=>setslide(index)} 
   href={item.link} className={`w-full ${ 'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}> 
-        <motion.div layout transition={{duration : 0.5}} > {clicked == index ? item.icon1 : item.icon2} </motion.div> 
+        <motion.div layout transition={{duration : 0.5}} > {slide == index ? item.icon1 : item.icon2} </motion.div> 
         <motion.p layout transition={{duration : 0.5}} className={ isLarge ? 'ml-5' :'mt-1 text-center text-xs' }>{item.name}</motion.p> 
         </Link>
 }
@@ -55,8 +58,6 @@ const SubSkel =()=>{
 
 
 const Sidebar = ({isLarge } : any )=>{
-
-  const [clicked,setClicked] = useState(0);
 
   useEffect(()=>{
     console.log('sidebar rendered')
@@ -94,7 +95,7 @@ const Sidebar = ({isLarge } : any )=>{
 
         {
           links.map((item : any , index : any)=>{
-            return <SideLinks key={index} changeLink={setClicked} clicked={clicked} index={index} item={item} isLarge={isLarge} />
+            return <SideLinks key={index} index={index} item={item} isLarge={isLarge} />
           })
         }
        

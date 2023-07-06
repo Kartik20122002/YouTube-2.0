@@ -1,14 +1,18 @@
-import { useEffect, useState  } from "react";
+import { useContext, useEffect, useState  } from "react";
 import PageSection from "../global/pagesection/pagesection";
 import { motion } from "framer-motion";
 import PageSkeleton from "../global/pagesection/loading";
+import { slideContext } from "@/app/layout";
 
 export const revalidate = 60
 
 const HomePage = ({param} : any)=>{
-
+  const {slide , setslide} = useContext(slideContext) as any;
+  setslide(0);
+   
    const [data,setData] = useState([]);
    const [loading , setLoading] = useState(true);
+
     useEffect(()=>{
        const fetchData = async ()=>{
         const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`);

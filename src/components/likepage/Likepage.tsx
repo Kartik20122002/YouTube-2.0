@@ -1,11 +1,14 @@
-import { useEffect, useState , cache } from "react";
+import { useEffect, useState , cache, useContext } from "react";
 import PageSection from "../global/pagesection/pagesection";
 import { motion } from "framer-motion";
 import PageSkeleton from "../global/pagesection/loading";
+import { slideContext } from "@/app/layout";
 
 export const revalidate = 0
 
 const LikePage = ({param} : any)=>{
+  const {slide , setslide} = useContext(slideContext) as any;
+  setslide(2);
 
    const [data,setData] = useState([]);
    const [loading , setLoading] = useState(true);
