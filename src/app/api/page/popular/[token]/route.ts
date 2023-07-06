@@ -20,17 +20,16 @@ export async function GET(req : any , {params} :any ) {
     refresh_token : refreshToken as string
   }
 }
-else{
-  oauth2client.apiKey = ytApi;
-}
+ 
+oauth2client.apiKey = ytApi;
 
   const results = await youtube.videos.list(
-    {   part:['snippet','statistics'], 
+    {  key : ytApi,
+        part:['snippet','statistics'], 
         maxResults : 50,
         chart : 'mostPopular',
         regionCode : 'In',
         pageToken : token == 'notoken' ? '' : token,
-        key : ytApi,
     });
 
     if(results.status !== 200) 
