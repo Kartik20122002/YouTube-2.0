@@ -15,7 +15,9 @@ const HomePage = ({param} : any)=>{
 
     useEffect(()=>{
        const fetchData = async ()=>{
-        const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`);
+        const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`,{
+          next : {revalidate : 300}
+        });
           const {videos,ptoken,ntoken} = await res.json();
           setLoading(false);
           setData(videos);
