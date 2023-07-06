@@ -21,10 +21,10 @@ export async function GET(req : any , {params} :any ) {
   }
 }
  
-oauth2client.apiKey = ytApi;
+oauth2client.apiKey = ytApi as string;
 
   const results = await youtube.videos.list(
-    {  key : ytApi,
+    {   key : ytApi as string,
         part:['snippet','statistics'], 
         maxResults : 50,
         chart : 'mostPopular',

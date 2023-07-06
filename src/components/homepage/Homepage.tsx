@@ -18,9 +18,14 @@ const HomePage = ({param} : any)=>{
         const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`,{
           next : {revalidate : 300}
         });
-          const {videos,ptoken,ntoken} = await res.json();
-          setLoading(false);
-          setData(videos);
+          if(res.status != 200){
+            console.log(res.statusText);
+          }
+          else{
+            const {videos,ptoken,ntoken} = await res.json();
+            setLoading(false);
+            setData(videos);
+          }
        }
 
        fetchData();

@@ -5,8 +5,11 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
 
 const getNewToken = async (token : any)=>{
-  const newTokens = await refreshedToken(token.refresh_token);
-  token.access_token = newTokens.access_token;
+  if(token.refresh_token){
+    const newTokens = await refreshedToken(token.refresh_token);
+    token.access_token = newTokens.access_token;
+  }
+  console.log('token refreshed' , token.access_token); 
   return token;
 }
 
@@ -49,7 +52,7 @@ const authOptions : NextAuthOptions = {
         else return token;
     
         } catch (error) {
-          return getNewToken(token);
+          return token;
         }
 
       },
