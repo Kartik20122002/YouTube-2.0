@@ -13,18 +13,15 @@ export default function Home() {
 
   return (
     <>
-          {status == 'authenticated' ?
+          {status == 'loading' ?
+          <>Loading ...</> :
           <HomePage/>
-           : 
-           <>
-           {status == 'unauthenticated' ?
-          <button onClick={()=>signIn()}>signin</button>
-          : <>Loading ...</>
-           }
-          </>
           }
     </>
   )
 }
+
+
+
 
 

@@ -1,5 +1,5 @@
 import { getToken } from "next-auth/jwt";
-import { secret } from "@/utils/secrets/secrets";
+import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 
@@ -12,13 +12,17 @@ export async function GET(req : any , {params} :any ) {
   
   const tokens = await getToken({req , secret});
 
-  const accessToken = tokens?.access_token;
+ if(tokens){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
   oauth2client.credentials = {
     access_token : accessToken as string, 
     refresh_token : refreshToken as string
   }
+}
+else{
+  oauth2client.apiKey = ytApi;
+}
 
   const results = await youtube.videos.list(
     {   part:['snippet','statistics'], 
