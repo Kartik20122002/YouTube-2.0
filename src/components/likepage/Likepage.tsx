@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState , cache, useContext } from "react";
 import PageSection from "../global/pagesection/pagesection";
 import { motion } from "framer-motion";

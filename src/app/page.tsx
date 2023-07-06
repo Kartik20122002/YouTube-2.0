@@ -2,6 +2,9 @@
 import { useSession, signIn } from "next-auth/react"
 import {useEffect } from "react";
 import HomePage from "@/components/homepage/Homepage";
+import { motion } from "framer-motion";
+import { FaYoutube } from "react-icons/fa6";
+import Loader from "@/components/global/loader/Loader";
 
 export default function Home() {
  
@@ -13,8 +16,9 @@ export default function Home() {
 
   return (
     <>
+
           {status == 'loading' ?
-          <>Loading ...</> :
+              <Loader/> :
           <HomePage/>
           }
     </>
