@@ -1,3 +1,4 @@
+'use client'
 import { slideContext } from "@/app/layout";
 import { useContext } from "react";
 
