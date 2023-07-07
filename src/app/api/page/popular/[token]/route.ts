@@ -21,27 +21,20 @@ export async function GET(req : any , {params} :any ) {
     access_token : accessToken as string, 
     refresh_token : refreshToken as string
   }
+  console.log('using tokens');
 }
+else{ console.log('using api key'); oauth2client.apiKey = ytApi;}
 
-const config = tokens ? {  
+
+
+
+  const results = await youtube.videos.list({ 
   part:['snippet','statistics'], 
   maxResults : 50,
   chart : 'mostPopular',
   regionCode : 'In',
   pageToken : token == 'notoken' ? '' : token,
-} :
-{  
-  key : ytApi as string,
-  part:['snippet','statistics'], 
-  maxResults : 50,
-  chart : 'mostPopular',
-  regionCode : 'In',
-  pageToken : token == 'notoken' ? '' : token,
-};
-
-console.log('config',config);
-
-  const results = await youtube.videos.list(config);
+  });
 
     if(results.status !== 200) 
     return  NextResponse.json({});
