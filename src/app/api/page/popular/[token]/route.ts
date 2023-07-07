@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
+import { useSession } from "next-auth/react";
 
 export async function GET(req : any , {params} :any ) {
 
@@ -9,10 +10,12 @@ export async function GET(req : any , {params} :any ) {
   console.log('homepage fetched');
 
   try{
+
+    const {status } = useSession()
   
   const tokens = await getToken({req , secret});
 
- if(tokens){ const accessToken = tokens?.access_token;
+ if(status == 'authenticated' && tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
   oauth2client.credentials = {
