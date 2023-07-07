@@ -11,11 +11,10 @@ export async function GET(req : any , {params} :any ) {
 
   try{
 
-    const {status } = useSession()
   
   const tokens = await getToken({req , secret});
 
- if(status == 'authenticated' && tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
+ if(tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
   oauth2client.credentials = {
