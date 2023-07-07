@@ -32,7 +32,7 @@ export async function GET(req : any , {params} :any ) {
     });
 
     if(results.status !== 200) 
-    return  NextResponse.json({});
+    return  NextResponse.json(results);
 
     const videos = results.data.items;
     const ptoken = results.data.prevPageToken;

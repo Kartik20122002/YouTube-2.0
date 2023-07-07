@@ -28,9 +28,6 @@ export async function GET(req : any ) {
     mine : true,
     });
 
-    if(results.status !== 200) 
-    return  NextResponse.json(results);
-
     const subs = results.data.items;
     const ptoken = results.data.prevPageToken;
     const ntoken = results.data.nextPageToken;
