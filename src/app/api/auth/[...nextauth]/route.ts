@@ -54,7 +54,7 @@ const authOptions : NextAuthOptions = {
 
         console.log(expire_time)
 
-        if(expire_time < 3560){
+        if(expire_time < 100){
             return getNewToken(token);
         }
         else return token;
