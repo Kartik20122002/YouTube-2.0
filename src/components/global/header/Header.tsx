@@ -108,9 +108,9 @@ const Header = ({change } : any)=>{
            {
             usermenu &&
 
-          <motion.div initial={{opacity : 0}} animate={{opacity:1}} className={`user-actions text-black absolute shadow-lg translate-x-[-100%] w-max min-w-[250px] rounded-md py-2 px-[1rem] bg-white border flex flex-col transition-all dark:bg-[#282828] dark:shadow-[rgb(255,255,255,0.1)]`}> 
+          <motion.div initial={{opacity : 0}} animate={{opacity:1}} className={`user-actions text-black absolute shadow-lg translate-x-[-100%] w-max min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] dark:shadow-[rgb(255,255,255,0.1)]`}> 
 
-           <Link href="/likedvideos" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]"> 
+           <Link href="/likepage" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]"> 
            <div className="w-[1.3rem] m-0 mr-[5%]">
             <FaThumbsUp className="dark:text-black !text-white text-lg"/>
            </div>
@@ -119,7 +119,7 @@ const Header = ({change } : any)=>{
 
            <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]"/>
 
-           <Link href="/userpage" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
+           <Link href="/library" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
            <div className="w-[1.3rem] m-0 mr-[5%]">
              <FaBook className="dark:text-black !text-white text-lg" />
             </div>
