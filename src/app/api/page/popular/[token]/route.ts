@@ -14,9 +14,6 @@ export async function GET(req : any , {params} :any ) {
   
   const tokens = await getToken({req , secret});
 
-  if(tokens?.status != 200) 
-  return  NextResponse.json({});
-
  if(tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
