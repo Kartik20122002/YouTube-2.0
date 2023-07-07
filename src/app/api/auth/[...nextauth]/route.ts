@@ -9,16 +9,12 @@ const getNewToken = async (token : any)=>{
   try {
     if(token.refresh_token){
       const newTokens = await refreshedToken(token.refresh_token);
-      token.access_token = newTokens.access_token;
-      token.expires_in = Date.now();
-      console.log('token refreshed' , token.access_token); 
-      token.status = 200;
+      return newTokens;
     }
     else token.status = 404;
+
     return token;
   } catch (error) {
-    console.log('loggin from auth route' ,error);
-    token.status = 404;
     return token;
   }
   
@@ -43,9 +39,7 @@ const authOptions : NextAuthOptions = {
 
     callbacks: {
       jwt: async ({token , account } : any)=> {
-
         try {
-          
         if (account && account?.access_token) {
           token.access_token = account.access_token;
           token.expires_in = Date.now()*1000;
@@ -55,15 +49,24 @@ const authOptions : NextAuthOptions = {
         }
 
         if(token.expires_in + 3500 <= Date.now()*1000){
-          console.log('loading from here')
-          return getNewToken(token);
+          console.log('loading from here');
+          const newTokens = await getNewToken(token);
+          token.access_token = newTokens.access_token;
+          token.expires_in = Date.now()*1000;
+          return token;
         }
-        else{ token.status = 200;  return token;}
-    
-        } catch (error) {
-          token.status = 405;
-          console.log('loggin from auth route' ,error);
-          return getNewToken(token);
+        else{ 
+          token.expires_in = Date.now()*1000;
+          token.status = 200;  
+          return token;
+        }
+      } catch (error) {
+        console.log('loggin from auth route' ,error);
+        const newTokens = await getNewToken(token);
+        token.access_token = newTokens.access_token;
+        token.expires_in = Date.now()*1000;
+        token.status = 405;
+          return token;
         }
 
       },
