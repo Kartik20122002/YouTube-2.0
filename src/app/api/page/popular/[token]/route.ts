@@ -23,7 +23,14 @@ export async function GET(req : any , {params} :any ) {
   }
   console.log('using tokens');
 }
-else{ console.log('using api key'); oauth2client.apiKey = ytApi;}
+else{ 
+  console.log('using api key');
+ oauth2client.credentials = {
+  access_token : '' as string, 
+  refresh_token : '' as string
+}
+ oauth2client.apiKey = ytApi;
+}
 
 
   const results = await youtube.videos.list({ 
