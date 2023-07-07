@@ -49,9 +49,9 @@ const authOptions : NextAuthOptions = {
         }
 
         if(token.expires_in + 3500 <= Date.now()*1000){
-          console.log('loading from here');
           const newTokens = await getNewToken(token);
           token.access_token = newTokens.access_token;
+          console.log('loading from here',token.access_token);
           token.expires_in = Date.now()*1000;
           return token;
         }
@@ -64,6 +64,7 @@ const authOptions : NextAuthOptions = {
         console.log('loggin from auth route' ,error);
         const newTokens = await getNewToken(token);
         token.access_token = newTokens.access_token;
+        console.log(token.access_token,'access_token');
         token.expires_in = Date.now()*1000;
         token.status = 405;
           return token;
