@@ -43,6 +43,8 @@ const config = tokens ? {
   pageToken : token == 'notoken' ? '' : token,
 };
 
+console.log('config',config);
+
   const results = await youtube.videos.list(config);
 
     if(results.status !== 200) 
