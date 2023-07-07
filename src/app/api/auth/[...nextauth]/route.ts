@@ -43,9 +43,12 @@ const authOptions : NextAuthOptions = {
         if (account && account?.access_token) {
           token.access_token = account.access_token;
           token.expires_in = Date.now()*1000;
+          console.log('first time' , token)
         }
         if(account && account?.refresh_token){
           token.refresh_token = account.refresh_token;
+
+          return token;
         }
 
         if(token.expires_in + 3500 <= Date.now()*1000){
