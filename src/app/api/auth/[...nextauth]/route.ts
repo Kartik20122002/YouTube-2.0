@@ -51,7 +51,8 @@ const authOptions : NextAuthOptions = {
         if(token.expires_in + 3500 <= Date.now()*1000){
           const newTokens = await getNewToken(token);
           token.access_token = newTokens.access_token;
-          console.log('loading from here',token.access_token);
+          token.kartik = 'renewed'
+          console.log('loading from here',token);
           token.status = 200;
           token.expires_in = Date.now()*1000;
           return token;
