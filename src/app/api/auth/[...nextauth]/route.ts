@@ -10,13 +10,14 @@ const getNewToken = async (token : any)=>{
     if(token.refresh_token){
       const newTokens = await refreshedToken(token.refresh_token);
       token.access_token = newTokens.access_token;
+      token.expires_in = Date.now();
       console.log('token refreshed' , token.access_token); 
       token.status = 200;
     }
     else token.status = 404;
     return token;
   } catch (error) {
-    console.log(error)
+    console.log('loggin from auth route' ,error);
     token.status = 404;
     return token;
   }
@@ -47,27 +48,22 @@ const authOptions : NextAuthOptions = {
           
         if (account && account?.access_token) {
           token.access_token = account.access_token;
+          token.expires_in = Date.now()*1000;
         }
         if(account && account?.refresh_token){
           token.refresh_token = account.refresh_token;
         }
 
-        // console.log('tokens' ,token.access_token)
-
-        const access_token_details_res = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token.access_token}`);
-        const access_token_details = await access_token_details_res.json();
-        const expire_time = access_token_details.expires_in;
-
-        console.log('expire_time',expire_time);
-
-        if(expire_time == undefined || expire_time < 100){
+        if(token.expires_in + 3500 <= Date.now()*1000){
+          console.log('loading from here')
           return getNewToken(token);
         }
         else{ token.status = 200;  return token;}
     
         } catch (error) {
           token.status = 405;
-          return token;
+          console.log('loggin from auth route' ,error);
+          return getNewToken(token);
         }
 
       },

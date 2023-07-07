@@ -26,8 +26,6 @@ export async function GET(req : any , {params} :any ) {
 else{ console.log('using api key'); oauth2client.apiKey = ytApi;}
 
 
-
-
   const results = await youtube.videos.list({ 
   part:['snippet','statistics'], 
   maxResults : 50,

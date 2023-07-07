@@ -1,12 +1,13 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import React, {  useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import {FaYoutube , FaMagnifyingGlass , FaThumbsUp , FaBook } from 'react-icons/fa6'
-import { AiOutlineMenu } from 'react-icons/ai'
+import {FaYoutube , FaMagnifyingGlass} from 'react-icons/fa6';
+import { AiFillLike } from "react-icons/ai";
+import { MdLibraryAdd } from 'react-icons/md';
+import { AiOutlineMenu , AiOutlineLogout } from 'react-icons/ai'
 
 import logo from '@/images/logo.png';
 import user from '@/images/user.png';
-import logout from '@/images/logout.png';
 
 import Image from "next/legacy/image";
 import Link from "next/link";
@@ -112,7 +113,7 @@ const Header = ({change } : any)=>{
 
            <Link href="/likepage" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]"> 
            <div className="w-[1.3rem] m-0 mr-[5%]">
-            <FaThumbsUp className="dark:text-black !text-white text-lg"/>
+            <AiFillLike className="dark:text-black !text-white text-lg"/>
            </div>
            Your Liked Videos
            </Link>
@@ -121,7 +122,7 @@ const Header = ({change } : any)=>{
 
            <Link href="/library" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
            <div className="w-[1.3rem] m-0 mr-[5%]">
-             <FaBook className="dark:text-black !text-white text-lg" />
+             <MdLibraryAdd className="dark:text-black !text-white text-lg" />
             </div>
             Library
              </Link>
@@ -130,7 +131,7 @@ const Header = ({change } : any)=>{
 
            <button id="logoutbtn" aria-label='logoutbtn' onClick={()=>{signOut()}} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" > 
            <div className="w-[1.3rem] m-0 mr-[5%]">
-           <Image className="dark:invert" layout="responsive" src={logout} alt="logout" />
+           <AiOutlineLogout className="dark:text-white text-black"/>
            </div>
              LogOut
            </button>
