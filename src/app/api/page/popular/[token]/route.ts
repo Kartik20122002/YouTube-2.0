@@ -25,7 +25,6 @@ export async function GET(req : any , {params} :any ) {
     refresh_token : refreshToken as string
   }
 }
-else oauth2client.apiKey = ytApi as string;
 
 const config = tokens ? {  
   part:['snippet','statistics'], 
