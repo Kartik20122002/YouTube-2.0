@@ -25,7 +25,7 @@ const VideoContainer = ({item , index ,isLarge}:any)=>{
   <Link className={`h-[18rem] md:h-[12.5rem] w-full`} href={`/videopage/${item?.id}`}>
 
   <motion.div className={`flex h-full w-full relative md:rounded-md`} layout transition={{duration : 0.5}}>
-    <Image src={item.snippet.thumbnails.medium.url} className="md:rounded-xl" layout="fill" alt="video" />
+    <Image src={item.snippet.thumbnails.medium.url} className="md:rounded-xl bg-skeleton dark:bg-skeletonDark" layout="fill" alt="video" />
   </motion.div>
 
   </Link>
@@ -33,7 +33,7 @@ const VideoContainer = ({item , index ,isLarge}:any)=>{
 <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start items-center px-2 mt-2`}>
 
     <Link href="" className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
-    <Image className="rounded-full h-[40px]" layout="responsive" src={megan} loading="lazy" alt="s" />
+    <Image className="rounded-full h-[40px] bg-[#b8b8b8]" layout="responsive" src={megan} loading="lazy" alt="s" />
     </Link> 
 
     <motion.div layout transition={{duration : 0.5}} className="text-sm">

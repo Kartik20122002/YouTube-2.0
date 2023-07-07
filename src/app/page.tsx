@@ -19,7 +19,7 @@ export default function Home() {
 
           {status == 'loading' ?
               <Loader/> :
-          <HomePage/>
+              <HomePage/>
           }
     </>
   )

@@ -3,6 +3,7 @@ import PageSection from "../global/pagesection/pagesection";
 import { motion } from "framer-motion";
 import PageSkeleton from "../global/pagesection/loading";
 import { slideContext } from "@/app/layout";
+import { signOut } from "next-auth/react";
 
 export const revalidate = 60
 
@@ -15,17 +16,23 @@ const HomePage = ({param} : any)=>{
 
     useEffect(()=>{
        const fetchData = async ()=>{
-        const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`,{
-          next : {revalidate : 300}
-        });
-          if(res.status != 200){
-            console.log(res.statusText);
-          }
-          else{
-            const {videos,ptoken,ntoken} = await res.json();
-            setLoading(false);
-            setData(videos);
-          }
+        try {
+          const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`,{
+            next : {revalidate : 300}
+          });
+            if(res.status != 200){
+              console.log(res.statusText);
+            }
+            else{
+              const {videos,ptoken,ntoken} = await res.json();
+              setLoading(false);
+              setData(videos);
+            }
+        } catch (error) {
+          console.log('homepage error' ,  error);
+          signOut();
+        }
+        
        }
 
        fetchData();

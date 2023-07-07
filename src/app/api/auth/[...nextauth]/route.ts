@@ -5,12 +5,18 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
 
 const getNewToken = async (token : any)=>{
-  if(token.refresh_token){
-    const newTokens = await refreshedToken(token.refresh_token);
-    token.access_token = newTokens.access_token;
+  try {
+    if(token.refresh_token){
+      const newTokens = await refreshedToken(token.refresh_token);
+      token.access_token = newTokens.access_token;
+    }
+    console.log('token refreshed' , token.access_token); 
+    return token;
+  } catch (error) {
+    console.log(error)
+    return token;
   }
-  console.log('token refreshed' , token.access_token); 
-  return token;
+  
 }
 
 const authOptions : NextAuthOptions = {
@@ -46,7 +52,9 @@ const authOptions : NextAuthOptions = {
         const access_token_details = await access_token_details_res.json();
         const expire_time = access_token_details.expires_in;
 
-        if(expire_time < 50){
+        console.log(expire_time)
+
+        if(expire_time < 3560){
             return getNewToken(token);
         }
         else return token;

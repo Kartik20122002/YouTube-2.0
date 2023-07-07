@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import React, { cache, useEffect, useRef, useState } from "react";
+import React, {  useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import {FaBars , FaYoutube , FaMagnifyingGlass , FaThumbsUp , FaBook } from 'react-icons/fa6'
+import {FaYoutube , FaMagnifyingGlass , FaThumbsUp , FaBook } from 'react-icons/fa6'
 import { AiOutlineMenu } from 'react-icons/ai'
 
 import logo from '@/images/logo.png';
@@ -11,7 +11,7 @@ import logout from '@/images/logout.png';
 import Image from "next/legacy/image";
 import Link from "next/link";
 
-const Header = ({isLarge , change } : any)=>{
+const Header = ({change } : any)=>{
 
   const [searchquery , setSearchQuery] = useState('');
 

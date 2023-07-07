@@ -19,6 +19,8 @@ module.exports = {
         'faint10Black' : 'rgba(0, 0, 0, 0.1)',
         'black' : '#0f0f0f',
         'white' : '#f1f1f1',
+        'skeleton' :'#b8b8b8',
+        'skeletonDark' : '#202324'
       },
       animation : {
         'skeleton' : 'skeletonLoading 1s infinite',
