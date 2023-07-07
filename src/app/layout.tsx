@@ -1,5 +1,5 @@
 'use client'
-
+import Head from 'next/head'
 import Header from '@/components/global/header/Header'
 import './globals.css'
 import { SessionProvider } from "next-auth/react"
@@ -37,6 +37,15 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+      <title>YouTube 2</title>
+      <meta name="description" content="This is YouTube 2 Web App" />
+      <meta charSet="UTF-8" />
+      <meta name="keywords" content="youtube, youtube-2, youtube 2" />
+      <meta name="author" content="Kartik Hatwar" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />    
+      </head>
+
       <body className='w-screen h-screen'>
       <SessionProvider>
         <isLargeContext.Provider value={isLarge}>
