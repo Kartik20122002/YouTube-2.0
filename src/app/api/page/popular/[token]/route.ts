@@ -14,6 +14,9 @@ export async function GET(req : any , {params} :any ) {
   
   const tokens = await getToken({req , secret});
 
+  if(tokens?.status != 200) 
+  return  NextResponse.json({});
+
  if(tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
@@ -22,17 +25,25 @@ export async function GET(req : any , {params} :any ) {
     refresh_token : refreshToken as string
   }
 }
- 
-oauth2client.apiKey = ytApi as string;
+else oauth2client.apiKey = ytApi as string;
 
-  const results = await youtube.videos.list(
-    {   key : ytApi as string,
-        part:['snippet','statistics'], 
-        maxResults : 50,
-        chart : 'mostPopular',
-        regionCode : 'In',
-        // pageToken : token == 'notoken' ? '' : token,
-    });
+const config = tokens ? {  
+  part:['snippet','statistics'], 
+  maxResults : 50,
+  chart : 'mostPopular',
+  regionCode : 'In',
+  pageToken : token == 'notoken' ? '' : token,
+} :
+{  
+  key : ytApi as string,
+  part:['snippet','statistics'], 
+  maxResults : 50,
+  chart : 'mostPopular',
+  regionCode : 'In',
+  pageToken : token == 'notoken' ? '' : token,
+};
+
+  const results = await youtube.videos.list(config);
 
     if(results.status !== 200) 
     return  NextResponse.json({});

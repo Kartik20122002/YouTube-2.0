@@ -6,6 +6,7 @@ import { AiFillHome , AiOutlineHome , AiFillLike , AiOutlineLike } from "react-i
 import { MdLibraryAdd , MdOutlineLibraryAdd } from 'react-icons/md';
 import { useSession } from "next-auth/react";
 import { slideContext } from "@/app/layout";
+import Loader from "../loader/Loader";
 
 export const dynamic = 'force-dynamic'
 
@@ -33,7 +34,7 @@ const links = [
 const Sub = ({item , isLarge}:any)=>{
     return <motion.div layout transition={{duration : 0.5}} >
     <Link href="#" className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]`}>
-    <motion.div layout transition={{duration : 0.5}} className="flex items-center">
+    <motion.div layout transition={{duration : 0.5}} className="flex  w-fit items-center">
     <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className="rounded-full  bg-[#5a5a5a]" loading="lazy" alt="img" />
     </motion.div>
     {isLarge && <motion.p layout transition={{duration : 0.5}} className="ml-[20px]">{item?.snippet?.title || 'unknown channel'}</motion.p>}
@@ -70,7 +71,7 @@ const Sidebar = ({isLarge } : any )=>{
      if(status == 'authenticated'){
         const fun = async ()=>{
         try{
-          const res = await fetch('/api/subs');
+          const res = await fetch('/api/subs',{ next : {revalidate : 300}});
           const {subs,ptoken,ntoken} = await res.json();
           setSubs(subs);
         }
@@ -102,7 +103,7 @@ const Sidebar = ({isLarge } : any )=>{
         <motion.hr layout transition={{duration : 0.5}} className={`m-auto border-0 h-[1px] mt-[7%] bg-white ${isLarge ? 'w-[85%]' : 'w-3/4 mb-10'}`}/>
     </motion.div>
  
-    {status == 'authenticated' && 
+    { status == 'authenticated' && 
 
     <motion.div layout transition={{duration : 0.5}} className="subscribed-list w-full pl-[3%] pb-[15%]">
        {isLarge && 
@@ -111,7 +112,7 @@ const Sidebar = ({isLarge } : any )=>{
 
         { subs ? subs?.map((item : any)=>{
          return <Sub item={item} isLarge={isLarge} key={item?.id}/>
-        }) : <SubSkel/>}
+        }) : <Loader/>}
 
     </motion.div>
     }

@@ -17,7 +17,9 @@ const LikePage = ({param} : any)=>{
     useEffect(()=>{
        const fetchData = async ()=>{
         try{
-          const res = await fetch(`/api/page/liked/${param?.token || 'notoken'}`);
+          const res = await fetch(`/api/page/liked/${param?.token || 'notoken'}`,{
+            next: {revalidate : 300},
+          });
           const {videos,ptoken,ntoken} = await res.json();
           setLoading(false);
           setData(videos);

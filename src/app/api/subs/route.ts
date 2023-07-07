@@ -9,21 +9,24 @@ export async function GET(req : any ) {
 
   try{
   
-  const token = await getToken({req , secret});
+  const tokens = await getToken({req , secret});
 
-  const accessToken = token?.access_token;
-  const refreshToken = token?.refresh_token;
+  if(tokens?.status != 200) 
+  return  NextResponse.json({});
+
+  const accessToken = tokens?.access_token;
+  const refreshToken = tokens?.refresh_token;
 
   oauth2client.credentials = {
     access_token : accessToken as string, 
     refresh_token : refreshToken as string
   }
 
-  const results = await youtube.subscriptions.list({
+    const results = await youtube.subscriptions.list({
     part : ['snippet','contentDetails'],
     maxResults : 50,
     mine : true,
-});
+    });
 
     if(results.status !== 200) 
     return  NextResponse.json({});

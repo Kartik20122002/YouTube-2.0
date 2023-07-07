@@ -1,24 +1,27 @@
+'use client'
 import { useContext, useEffect, useState  } from "react";
 import PageSection from "../global/pagesection/pagesection";
 import { motion } from "framer-motion";
 import PageSkeleton from "../global/pagesection/loading";
 import { slideContext } from "@/app/layout";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export const revalidate = 60
 
 const HomePage = ({param} : any)=>{
   const {slide , setslide} = useContext(slideContext) as any;
   setslide(0);
-   
-   const [data,setData] = useState([]);
-   const [loading , setLoading] = useState(true);
+  
+  const [data,setData] = useState([]);
+  const [loading , setLoading] = useState(true);
+  const {status} = useSession();
 
     useEffect(()=>{
        const fetchData = async ()=>{
         try {
           const res = await fetch(`/api/page/popular/${param?.token || 'notoken'}`,{
-            next : {revalidate : 300}
+            next : {revalidate : 300},
+            // body : {status} as any
           });
             if(res.status != 200){
               console.log(res.statusText);

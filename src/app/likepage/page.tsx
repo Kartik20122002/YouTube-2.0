@@ -2,6 +2,7 @@
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Suspense, useEffect, useState } from "react";
 import LikePage from "@/components/likepage/Likepage";
+import Loader from "@/components/global/loader/Loader";
 
 export default function Home() {
  
@@ -19,7 +20,7 @@ export default function Home() {
            <>
            {status == 'unauthenticated' ?
           <button onClick={()=>signIn()}>signin</button>
-          : <>loading... optional at most</>
+          : <><Loader/></>
            }
           </>
           }
