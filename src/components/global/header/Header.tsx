@@ -82,7 +82,7 @@ const Header = ({change } : any)=>{
             </div>
 
             <div className="btn-div w-[10%] h-full p-0 flex justify-center rounded-r-[25px] bg-[rgb(0,0,0,0.05)] border-0 border-l-2 border-l-[rgba(103,103,103,0.68)] hover:bg-[rgb(0,0,0,0.1)]" >
-              <button id="searchbtnlg" className="border-r-[0px] h-full dark:bg-black dark:hover:bg-[#585858fe] rounded-r-[25px] cursor-pointer w-full border-0 flex items-center justify-center" type="submit">
+              <button id="searchbtnlg" aria-label='searchbtnlg' className="border-r-[0px] h-full dark:bg-black dark:hover:bg-[#585858fe] rounded-r-[25px] cursor-pointer w-full border-0 flex items-center justify-center" type="submit">
                 <FaMagnifyingGlass className="text-black dark:text-white"/>
               </button>
             </div>
@@ -93,11 +93,11 @@ const Header = ({change } : any)=>{
 
     <div className="nav-right flex justify-center items-center">
 
-        <button id="searchbtnsm" className="flex items-center justify-center" onClick={()=>{setSearch((search)=>{return !search})}}><FaMagnifyingGlass className="w-[25px] h-[25px] font-bold inline text-white md:hidden mr-8 search"/></button>
+        <button id="searchbtnsm" aria-label='searchbtnsm' className="flex items-center justify-center" onClick={()=>{setSearch((search)=>{return !search})}}><FaMagnifyingGlass className="w-[25px] h-[25px] font-bold inline text-white md:hidden mr-8 search"/></button>
 
         <motion.div transition={{layout:{duration : 1 }}} layout className="usermenu relative">
 
-          <button id="usermenu" className="profile-section" onClick={()=>{userBtn()}}>
+          <button id="usermenu" aria-label='usermenu' className="profile-section" onClick={()=>{userBtn()}}>
             {status == 'authenticated' ?
             <Image src={profileUrl} alt="user" width={35} height={35} className="mr-0  bg-white rounded-full" />
             :
@@ -128,7 +128,7 @@ const Header = ({change } : any)=>{
 
               <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]"/>
 
-           <button id="logoutbtn" onClick={()=>{signOut()}} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" > 
+           <button id="logoutbtn" aria-label='logoutbtn' onClick={()=>{signOut()}} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" > 
            <div className="w-[1.3rem] m-0 mr-[5%]">
            <Image className="dark:invert" layout="responsive" src={logout} alt="logout" />
            </div>
