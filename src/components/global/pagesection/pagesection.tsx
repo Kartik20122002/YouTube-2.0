@@ -7,7 +7,6 @@ import { isLargeContext } from "@/app/layout"
 import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import { signOut } from "next-auth/react"
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 
 const PageSection = ({page} : any)=>{
@@ -30,6 +29,7 @@ const PageSection = ({page} : any)=>{
           setToken(ntoken);
           setLoading(false);
         }
+        else throw new Error('some error hai yaar')
 
       }
       catch(error){

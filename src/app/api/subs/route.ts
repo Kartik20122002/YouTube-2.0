@@ -39,7 +39,7 @@ export async function GET(req : any ) {
 }
 catch(err){
     console.log('fetch error' , err);
-    return NextResponse.json(err);
+    return NextResponse.json({});
 
 }
 }
