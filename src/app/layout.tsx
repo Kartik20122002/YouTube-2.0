@@ -2,9 +2,9 @@
 import Head from 'next/head'
 import Header from '@/components/global/header/Header'
 import './globals.css'
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider, signOut, useSession } from "next-auth/react"
 import Sidebar from '@/components/global/sidebar/Sidebar'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 
@@ -34,6 +34,13 @@ export default function RootLayout({
   function setslide(val : any){
     setSlide(val)
   }
+
+  const {status} = useSession();
+
+  useEffect(()=>{
+    if(status == 'authenticated') signOut();
+  },[status])
+
 
   return (
     <html lang="en">

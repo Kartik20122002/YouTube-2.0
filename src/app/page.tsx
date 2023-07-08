@@ -1,5 +1,5 @@
 'use client'
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import {useContext, useEffect } from "react";
 import { motion } from "framer-motion";
 import Loader from "@/components/global/loader/Loader";
@@ -13,13 +13,12 @@ export default function Home() {
  
   const { status } = useSession();
 
+
+
   const {slide , setslide} = useContext(slideContext) as any;
   setslide(0);
 
-  useEffect(()=>{
-    console.log(status)
-  },[status])
-
+ 
   return (
     <>
 
