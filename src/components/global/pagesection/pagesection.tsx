@@ -7,6 +7,7 @@ import { isLargeContext } from "@/app/layout"
 import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import { signOut } from "next-auth/react"
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 
 const PageSection = ({page} : any)=>{
@@ -17,7 +18,7 @@ const PageSection = ({page} : any)=>{
     const [loading,setLoading] = useState(true);
 
    
-    const fetchData = async (token = '')=>{
+    const fetchData = async ()=>{
       try{
         const res = await fetch(`/api/page/${page}/${token}`,{
           next: {revalidate : 300},
@@ -33,7 +34,7 @@ const PageSection = ({page} : any)=>{
       }
       catch(error){
         console.log('page error' , error);
-        // signOut();
+        signOut();
       }
      
      }
@@ -46,8 +47,8 @@ const PageSection = ({page} : any)=>{
     return loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
            {items?.map((item : any , index : any)=>{
-               return <VideoContainer index={index} key={index} isLarge={isLarge} item={item} />
-           })}
+             return <VideoContainer index={index} key={index} isLarge={isLarge} item={item} />
+            })}
           </motion.div>
 }
 
