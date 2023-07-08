@@ -42,7 +42,7 @@ const authOptions : NextAuthOptions = {
         try {
         if (account && account?.access_token) {
           token.access_token = account.access_token;
-          token.expires_in = Date.now()*1000;
+          token.expires_in = Date.now()/1000;
           console.log('first time' , token)
         }
         if(account && account?.refresh_token){
@@ -51,17 +51,17 @@ const authOptions : NextAuthOptions = {
           return token;
         }
 
-        if(token.expires_in + 3500 <= Date.now()*1000){
+        if(token.expires_in + 3500 <= Date.now()/1000){
           const newTokens = await getNewToken(token);
           token.access_token = newTokens.access_token;
           token.kartik = 'renewed'
           console.log('loading from here',token);
           token.status = 200;
-          token.expires_in = Date.now()*1000;
+          token.expires_in = Date.now()/1000;
           return token;
         }
         else{ 
-          token.expires_in = Date.now()*1000;
+          token.expires_in = Date.now()/1000;
           token.status = 200;  
           return token;
         }
@@ -70,7 +70,7 @@ const authOptions : NextAuthOptions = {
         const newTokens = await getNewToken(token);
         token.access_token = newTokens.access_token;
         console.log(token.access_token,'access_token');
-        token.expires_in = Date.now()*1000;
+        token.expires_in = Date.now()/1000;
         token.status = 200;
           return token;
         }
