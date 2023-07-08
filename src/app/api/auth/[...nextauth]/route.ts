@@ -48,8 +48,11 @@ const authOptions : NextAuthOptions = {
           token.refresh_token = account.refresh_token;
           
           console.log('first time' , token)
+          token.kartik = 'old'
           return token;
         }
+
+        token.kartik = 'old'
 
         if(token.expires_in + 3500 <= Date.now()/1000){
           const newTokens = await getNewToken(token);
@@ -72,6 +75,7 @@ const authOptions : NextAuthOptions = {
         console.log(token.access_token,'access_token');
         token.expires_in = Date.now()/1000;
         token.status = 200;
+        token.kartik = 'error kartik'
           return token;
         }
 

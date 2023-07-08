@@ -11,6 +11,8 @@ export async function GET(req : any ) {
   
   const tokens = await getToken({req , secret});
 
+  console.log("check it here" , tokens?.kartik);
+
   if(tokens?.status != 200) 
   return  NextResponse.json({});
 
