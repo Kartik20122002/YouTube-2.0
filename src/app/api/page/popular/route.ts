@@ -2,11 +2,9 @@ import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { useSession } from "next-auth/react";
 
-export async function GET(req : any , {params} :any ) {
+export async function GET(req : any ) {
 
-  const {token} = params;
   console.log('homepage fetched');
 
   try{
@@ -21,7 +19,7 @@ export async function GET(req : any , {params} :any ) {
     access_token : accessToken as string, 
     refresh_token : refreshToken as string
   }
-  console.log('using tokens');
+  console.log('using tokens without token');
 }
 else{ 
   console.log('using api key');
@@ -38,7 +36,6 @@ else{
   maxResults : 50,
   chart : 'mostPopular',
   regionCode : 'In',
-  pageToken : token,
   });
 
     if(results.status !== 200) 

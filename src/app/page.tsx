@@ -1,14 +1,17 @@
 'use client'
-import { useSession, signIn } from "next-auth/react"
-import {useEffect } from "react";
-import HomePage from "@/components/homepage/Homepage";
+import { useSession } from "next-auth/react"
+import {useContext, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaYoutube } from "react-icons/fa6";
 import Loader from "@/components/global/loader/Loader";
+import { slideContext } from "./layout";
+import PageSection from "@/components/global/pagesection/pagesection";
 
 export default function Home() {
  
   const { status } = useSession();
+
+  const {slide , setslide} = useContext(slideContext) as any;
+  setslide(0);
 
   useEffect(()=>{
     console.log(status)
@@ -19,7 +22,9 @@ export default function Home() {
 
           {status == 'loading' ?
               <Loader/> :
-              <HomePage/>
+              <motion.div layout transition={{duration : 0.5}}>
+              <PageSection page={'popular'}/>
+              </motion.div>
           }
     </>
   )

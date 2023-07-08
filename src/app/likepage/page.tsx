@@ -1,12 +1,18 @@
 'use client'
 import { useSession, signIn, signOut } from "next-auth/react"
-import { Suspense, useEffect, useState } from "react";
-import LikePage from "@/components/likepage/Likepage";
+import { useContext, useEffect } from "react";
 import Loader from "@/components/global/loader/Loader";
+import { slideContext } from "../layout";
+import { motion } from "framer-motion";
+import PageSection from "@/components/global/pagesection/pagesection";
 
 export default function Home() {
  
   const { status } = useSession();
+
+  const {slide , setslide} = useContext(slideContext) as any;
+  setslide(2);
+
 
   useEffect(()=>{
     console.log(status)
@@ -15,7 +21,9 @@ export default function Home() {
   return (
     <>
           {status == 'authenticated' ?
-          <LikePage/>
+          <motion.div layout transition={{duration : 0.5}}>
+          <PageSection page={'liked'}/>
+          </motion.div>
            : 
            <>
            {status == 'unauthenticated' ?

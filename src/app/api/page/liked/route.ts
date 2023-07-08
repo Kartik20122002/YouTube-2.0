@@ -3,9 +3,8 @@ import { secret } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 
-export async function GET(req : any , {params} :any ) {
+export async function GET(req : any) {
 
-  const {token} = params;
   console.log('likepage fetched');
 
   try{
@@ -25,11 +24,10 @@ export async function GET(req : any , {params} :any ) {
         maxResults : 50,
         regionCode : 'In',
         myRating : 'like',
-        pageToken : token,
     });
 
     if(results.status !== 200) 
-    return  NextResponse.json({});
+    return  NextResponse.json(results);
 
     const videos = results.data.items;
     const ptoken = results.data.prevPageToken;

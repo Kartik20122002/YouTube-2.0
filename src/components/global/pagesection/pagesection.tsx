@@ -4,12 +4,47 @@ import Link from "next/link"
 import megan from "@/images/megan.png"
 import { motion } from "framer-motion"
 import { isLargeContext } from "@/app/layout"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
+import PageSkeleton from "@/components/global/pagesection/loading";
+import { signOut } from "next-auth/react"
 
-const PageSection = ({items } : any)=>{
+
+const PageSection = ({page} : any)=>{
     const isLarge = useContext(isLargeContext);
 
-    return <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
+    const [items,setItems] = useState([]);
+    const [token,setToken] = useState('');
+    const [loading,setLoading] = useState(true);
+
+   
+    const fetchData = async (token = '')=>{
+      try{
+        const res = await fetch(`/api/page/${page}/${token}`,{
+          next: {revalidate : 300},
+        });
+
+        if(res.status != 500 && res.status != 404){
+          const {videos , ptoken , ntoken} = await res.json();
+          setItems(videos);
+          setToken(ntoken);
+          setLoading(false);
+        }
+
+      }
+      catch(error){
+        console.log('page error' , error);
+        // signOut();
+      }
+     
+     }
+
+     useEffect(()=>{
+      fetchData();
+     },[])
+
+
+    return loading ? <PageSkeleton/> : 
+         <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
            {items?.map((item : any , index : any)=>{
                return <VideoContainer index={index} key={index} isLarge={isLarge} item={item} />
            })}
