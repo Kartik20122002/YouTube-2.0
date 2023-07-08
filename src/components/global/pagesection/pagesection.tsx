@@ -8,6 +8,8 @@ import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import { signOut } from "next-auth/react"
 
+const dynamic = 'force-dynamic'
+
 
 const PageSection = ({page} : any)=>{
     const isLarge = useContext(isLargeContext);
