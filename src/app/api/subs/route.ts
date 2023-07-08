@@ -13,9 +13,6 @@ export async function GET(req : any ) {
 
   console.log("check it here" , tokens?.kartik);
 
-  if(tokens?.status != 200) 
-  return  NextResponse.json({});
-
   const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
@@ -38,8 +35,7 @@ export async function GET(req : any ) {
 
 }
 catch(err){
-    console.log('fetch error' , err);
-    return NextResponse.json({});
+    return NextResponse.json({err});
 
 }
 }
