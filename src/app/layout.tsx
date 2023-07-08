@@ -35,13 +35,6 @@ export default function RootLayout({
     setSlide(val)
   }
 
-  const {status} = useSession();
-
-  useEffect(()=>{
-    if(status == 'authenticated') signOut();
-  },[status])
-
-
   return (
     <html lang="en">
       <head>
