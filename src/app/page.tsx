@@ -6,6 +6,9 @@ import Loader from "@/components/global/loader/Loader";
 import { slideContext } from "./layout";
 import PageSection from "@/components/global/pagesection/pagesection";
 
+const dynamic = 'force-dynamic'
+
+
 export default function Home() {
  
   const { status } = useSession();

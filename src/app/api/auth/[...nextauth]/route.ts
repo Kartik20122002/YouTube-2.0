@@ -20,6 +20,9 @@ const getNewToken = async (token : any)=>{
   
 }
 
+const dynamic = 'force-dynamic'
+
+
 const authOptions : NextAuthOptions = {
     providers: [
       Google({
