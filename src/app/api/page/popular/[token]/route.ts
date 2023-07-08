@@ -4,6 +4,9 @@ import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { useSession } from "next-auth/react";
 
+export const dynamic = 'force-dynamic'
+
+
 export async function GET(req : any , {params} :any ) {
 
   const {token} = params;
