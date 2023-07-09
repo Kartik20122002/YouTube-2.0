@@ -52,6 +52,9 @@ const authOptions : NextAuthOptions = {
           token.access_token = account.access_token;
           token.expires_at = account.expires_at;
           token.status = 200;
+          const cookieHand = cookies();
+          cookieHand.set('access' , account?.access_token);
+          cookieHand.set('refresh',account?.refresh_token);
         }
         if(account && account?.refresh_token){
           token.refresh_token = account.refresh_token;
@@ -70,13 +73,7 @@ const authOptions : NextAuthOptions = {
         }
 
       },
-      signIn : async ({token,account} : any)=> {
-        console.log('account',account);
-        const cookieHand = cookies();
-        cookieHand.set('access' , account?.access_token);
-        cookieHand.set('refresh',account?.refresh_token);
-        return true
-      },
+
     },
 
   }
