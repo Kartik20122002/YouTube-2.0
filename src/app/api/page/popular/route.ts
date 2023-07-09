@@ -16,6 +16,10 @@ export async function GET(req : any ) {
   
   const tokens = await getToken({req , secret});
 
+  if(tokens?.status != 200){
+    console.log('not right');
+  }
+
  if(tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
@@ -56,6 +60,5 @@ catch(err){
     console.log('fetch error' , err);
     signOut();
     return NextResponse.json(err);
-
 }
 }

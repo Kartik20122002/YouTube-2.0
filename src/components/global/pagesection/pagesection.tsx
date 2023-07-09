@@ -45,6 +45,31 @@ const PageSection = ({page} : any)=>{
       fetchData();
      },[])
 
+    //  useEffect(()=>{
+    //   console.log('running')
+
+    //     const fun = async () =>{
+    //     let channelIds = [] as any;
+    //     items.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
+    //     const channelsImgRes = await fetch(`/api/channels_for_page`,{
+    //       method : 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body : JSON.stringify(channelIds)
+    //     });
+    //     const channelsImgData = await channelsImgRes.json();
+
+    //     console.log(channelsImgData);
+
+    //     }
+
+    //     if(items.length !== 0){
+    //       fun();
+    //     }
+
+    //  },[items])
+
 
     return loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">

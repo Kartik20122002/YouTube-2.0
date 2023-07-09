@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { secret } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
+import { signOut } from "next-auth/react";
 
 export const dynamic = 'force-dynamic'
 
@@ -35,7 +36,8 @@ export async function GET(req : any ) {
 
 }
 catch(err){
-    return NextResponse.json({err});
-
+  console.log('fetch error' , err);
+  signOut();
+  return NextResponse.json(err);
 }
 }

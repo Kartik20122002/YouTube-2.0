@@ -16,7 +16,6 @@ export const refreshedToken = async (refreshToken : any)=>{
       "Content-Type": "application/x-www-form-urlencoded",
     },
     method: "POST",
-    cache : 'default'
   })
 
   const refreshedTokens = await response.json()

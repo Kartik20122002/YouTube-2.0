@@ -4,17 +4,22 @@ import { clientId, clientSecret, scopesStr, secret } from '@/utils/secrets/secre
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { signOut } from 'next-auth/react';
+import { cookies } from 'next/headers'
 
 const getNewToken = async (token : any)=>{
   try {
     if(token.refresh_token){
       const newTokens = await refreshedToken(token.refresh_token);
-      return newTokens;
+      token.access_token = newTokens.access_token;
+      token.expires_at = Date.now() + 3600*1000;
+      token.status = 200;
+      return token;
     }
     else token.status = 404;
 
     return token;
   } catch (error) {
+    token.status = 404;
     return token;
   }
   
@@ -45,23 +50,35 @@ const authOptions : NextAuthOptions = {
         try {
         if (account && account?.access_token) {
           token.access_token = account.access_token;
-          token.expires_in = Date.now()/1000;
+          token.expires_at = account.expires_at;
+          token.status = 200;
         }
         if(account && account?.refresh_token){
           token.refresh_token = account.refresh_token;
         }
 
-        token.kartik = 'old'
+        if(token.expires_at < Date.now()){
+          return getNewToken(token);
+        }
+
 
         return token;
 
       } catch (error) {
-        token.kartik = 'error kartik'
-          return token;
+          token.kartik = 'error kartik'
+          return error;
         }
 
       },
+      signIn : async ({token,account} : any)=> {
+        console.log('account',account);
+        const cookieHand = cookies();
+        cookieHand.set('access' , account?.access_token);
+        cookieHand.set('refresh',account?.refresh_token);
+        return true
+      },
     },
+
   }
 
 const handler = NextAuth(authOptions);
