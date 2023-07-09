@@ -53,11 +53,12 @@ const authOptions : NextAuthOptions = {
           token.expires_at = account.expires_at;
           token.status = 200;
           const cookieHand = cookies();
-          cookieHand.set('access' , account?.access_token);
-          cookieHand.set('refresh',account?.refresh_token);
+          cookieHand.set('access_token' , account?.access_token);
+          
         }
         if(account && account?.refresh_token){
           token.refresh_token = account.refresh_token;
+          cookieHand.set('refresh_token',account.refresh_token);
         }
 
         if(token.expires_at < Date.now()){
