@@ -51,6 +51,7 @@ const authOptions : NextAuthOptions = {
         if (account && account?.access_token) {
           token.access_token = account.access_token;
           token.expires_at = account.expires_at;
+          console.log(account.expires_at - Date.now());
           token.status = 200;
           const cookieHand = cookies();
           cookieHand.set('access_token' , account?.access_token);
