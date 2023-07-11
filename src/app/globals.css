@@ -23,10 +23,6 @@
     width: 0px;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgb(255 255 255);
-  }
-  
   ::-webkit-scrollbar-thumb {
     display: none;
     visibility: hidden;
@@ -98,6 +94,13 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+.truncate-1{
+  display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .truncate-2{

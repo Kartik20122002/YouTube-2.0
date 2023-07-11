@@ -11,6 +11,7 @@ import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 
 const dynamic = 'force-dynamic'
 
+export const revalidate = 300;
 
 const PageSection = ({page} : any)=>{
     const isLarge = useContext(isLargeContext);
@@ -103,46 +104,47 @@ const PageSection = ({page} : any)=>{
      
      }
 
+     const fun = async () =>{
+      let channelIds = [] as any;
+      items.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
+      const channelsImgRes = await fetch(`/api/channels_for_page`,{
+        method : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body : JSON.stringify(channelIds),
+        cache :'force-cache'
+      });
+      const channelsImgData = await channelsImgRes.json();
+
+      for(let i = 0 ; i < items.length ; i++){
+        for(let j = 0 ; j < channelsImgData.length ; j++){
+          if(items[i].snippet.channelTitle == channelsImgData[j].snippet.title){
+            const newArray = imgs;
+            newArray[i] = channelsImgData[j].snippet.thumbnails.default.url;
+            setImgs(newArray);
+          }
+        }
+      } 
+    }
+
      useEffect(()=>{
       fetchData();
      },[])
 
      useEffect(()=>{
-        const fun = async () =>{
-        let channelIds = [] as any;
-        items.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
-        const channelsImgRes = await fetch(`/api/channels_for_page`,{
-          method : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body : JSON.stringify(channelIds),
-          cache :'force-cache'
-        });
-        const channelsImgData = await channelsImgRes.json();
-
-        for(let i = 0 ; i < items.length ; i++){
-          for(let j = 0 ; j < channelsImgData.length ; j++){
-            if(items[i].snippet.channelTitle == channelsImgData[j].snippet.title){
-              const newArray = imgs;
-              newArray[i] = channelsImgData[j].snippet.thumbnails.default.url;
-              setImgs(newArray);
-            }
-          }
-        }
-      }
-
         if(items.length !== 0){
           fun();
         }
-
      },[items])
 
     return loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
+          <div className="flex flex-wrap justify-evenly w-full">
            {items?.map((item : any , index : any)=>{
              return <VideoContainer index={index} imgs={imgs} key={index} isLarge={isLarge} item={item} />
             })}
+          </div>
           </motion.div>
 }
 

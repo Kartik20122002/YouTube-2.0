@@ -48,21 +48,12 @@ const authOptions : NextAuthOptions = {
     callbacks: {
       jwt: async ({token , account } : any)=> {
         try {
-        // const cookieHand = cookies();
         if (account && account?.access_token) {
           token.access_token = account.access_token;
           token.status = 200;
-          // const isThere = cookieHand.has('access_token');
-          // if(isThere) cookieHand.delete('access_token');
-          // cookieHand.set('access_token' , JSON.stringify(account?.access_token));
-          
         }
         if(account && account?.refresh_token){
           token.refresh_token = account?.refresh_token;
-          console.log(account?.refresh_token)
-          // const isThere = cookieHand.has('theToken');
-          // if(isThere) cookieHand.delete('theToken');
-          // cookieHand.set('theToken' , account?.refresh_token);
         }
 
         return token;

@@ -29,7 +29,7 @@ export async function GET(req : any) {
 
   const results = await youtube.videos.list(
     {   part:['snippet','statistics'], 
-        maxResults : 50,
+        maxResults : 48,
         regionCode : 'In',
         myRating : 'like',
     });
