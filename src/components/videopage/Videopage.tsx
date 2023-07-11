@@ -1,15 +1,17 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineSend, AiOutlineShareAlt } from 'react-icons/ai';
 import YouTube from 'react-youtube';
 import megan from '@/images/megan.png'
 import Image from 'next/legacy/image';
+import { useSession } from 'next-auth/react';
 
 const Videopage = ({id,channelId} : any)=>{ 
 
     const [rating,setRating] = useState<any>(0)
     const [largeDesc , setLargeDesc] = useState(false);
     const [comment,setComment] = useState<any>('');
+    const {status , data : session } = useSession();
 
     return (<>
     <div className="w-screen h-screen container play-container transition-all overflow-y-scroll pb-8">
@@ -99,8 +101,10 @@ const Videopage = ({id,channelId} : any)=>{
 
               <h4 className='hidden md:block my-1'>135 Comments</h4>
 
+            {status == 'authenticated' && 
               <form method="post" className="mt-2 flex items-start">
-                <Image src={megan} width={45} height={45} className='rounded-full' />
+                
+                <Image src={session.user?.image || megan} width={45} height={45} className='rounded-full' />
 
                 <div className="basis-auto w-full ml-6 flex flex-col">
 
@@ -113,7 +117,8 @@ const Videopage = ({id,channelId} : any)=>{
 
                 </div>
               </form>
-
+            }
+            
         <div className="comments hidden md:block">
 
         {/* <% for(let i = 0 ; i < comments.length ; i++){ %>
