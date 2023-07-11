@@ -7,6 +7,7 @@ import { isLargeContext } from "@/app/layout"
 import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import { signOut } from "next-auth/react"
+import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 
 const dynamic = 'force-dynamic'
 
@@ -115,7 +116,8 @@ const PageSection = ({page} : any)=>{
           headers: {
             'Content-Type': 'application/json',
           },
-          body : JSON.stringify(channelIds)
+          body : JSON.stringify(channelIds),
+          cache :'force-cache'
         });
         const channelsImgData = await channelsImgRes.json();
 
@@ -181,7 +183,7 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
     { imgs[index] ?
     <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={imgs[index]} loading="lazy" alt="channelImg" /> 
     : 
-    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" src={megan} loading="lazy" alt="channelImg" />
+    <ImgSkeleton className="w-[40px] h-[40px] rounded-full"/>
     }
     </Link> 
 
