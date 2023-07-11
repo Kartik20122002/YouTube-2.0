@@ -27,7 +27,7 @@ const Videopage = ({id,channelId} : any)=>{
 
             <div className="video-info flex flex-col md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
 
-                <div className="flex md:basis-[40%] basis-full mb-2 px-1 md:px-0">
+                <div className="flex md:basis-[40%] md:text-md text-xs basis-full mb-2 px-1 md:px-0">
                     <div className="flex items-center">
                         <div className="min-w-[45px] min-h-[45px]">
                         <Image width={45} height={45} className='rounded-full' src={megan}/>
