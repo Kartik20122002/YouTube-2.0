@@ -44,7 +44,7 @@ const Videopage = ({id,channelId} : any)=>{
                     </div>
                 </div>
 
-                <div className=" dark:text-white flex flex-wrap basis-[100%] md:basis-[60%] px-1 md:px-0 justify-between md:justify-end" id="buttons">
+                <div className=" dark:text-white flex text-xs md:text-md flex-wrap basis-[100%] md:basis-[60%] px-1 md:px-0 justify-between md:justify-end" id="buttons">
                     
                     <div className="flex h-10 items-center mr-1 mb-4">
 
