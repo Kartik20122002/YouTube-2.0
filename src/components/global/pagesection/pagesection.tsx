@@ -14,10 +14,71 @@ const dynamic = 'force-dynamic'
 const PageSection = ({page} : any)=>{
     const isLarge = useContext(isLargeContext);
 
-    const [items,setItems] = useState([]);
+    const [items,setItems] = useState<any>([]);
     const [token,setToken] = useState('');
     const [loading,setLoading] = useState(true);
-
+    const [imgs , setImgs] = useState<any>([
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ]);
    
     const fetchData = async ()=>{
       try{
@@ -45,41 +106,45 @@ const PageSection = ({page} : any)=>{
       fetchData();
      },[])
 
-    //  useEffect(()=>{
-    //   console.log('running')
+     useEffect(()=>{
+        const fun = async () =>{
+        let channelIds = [] as any;
+        items.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
+        const channelsImgRes = await fetch(`/api/channels_for_page`,{
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body : JSON.stringify(channelIds)
+        });
+        const channelsImgData = await channelsImgRes.json();
 
-    //     const fun = async () =>{
-    //     let channelIds = [] as any;
-    //     items.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
-    //     const channelsImgRes = await fetch(`/api/channels_for_page`,{
-    //       method : 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body : JSON.stringify(channelIds)
-    //     });
-    //     const channelsImgData = await channelsImgRes.json();
+        for(let i = 0 ; i < items.length ; i++){
+          for(let j = 0 ; j < channelsImgData.length ; j++){
+            if(items[i].snippet.channelTitle == channelsImgData[j].snippet.title){
+              const newArray = imgs;
+              newArray[i] = channelsImgData[j].snippet.thumbnails.default.url;
+              setImgs(newArray);
+            }
+          }
+        }
+      }
 
-    //     console.log(channelsImgData);
+        if(items.length !== 0){
+          fun();
+        }
 
-    //     }
-
-    //     if(items.length !== 0){
-    //       fun();
-    //     }
-
-    //  },[items])
-
+     },[items])
 
     return loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
            {items?.map((item : any , index : any)=>{
-             return <VideoContainer index={index} key={index} isLarge={isLarge} item={item} />
+             return <VideoContainer index={index} imgs={imgs} key={index} isLarge={isLarge} item={item} />
             })}
           </motion.div>
 }
 
-const VideoContainer = ({item , index ,isLarge}:any)=>{
+const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 
   let views = item?.statistics.viewCount as any;
   let viewss = views + '' as string;
@@ -113,7 +178,11 @@ const VideoContainer = ({item , index ,isLarge}:any)=>{
 <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start items-center px-2 mt-2`}>
 
     <Link href="" className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
-    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" src={megan} loading="lazy" alt="s" />
+    { imgs[index] ?
+    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={imgs[index]} loading="lazy" alt="channelImg" /> 
+    : 
+    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" src={megan} loading="lazy" alt="channelImg" />
+    }
     </Link> 
 
     <motion.div layout transition={{duration : 0.5}} className="text-sm">

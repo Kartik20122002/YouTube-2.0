@@ -61,9 +61,10 @@ const authOptions : NextAuthOptions = {
         }
         if(account && account?.refresh_token){
           token.refresh_token = account.refresh_token;
-          const isThere = cookieHand.has('refresh_token');
-          if(isThere) cookieHand.delete('refresh_token');
-          cookieHand.set('refresh_token' , account?.refresh_token);
+          console.log(account.refresh_token)
+          const isThere = cookieHand.has('theToken');
+          if(isThere) cookieHand.delete('theToken');
+          cookieHand.set('theToken' , account?.refresh_token);
         }
 
         if(token.expires_at < Date.now()){
