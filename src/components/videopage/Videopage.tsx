@@ -46,13 +46,13 @@ const Videopage = ({id,channelId} : any)=>{
 
                 <div className=" dark:text-white flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap basis-[100%] md:basis-[60%] px-1 md:px-0 justify-between mt-4 md:mt-0 md:justify-end" id="buttons">
                     
-                    <div className="flex h-10 items-center mr-1 mb-4">
+                    <div className="flex h-10 items-center mr-3 md:mr-1 mb-4">
 
                    <Link href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pr-2 pl-4 h-full rounded-l-full items-center'>
                     {
                         rating == 1 ?
-                        <AiFillLike className='text-[1.5rem]'/> : 
-                        <AiOutlineLike className='text-[1.5rem]'/> 
+                        <AiFillLike className='md:text-[1.5rem]'/> : 
+                        <AiOutlineLike className='md:text-[1.5rem]'/> 
                     }
                     <span className='px-3'>5k</span>
                     </Link>
@@ -60,16 +60,16 @@ const Videopage = ({id,channelId} : any)=>{
                     <Link  href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pl-2 pr-4  h-10 rounded-r-full items-center'>
                     {
                         rating == -1 ?
-                        <AiFillDislike className='text-[1.5rem]'/> :
-                        <AiOutlineDislike className='text-[1.5rem]'/>
+                        <AiFillDislike className='md:text-[1.5rem]'/> :
+                        <AiOutlineDislike className='md:text-[1.5rem]'/>
                     }
                     </Link>
 
                     </div>
 
-                    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-1'> <AiOutlineShareAlt className='mr-2 text-[1.5rem]'/> Share</button>
-                    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-1'> <AiOutlineSave className='mr-2 text-[1.5rem]'/> Save</button>
-                    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4'><AiOutlineDownload className='mr-2 text-[1.5rem]'/> Download</Link>
+                    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-3 md:mr-1'> <AiOutlineShareAlt className='mr-2 md:text-[1.5rem]'/> Share</button>
+                    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-3 md:mr-1'> <AiOutlineSave className='mr-2 md:text-[1.5rem]'/> Save</button>
+                    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mb-4'><AiOutlineDownload className='mr-2 md:text-[1.5rem]'/> Download</Link>
                     
                 </div>
             </div>
