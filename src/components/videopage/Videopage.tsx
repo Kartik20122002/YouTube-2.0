@@ -40,7 +40,7 @@ const Videopage = ({id,channelId} : any)=>{
                     </div>
                     <div className="ml-auto">
                          {/* <button className='bg-[#cfcfcf57] dark:text-white text-black py-2 px-6 rounded-full font-semibold hover:opacity-70'>Subscribed</button> */}
-                         <button className='bg-white py-2 px-6 rounded-full font-semibold hover:opacity-70'>Subscribe</button>
+                         <button className='bg-white py-2 px-6 rounded-full text-lg font-semibold hover:opacity-70'>Subscribe</button>
                     </div>
                 </div>
 
