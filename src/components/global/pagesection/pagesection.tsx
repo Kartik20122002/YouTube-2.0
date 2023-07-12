@@ -133,7 +133,7 @@ const PageSection = ({page} : any)=>{
      },[])
 
      useEffect(()=>{
-        if(items.length !== 0){
+        if(items?.length !== 0){
           fun();
         }
      },[items])
@@ -169,17 +169,17 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 
     return <>
 
-<motion.div whileHover={{ scale: 1.1, transition: { duration: 0.5 ,delay : 3 }}} layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className= {`px-0 h-[21rem] md:h-[18rem] w-full md:w-[22rem] items-center mb-7 flex flex-col justify-between`}>
+<motion.div whileHover={{ scale: 1.1, transition: { duration: 0.5 ,delay : 3 }}} layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className= {`px-0  md:h-[18rem] w-full md:w-[22rem] items-center mb-7 flex flex-col justify-between`}>
 
-  <Link className={`h-[18rem] md:h-[12.5rem] w-full`} href={`/videopage/${item?.id}`}>
+  <Link className={`relative md:h-[12.5rem] w-full`} href={`/videopage/${item?.id}`}>
 
-  <motion.div className={`flex h-full w-full relative md:rounded-md`} layout transition={{duration : 0.5}}>
+  <motion.div className={`flex h-full w-full relative pt-[56.25%] md:pt-0 md:rounded-md`} layout transition={{duration : 0.5}}>
     <Image src={item.snippet.thumbnails.medium.url} className="md:rounded-xl dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />
   </motion.div>
 
   </Link>
 
-<motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start items-center px-2 mt-2`}>
+<motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
     <Link href="" className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
     { imgs[index] ?

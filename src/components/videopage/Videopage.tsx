@@ -24,7 +24,7 @@ const Videopage = ({id,channelId} : any)=>{
     </>)
 }
 
-const VideoSection = (id : any)=>{
+const VideoSection = ({id} : any)=>{
 
 const {status , data : session } = useSession();
 
@@ -32,7 +32,7 @@ const {status , data : session } = useSession();
     return (<>
 <div className=" md:basis-[64%] shrink h-full">
 
-<div className="player w-full h-full relative pt-[56.25%] overflow-hidden">
+<div className="w-full h-full relative pt-[56.25%] overflow-hidden">
 
  <iframe src={`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' onPlay={()=>console.log('played')} /> 
 
@@ -51,8 +51,6 @@ const {status , data : session } = useSession();
 { status == 'authenticated' && 
     <CommentForm img={session?.user?.image}/>
 }
-
-    
 
  </div>
 </div>
