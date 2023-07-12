@@ -4,17 +4,60 @@ import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutli
 import megan from '@/images/megan.png'
 import Image from 'next/legacy/image';
 import { useSession } from 'next-auth/react';
+import Sekelton from '../global/skeletonComponents/TextSkeleton';
+import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 
 const Videopage = ({id,channelId} : any)=>{ 
 
+    const [videoDetails , setVideoDetails] = useState<any>({});
+    const [channelDetails , setChannelDetails] = useState<any>({});
+    const [commentDetails,setComments] = useState<any>([]);
+    const [related,setRelated] = useState<any>([]);
+    const [loading , setLoading] = useState(true);
+
+    const getDetails = async ()=>{
+        try{
+            const res = await fetch(`/api/video/${id}`,{
+                method : 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({id,channelId}),
+                next : {revalidate : 300}
+              })
+            
+            if(res.status != 404 && res.status != 500){
+                const {video,channel,comments,related} = await res.json();
+                setVideoDetails(video);
+                setChannelDetails(channel);
+                setComments(comments);
+                setRelated(related);
+                setLoading(false);
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+    
+        
+
+    useEffect(()=>{
+       getDetails();
+       console.log('reunned')
+    },[])
 
     return (<>
     <div className="h-screen transition-all overflow-y-scroll pb-8">
-       <div className="flex w-full flex-wrap flex-col md:flex-row justify-between">
+       <div className="flex w-full flex-col md:flex-row justify-between">
 
-        <VideoSection id={id}/>
+        {videoDetails && channelDetails && commentDetails &&
+        <VideoSection video={videoDetails} channel={channelDetails} comments={commentDetails} loading={loading} id={id}/>
+        }
+    
+        { related && <SideRow related={related}/>}
 
-        <SideRow id={id}/>
+        
 
        </div>
 
@@ -23,7 +66,7 @@ const Videopage = ({id,channelId} : any)=>{
     </>)
 }
 
-const VideoSection = ({id} : any)=>{
+const VideoSection = ({video,channel,comments,loading,id} : any)=>{
 
 const {status , data : session } = useSession();
 
@@ -32,13 +75,13 @@ const {status , data : session } = useSession();
 
 <div className="w-full h-full relative pt-[56.25%] overflow-hidden">
 
- <iframe src={`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' onPlay={()=>console.log('played')} /> 
+ <iframe allowFullScreen src={`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' onPlay={()=>console.log('played')} /> 
 
 </div>
 
-<h3 className="video-title pt-4 truncate-1 dark:text-white text-[1.2rem] font-semibold w-full">Video.snippet.title Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae, recusandae cumque dolorem ullam, ipsum, dolor vitae quod laudantium quae magni accusantium! Corporis repudiandae ducimus voluptate maxime aliquid quae vel odio!</h3>
+<h3 className="video-title pt-4 truncate-1 dark:text-white text-[1.2rem] font-semibold w-full">{ loading ?  <Sekelton className="w-full"/> : video?.snippet?.title}</h3>
 
-   <VideoInfo/>
+   <VideoInfo video={video} channel={channel} loading={loading}/>
 
  <div className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
@@ -55,26 +98,34 @@ const {status , data : session } = useSession();
     </>)
 }
 
-const VideoInfo = ()=>{
+const VideoInfo = ({video,channel,loading} : any)=>{
     const [rating,setRating] = useState<any>(0)
+
+    const likes = converter(video?.statistics?.likeCount || 0);
+    const subscribers = converter(channel?.statistics?.subscriberCount || 0);
 
     return (<>
     <div className="flex flex-col flex-wrap md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
 
 <div className="flex md:basis-[40%] grow md:text-md text-xs basis-full mb-2 px-2 md:px-0">
-    <div className="flex items-center">
+    <div className={`flex items-center ${loading && 'w-1/3'}`}>
         <div className="min-w-[45px] min-h-[45px]">
-        <Image width={45} height={45} className='rounded-full' src={megan}/>
+        {
+            loading ? 
+            <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle/>
+            :
+            <Image width={45} height={45} className='rounded-full' src={channel?.snippet?.thumbnails?.default?.url}/>
+        }
         </div>
 
-        <div className="ml-2 w-full">
-            <div className="text-lg font-bold text-black dark:text-white truncate-1"> Take U Forward </div>
-            <div className="text-sm"> 123k subscribers </div>
+        <div className="ml-2 min-w-full">
+             {loading ? <Sekelton width={'w-full'}/> :<div className="text-lg font-bold text-black dark:text-white truncate-1 w-full"> {video?.snippet?.channelTitle}</div>} 
+             {loading ? <Sekelton width={'w-full'}/> : <div className="text-sm w-full"> {subscribers} subscribers </div> }
         </div>
     </div>
     <div className="ml-auto">
          {/* <button className='bg-[#cfcfcf57] dark:text-white text-black py-2 px-6 rounded-full font-semibold hover:opacity-70'>Subscribed</button> */}
-         <button className='bg-white py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</button>
+         <button className='bg-white py-1 ml-3 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</button>
     </div>
 </div>
 
@@ -88,7 +139,7 @@ const VideoInfo = ()=>{
         <AiFillLike className='text-[1.2rem] md:text-[1.5rem]'/> : 
         <AiOutlineLike className='text-[1.2rem] md:text-[1.5rem]'/> 
     }
-    <span className='px-3'>5k</span>
+    <span className='px-3'>{likes}</span>
     </Link>
 
     <Link  href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pl-2 pr-4  h-10 rounded-r-full items-center'>
@@ -205,43 +256,40 @@ const Comments = ()=>{
     </>)
 }
 
-const SideRow = (id:any)=>{
+const SideRow = ({related}:any)=>{
    return (<>
    <div className="md:basis-[33%] flex flex-col">
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-          <SideVideo/>
-        </div>
+    {
+        related.map((item : any , index : any)=>{
+           return <SideVideo key={index} item={item} />
+        })
+    }
+    </div>
    </>)
 }
 
-const SideVideo = ()=>{
-    return (<>
-<div className="side-video-list flex flex-wrap justify-between mb-2">
+const SideVideo = ({item} : any)=>{
 
-<Link href={'#'} className="flex basis-[35%] justify-center items-center "> <Image src={'https://images.pexels.com/photos/16982925/pexels-photo-16982925/free-photo-of-fashion-man-people-woman.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'} width={160} height={90} className='bg-[#5a5a5a] rounded-md' loading="lazy" alt="." /> </Link>
+    let d1 = new Date(item.snippet.publishedAt) as any;
+    let d2 = new Date() as any;
+    let date = Math.abs(d2-d1) as any;
+    date = date/(1000*60);
+    let time = Math.trunc(date) + " mins" 
+    if(date >= 60){ date = date/60; time = Math.trunc(date) + " hours";
+    if(date >= 24){ date = date/24; time = Math.trunc(date) + " days";
+    if(date >= 31){ date = date/30.4167; time = Math.trunc(date) + " months";
+    if(date >= 12){ date = date/12; time = Math.trunc(date) + " years";
+    }}}}
+
+    return (<>
+<div className="side-video-list flex flex-wrap justify-between mb-6">
+
+<Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="flex basis-[35%] justify-center items-center  "> <Image src={item?.snippet?.thumbnails?.default?.url || item?.snippet?.thumbnails?.medium?.url} width={160} height={90} className='bg-[#5a5a5a] rounded-md' loading="lazy" alt="." /> </Link>
 
 <div className="vid-info basis-[64%] pt-1">
-    <Link href={"#"} className="text-md dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">videoTitle Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci ea quibusdam iusto numquam et tenetur illo minus harum voluptate quas!</Link>
-    <p className="text-[#606060] font-medium text-sm"><a href="#">channelTitle</a></p>
-    <p className="text-[#606060] font-medium text-sm">3 days ago</p>
+    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
+    <p className="text-[#606060] font-medium text-sm"><Link href="#">{item?.snippet?.channelTitle}</Link></p>
+    <p className="text-[#606060] font-medium text-sm">{time} ago</p>
 </div>
 
 </div>
@@ -250,3 +298,10 @@ const SideVideo = ()=>{
 
 export default Videopage;
 
+const converter = (val : any)=>{
+    let str = val + '' as string;
+  if(val >= 1000){val = val/1000; str = Math.trunc(val) + 'K'}
+  if(val >= 1000){val = val/1000; str = Math.trunc(val) + 'M'}
+  if(val >= 1000){val = val/1000; str = Math.trunc(val) + 'B'}
+  return str;
+}

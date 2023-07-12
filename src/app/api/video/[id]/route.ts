@@ -7,14 +7,9 @@ import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
 
-
-
-
-
-export async function POST(req : NextRequest ) {
+export async function POST(req : any ) {
   const body = await req.text();
   const {id , channelId} = JSON.parse(body);
-
 
   try{
 
@@ -54,64 +49,24 @@ const CommentsPromise = youtube.commentThreads.list({
   maxResults : 50
 });
 
-const RelatedVideosPromise = async (id : any)=>{
-  try {
-const url = `https://youtube-v31.p.rapidapi.com/search?relatedToVideoId=${id}&part=id%2Csnippet&type=video&maxResults=25`;
-
-const options = {
-method: 'GET',
-headers: {
-  'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
-  'X-RapidAPI-Host': 'youtube-v31.p.rapidapi.com'
-}
-};
-
-let results = await fetch(url,options);
-results = await results.json();
-
-return results;
-
-  } catch (error) {
-    return {};
-      throw error;
+const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?relatedToVideoId=${id}&part=id%2Csnippet&type=video&maxResults=25`,{
+  method: 'GET',
+  headers: {
+    'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
+    'X-RapidAPI-Host': 'youtube-v31.p.rapidapi.com'
   }
-}
-
-
-if(tokens && tokens?.access_token){
-  const RatingPromise = youtube.videos.getRating({
-    id: id,
   });
-  
-  const SubscriptionPromise = youtube.subscriptions.list({
-    part : ['id'],
-    forChannelId : channelId,
-    mine : true
-  });
-  
- 
-  const [VideoData , ChannelData , CommentsData , RatingData , SubscriptionData , RelatedVideos] = await Promise.all([VideoPromise,ChannelPromise,CommentsPromise,RatingPromise,SubscriptionPromise,RelatedVideosPromise]);
-  
-  const relatedData = RelatedVideos;
-  const video = VideoData?.data?.items;
-  const channel = ChannelData?.data?.items;
-  const comments = CommentsData.data.items;
-  const rating = RatingData.data.items; 
-  const subscription = SubscriptionData.data.items;
-  
-  return {video,channel,comments,rating,subscription,relatedData};
-}
-else{
+
   const [VideoData , ChannelData , CommentsData , RelatedVideos] = await Promise.all([VideoPromise,ChannelPromise,CommentsPromise,RelatedVideosPromise]);
 
-  const relatedData = RelatedVideos;
-  const video = VideoData?.data?.items;
-  const channel = ChannelData?.data?.items;
-  const comments = CommentsData.data.items;
-  
-  return {video,channel,comments,relatedData};
-}
+  const relatedData = await RelatedVideos.json();
 
+  const video = VideoData?.data?.items[0];
+  const channel = ChannelData?.data?.items[0];
+  const comments = CommentsData.data.items;
+  const related = relatedData.items;
+  
+  return NextResponse.json({video,channel,comments,related});
 
 }
 catch(err){

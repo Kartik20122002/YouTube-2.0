@@ -10,8 +10,7 @@ const VideoPage = ({params} : any)=>{
     setslide(-1);
   })
 
-
-    return <Videopage id={params.id}/>
+  return <Videopage id={params.id} channelId={params.channelId}/>
 }
 
 export default VideoPage;
