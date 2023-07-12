@@ -6,6 +6,7 @@ import Image from 'next/legacy/image';
 import { useSession } from 'next-auth/react';
 import Sekelton from '../global/skeletonComponents/TextSkeleton';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
+import {motion} from 'framer-motion'
 
 const Videopage = ({id,channelId} : any)=>{ 
 
@@ -85,7 +86,7 @@ const {status , data : session } = useSession();
 
  <div className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
-   <Descrption/>
+   <Descrption loading={loading} video={video}/>
 
    <h4 className='hidden md:block my-1'>135 Comments</h4>
 
@@ -161,28 +162,44 @@ const VideoInfo = ({video,channel,loading} : any)=>{
     </>)
 }
 
-const Descrption = ()=>{
+const Descrption = ({loading , video} : any)=>{
     const [largeDesc , setLargeDesc] = useState(false);
 
-    return (<> <div onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
+    const views = converter(video?.statistics?.viewCount || 0);
+
+    let d1 = new Date(video.snippet.publishedAt) as any;
+    let d2 = new Date() as any;
+    let date = Math.abs(d2-d1) as any;
+    date = date/(1000*60);
+    let time = Math.trunc(date) + " mins" 
+    if(date >= 60){ date = date/60; time = Math.trunc(date) + " hours";
+    if(date >= 24){ date = date/24; time = Math.trunc(date) + " days";
+    if(date >= 31){ date = date/30.4167; time = Math.trunc(date) + " months";
+    if(date >= 12){ date = date/12; time = Math.trunc(date) + " years";
+    }}}}
+
+
+    return (<> <motion.div layout transition={{duration : 0.5}} onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
     <div className="flex flex-wrap">
-    <span className='mr-2'>69K views</span>
-    <span className='mr-2'>1 year ago</span>
-    <div className="tag ">
-        <span className='mr-1 dark:text-white opacity-30'>#progamming</span>
-        <span className='mr-1 dark:text-white opacity-30'>#coding</span>
-        <span className='mr-1 dark:text-white opacity-30'>#CodeBeyond</span>
+    <span className='mr-2'>{views} views</span>
+    <span className='mr-2'>{time} ago</span>
+    <div className="tag">
+         {
+            !loading && video?.snippet.tags.map((tag:any , index: any) =>{
+                 return  <span key={index} className='mr-1 dark:text-white opacity-30'>#{tag}</span>
+            })
+         }
     </div>
     </div>
 
-    <div className={`${!largeDesc && 'truncate-3'} mt-1`}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolorum aperiam nemo voluptas eius fugit voluptate obcaecati, quam reprehenderit corrupti pariatur. Reprehenderit ipsa voluptatum excepturi mollitia impedit quam molestiae ipsam similique recusandae, maiores aut, neque nulla quia atque. Quod repellendus sed dolor aliquid optio facilis minus quia vero sit dolorem. Quis illum molestias possimus autem doloremque fugiat quaerat quidem nisi mollitia recusandae vitae non velit cum explicabo eligendi doloribus odit suscipit commodi, et sequi voluptatum labore ipsam minus facilis. Harum corporis saepe est perspiciatis iure deserunt placeat sequi, nihil ducimus accusamus, error ex. Distinctio magnam commodi tempora iste laudantium hic illo voluptate possimus beatae, libero dolore minus vel voluptates id eius consequuntur perspiciatis nam fugiat cumque consectetur soluta numquam quo animi odit! Voluptates voluptas hic ea nostrum ratione consequuntur, exercitationem facilis quam perferendis quis cumque aliquam nulla tempore dolor aperiam ipsam perspiciatis dolore omnis beatae quo dolores ipsum totam. Quis porro praesentium quisquam quod, cupiditate itaque fuga culpa dolorem minima odit veniam cumque magnam laudantium modi tempore consequuntur labore quibusdam eveniet corporis perspiciatis in natus dolore! Voluptate dolores libero ipsa vero, expedita est enim illo incidunt velit, minima ea distinctio eos rerum suscipit blanditiis quos consequuntur, in magnam odio. Laudantium. ipsum dolor sit amet, consectetur adipisicing elit. Placeat, quis quasi pariatur amet quisquam error, fuga voluptatibus aspernatur non voluptatem dolorem nihil nisi mollitia cum voluptatum exercitationem! Obcaecati a magnam exercitationem eligendi tempore nihil quos modi odio voluptates impedit aliquam eius aspernatur sequi amet, sint vero necessitatibus iure facilis sunt. ipsum dolor sit, amet consectetur adipisicing elit. Qui, temporibus officia nihil quis quia, voluptatem expedita libero ullam illum doloremque eos recusandae, odit excepturi doloribus molestiae quas eaque beatae impedit!
-    </div>
+    <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden  mt-1`}>
+        {video?.snippet?.description}
+    </motion.div>
     {largeDesc && 
-    <div onClick={()=>setLargeDesc(false)} className="mt-3 text-white hover:opacity-80 cursor-pointer">Show Less</div>
+    <motion.div layout transition={{duration : 0.5}} onClick={()=>setLargeDesc(false)} className="mt-3 text-white hover:opacity-80 cursor-pointer">Show Less</motion.div>
     }
 
- </div>
+    </motion.div>
  </>)
 }
 
