@@ -167,7 +167,7 @@ const Descrption = ({loading , video} : any)=>{
 
     const views = converter(video?.statistics?.viewCount || 0);
 
-    let d1 = new Date(video.snippet.publishedAt) as any;
+    let d1 = new Date(video?.snippet?.publishedAt) as any;
     let d2 = new Date() as any;
     let date = Math.abs(d2-d1) as any;
     date = date/(1000*60);
