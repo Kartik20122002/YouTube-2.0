@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineSend, AiOutlineShareAlt } from 'react-icons/ai';
-import YouTube from 'react-youtube';
 import megan from '@/images/megan.png'
 import Image from 'next/legacy/image';
 import { useSession } from 'next-auth/react';
@@ -28,7 +27,6 @@ const VideoSection = ({id} : any)=>{
 
 const {status , data : session } = useSession();
 
-
     return (<>
 <div className=" md:basis-[64%] shrink h-full">
 
@@ -42,7 +40,7 @@ const {status , data : session } = useSession();
 
    <VideoInfo/>
 
- <div className="h-fit-content mt-4 dark:text-white">
+ <div className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
    <Descrption/>
 
@@ -61,10 +59,10 @@ const VideoInfo = ()=>{
     const [rating,setRating] = useState<any>(0)
 
     return (<>
-    <div className="video-info flex flex-col md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
+    <div className="flex flex-col flex-wrap md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
 
-<div className="flex md:basis-[40%] md:text-md text-xs basis-full mb-2 px-2 md:px-0">
-    <div className="flex items-center w-1/2">
+<div className="flex md:basis-[40%] grow md:text-md text-xs basis-full mb-2 px-2 md:px-0">
+    <div className="flex items-center">
         <div className="min-w-[45px] min-h-[45px]">
         <Image width={45} height={45} className='rounded-full' src={megan}/>
         </div>
@@ -76,11 +74,11 @@ const VideoInfo = ()=>{
     </div>
     <div className="ml-auto">
          {/* <button className='bg-[#cfcfcf57] dark:text-white text-black py-2 px-6 rounded-full font-semibold hover:opacity-70'>Subscribed</button> */}
-         <button className='bg-white py-2 px-6 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</button>
+         <button className='bg-white py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</button>
     </div>
 </div>
 
-<div className=" dark:text-white flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap basis-[100%] md:basis-[60%] px-1 md:px-0 justify-between mt-4 md:mt-0 md:justify-end" id="buttons">
+<div className="dark:text-white w-screen md:w-auto flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap basis-[100%] shrink grow md:basis-[60%] px-1 md:px-0 justify-between mt-4 md:mt-0 md:justify-end" id="buttons">
     
     <div className="flex h-10 items-center mr-3 md:mr-1 mb-4">
 
@@ -115,7 +113,7 @@ const VideoInfo = ()=>{
 const Descrption = ()=>{
     const [largeDesc , setLargeDesc] = useState(false);
 
-    return (<> <div onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} md:rounded-lg w-full h-fit-content mb-4`}>
+    return (<> <div onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
     <div className="flex flex-wrap">
     <span className='mr-2'>69K views</span>
     <span className='mr-2'>1 year ago</span>
