@@ -11,7 +11,7 @@ const VideoPage = ({params} : any)=>{
   })
 
 
-    return <div className="w-screen px-0"><Videopage id={params.id}/></div>
+    return <Videopage id={params.id}/>
 }
 
 export default VideoPage;
