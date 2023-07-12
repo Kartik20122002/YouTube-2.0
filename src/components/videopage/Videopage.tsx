@@ -71,6 +71,8 @@ const VideoSection = ({video,channel,comments,loading,id} : any)=>{
 
 const {status , data : session } = useSession();
 
+const commentsCount = converter(video?.statistics?.commentCount || 0)
+
     return (<>
 <div className=" md:basis-[64%] shrink h-full">
 
@@ -88,7 +90,7 @@ const {status , data : session } = useSession();
 
    <Descrption loading={loading} video={video}/>
 
-   <h4 className='hidden md:block my-1'>135 Comments</h4>
+   <h4 className='hidden md:block my-1'>{commentsCount} Comments</h4>
 
 { status == 'authenticated' && 
     <CommentForm img={session?.user?.image}/>
@@ -203,7 +205,7 @@ const Descrption = ({loading , video} : any)=>{
  </>)
 }
 
-const CommentForm = (img : any)=>{
+const CommentForm = ({img} : any)=>{
 
     const [comment,setComment] = useState<any>('');
 
@@ -211,7 +213,7 @@ const CommentForm = (img : any)=>{
     
     <form method="post" className="mt-2 flex items-start">
     
-    <Image src={img || megan} width={45} height={45} className='rounded-full' />
+    <Image src={img} width={45} height={45} className='rounded-full' />
 
     <div className="basis-auto w-full ml-6 flex flex-col">
 
