@@ -13,15 +13,12 @@ export default function Home() {
  
   const { status } = useSession();
 
-
-
   const {slide , setslide} = useContext(slideContext) as any;
   setslide(0);
 
  
   return (
     <>
-
           {status == 'loading' ?
               <Loader/> :
               <motion.div layout transition={{duration : 0.5}}>
