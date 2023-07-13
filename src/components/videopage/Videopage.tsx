@@ -10,6 +10,8 @@ import {DateConverter} from "@/utils/Functions/Converters/DateConverter";
 import {CountConverter} from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext } from '@/app/layout';
 
+export const revalidate = 300;
+
 const Videopage = ({id,channelId} : any)=>{ 
 
     const [videoDetails , setVideoDetails] = useState<any>({});
@@ -78,7 +80,7 @@ const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
 </div>
 
-<h3 className="video-title pt-4 truncate-1 dark:text-white text-[1.2rem] font-semibold w-full">{ loading ?  <Sekelton height={'h-6'} width={'w-[95%] md:w-full'} className="mx-auto md:mx-0"/> : video?.snippet?.title}</h3>
+<h3 className="px-1 md:px-0 pt-4  truncate-1 dark:text-white text-[1.2rem] font-semibold w-full">{ loading ?  <Sekelton height={'h-6'} width={'w-[95%] md:w-full'} className="mx-auto  md:mx-0"/> : video?.snippet?.title}</h3>
 
  {loading ? <VideoInfoSkeleton/> : <VideoInfo status={status} id={id} channelId={channelId} video={video} channel={channel} loading={loading}/>}
 
@@ -140,11 +142,12 @@ useEffect(()=>{
     const subscribers = CountConverter(channel?.statistics?.subscriberCount || 0);
 
     return (<>
-    <div className="flex flex-col flex-wrap md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
+    <div className="flex flex-col flex-wrap md:flex-row md:items-center px-1 md:px-0 justify-center mt-5 text-[#5a5a5a] w-full">
 
-<div className="flex md:basis-[40%] grow md:text-md text-xs basis-full mb-2 px-2 md:px-0">
-    <div className={`flex items-center ${loading && 'w-1/3'}`}>
-        <div className="min-w-[45px] min-h-[45px]">
+<div className="justify-between flex w-full min-w-min md:basis-[40%] grow md:max-w-full md:text-md text-xs">
+
+    <div className={`flex items-center w-[70%]`}>
+        <div className=" min-w-[45px] min-h-[45px]">
         {
             loading ? 
             <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle/>
@@ -153,23 +156,24 @@ useEffect(()=>{
         }
         </div>
 
-        <div className="ml-2 min-w-full">
-             {loading ? <Sekelton width={'w-full'}/> :<div className="text-lg font-bold text-black dark:text-white truncate-1 w-full"> {video?.snippet?.channelTitle}</div>} 
+        <div className="ml-3">
+             {loading ? <Sekelton width={'w-full'}/> :<div className="text-lg font-bold text-black dark:text-white truncate-1 w-full overflow-hidden"> {video?.snippet?.channelTitle}</div>} 
              {loading ? <Sekelton width={'w-full'}/> : <div className="text-sm w-full"> {subscribers} subscribers </div> }
         </div>
     </div>
-    <div className="ml-auto">
+
+    <div className="w-min items-center justify-center flex">
         {sub == 1 ? 
-         <button onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 ml-3 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</button>
+         <button onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</button>
          :
-         <button onClick={()=>toggleSub()} className='bg-white py-1 ml-3 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</button>
+         <button onClick={()=>toggleSub()} className='bg-white py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</button>
          }
     </div>
 </div>
 
-<div className="dark:text-white w-screen md:w-auto flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap basis-[100%] shrink grow md:basis-[60%] px-1 md:px-0 justify-between mt-4 md:mt-0 md:justify-end" id="buttons">
+<div className="dark:text-white max-w-full md:basis-[60%] grow flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap md:px-0 justify-between items-center mt-4 md:mt-0 md:justify-end" id="buttons">
     
-    <div className="flex h-10 items-center mr-3 md:mr-1 mb-4">
+    <div className="flex h-10 items-center mr-3 md:mr-1 my-1">
 
    <Link href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pr-2 pl-4 h-full rounded-l-full items-center'>
     {
@@ -190,9 +194,9 @@ useEffect(()=>{
 
     </div>
 
-    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-3 md:mr-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</button>
-    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-3 md:mr-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</button>
-    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mb-4'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link>
+    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</button>
+    <button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</button>
+    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link>
     
 </div>
 </div>
@@ -261,7 +265,7 @@ const Description = ({loading , video} : any)=>{
     </div>
     </div>
 
-    <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden  mt-1`}>
+    <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden whitespace-normalmt-1`}>
         {video?.snippet?.description}
     </motion.div>
     {largeDesc && 
