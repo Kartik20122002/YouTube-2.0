@@ -1,10 +1,7 @@
 import { refreshedToken } from '@/utils/auth/refreshed';
-import { oauth2client } from '@/utils/auth/youtube';
 import { clientId, clientSecret, scopesStr, secret } from '@/utils/secrets/secrets';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
-import { signOut } from 'next-auth/react';
-import { cookies } from 'next/headers'
 
 const getNewToken = async (token : any)=>{
   try {

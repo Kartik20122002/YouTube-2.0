@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextRequest, NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signOut } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 export const dynamic = 'force-dynamic'
 
@@ -24,11 +24,8 @@ export async function POST(req : NextRequest ) {
   }
 }
 else{ 
- oauth2client.credentials = {
-  access_token : '' as string, 
-  refresh_token : '' as string
-}
- oauth2client.apiKey = ytApi;
+signIn();
+return;
 }
 
 if(tokens && tokens?.access_token){
@@ -41,14 +38,16 @@ if(tokens && tokens?.access_token){
       forChannelId : channelId,
       mine : true
     });
+
+    console.log('reach');
     
    
     const [RatingData , SubscriptionData] = await Promise.all([RatingPromise,SubscriptionPromise]);
-    
+
     const rating = RatingData.data.items; 
     const subscription = SubscriptionData.data.items;
     
-    return {rating,subscription};
+    return NextResponse.json({rating,subscription});
   }
 
 }
