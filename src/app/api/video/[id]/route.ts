@@ -1,9 +1,8 @@
 import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
-import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
 
@@ -61,8 +60,10 @@ const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?re
 
   const relatedData = await RelatedVideos.json();
 
-  const video = VideoData?.data?.items[0];
-  const channel = ChannelData?.data?.items[0];
+  // @ts-ignore
+      const video = VideoData?.data?.items[0];
+  // @ts-ignore
+      const channel = ChannelData?.data?.items[0];
   const comments = CommentsData.data.items;
   const related = relatedData.items;
   

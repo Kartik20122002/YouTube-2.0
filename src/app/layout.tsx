@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react"
 import Sidebar from '@/components/global/sidebar/Sidebar'
 import { createContext, useState } from 'react'
 import { motion } from 'framer-motion'
+
 // @ts-ignore
 export const isLargeContext = createContext(true);
 

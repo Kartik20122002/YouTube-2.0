@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineSend, AiOutlineShareAlt } from 'react-icons/ai';
-import megan from '@/images/megan.png'
+import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
 import Image from 'next/legacy/image';
 import { useSession } from 'next-auth/react';
 import Sekelton from '../global/skeletonComponents/TextSkeleton';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import {motion} from 'framer-motion'
+import {DateConverter} from "@/utils/Functions/Converters/DateConverter";
+import {CountConverter} from "@/utils/Functions/Converters/CountConverter";
 
 const Videopage = ({id,channelId} : any)=>{ 
 
@@ -45,7 +46,7 @@ const Videopage = ({id,channelId} : any)=>{
 
     useEffect(()=>{
        getDetails();
-       console.log('reunned')
+
     },[])
 
     return (<>
@@ -71,7 +72,7 @@ const VideoSection = ({video,channel,comments,loading,id} : any)=>{
 
 const {status , data : session } = useSession();
 
-const commentsCount = converter(video?.statistics?.commentCount || 0)
+const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
     return (<>
 <div className=" md:basis-[64%] shrink h-full">
@@ -88,7 +89,7 @@ const commentsCount = converter(video?.statistics?.commentCount || 0)
 
  <div className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
-   <Descrption loading={loading} video={video}/>
+   <Description loading={loading} video={video}/>
 
    <h4 className='hidden md:block my-1'>{commentsCount} Comments</h4>
 
@@ -104,8 +105,8 @@ const commentsCount = converter(video?.statistics?.commentCount || 0)
 const VideoInfo = ({video,channel,loading} : any)=>{
     const [rating,setRating] = useState<any>(0)
 
-    const likes = converter(video?.statistics?.likeCount || 0);
-    const subscribers = converter(channel?.statistics?.subscriberCount || 0);
+    const likes = CountConverter(video?.statistics?.likeCount || 0);
+    const subscribers = CountConverter(channel?.statistics?.subscriberCount || 0);
 
     return (<>
     <div className="flex flex-col flex-wrap md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
@@ -117,7 +118,7 @@ const VideoInfo = ({video,channel,loading} : any)=>{
             loading ? 
             <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle/>
             :
-            <Image width={45} height={45} className='rounded-full' src={channel?.snippet?.thumbnails?.default?.url}/>
+            <Image width={45} height={45} alt={'channel'} className='rounded-full' src={channel?.snippet?.thumbnails?.default?.url}/>
         }
         </div>
 
@@ -164,10 +165,10 @@ const VideoInfo = ({video,channel,loading} : any)=>{
     </>)
 }
 
-const Descrption = ({loading , video} : any)=>{
+const Description = ({loading , video} : any)=>{
     const [largeDesc , setLargeDesc] = useState(false);
 
-    const views = converter(video?.statistics?.viewCount || 0);
+    const views = CountConverter(video?.statistics?.viewCount || 0);
 
     let d1 = new Date(video?.snippet?.publishedAt) as any;
     let d2 = new Date() as any;
@@ -213,7 +214,7 @@ const CommentForm = ({img} : any)=>{
     
     <form method="post" className="mt-2 flex items-start">
     
-    <Image src={img} width={45} height={45} className='rounded-full' />
+    <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full' />
 
     <div className="basis-auto w-full ml-6 flex flex-col">
 
@@ -289,16 +290,7 @@ const SideRow = ({related}:any)=>{
 
 const SideVideo = ({item} : any)=>{
 
-    let d1 = new Date(item.snippet.publishedAt) as any;
-    let d2 = new Date() as any;
-    let date = Math.abs(d2-d1) as any;
-    date = date/(1000*60);
-    let time = Math.trunc(date) + " mins" 
-    if(date >= 60){ date = date/60; time = Math.trunc(date) + " hours";
-    if(date >= 24){ date = date/24; time = Math.trunc(date) + " days";
-    if(date >= 31){ date = date/30.4167; time = Math.trunc(date) + " months";
-    if(date >= 12){ date = date/12; time = Math.trunc(date) + " years";
-    }}}}
+const time = DateConverter(item.snippet.publishedAt);
 
     return (<>
 <div className="side-video-list flex flex-wrap justify-between mb-6">
@@ -317,10 +309,3 @@ const SideVideo = ({item} : any)=>{
 
 export default Videopage;
 
-const converter = (val : any)=>{
-    let str = val + '' as string;
-  if(val >= 1000){val = val/1000; str = Math.trunc(val) + 'K'}
-  if(val >= 1000){val = val/1000; str = Math.trunc(val) + 'M'}
-  if(val >= 1000){val = val/1000; str = Math.trunc(val) + 'B'}
-  return str;
-}
