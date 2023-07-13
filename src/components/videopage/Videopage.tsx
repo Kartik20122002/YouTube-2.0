@@ -212,7 +212,7 @@ const CommentForm = ({img} : any)=>{
 
     return (<>
     
-    <form method="post" className="mt-2 flex items-start">
+    <form method="post" className="mt-2 hidden md:flex items-start">
     
     <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full' />
 
