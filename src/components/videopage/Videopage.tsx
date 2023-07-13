@@ -265,7 +265,7 @@ const Description = ({loading , video} : any)=>{
     </div>
     </div>
 
-    <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden whitespace-normalmt-1`}>
+    <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden whitespace-normal mt-1`}>
         {video?.snippet?.description}
     </motion.div>
     {largeDesc && 
