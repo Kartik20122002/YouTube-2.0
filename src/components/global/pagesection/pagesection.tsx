@@ -3,7 +3,7 @@ import Image from "next/legacy/image"
 import Link from "next/link"
 import megan from "@/images/megan.png"
 import { motion } from "framer-motion"
-import { isLargeContext } from "@/app/layout"
+import { isLargeContext, pageContext } from "@/app/layout"
 import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import { signOut } from "next-auth/react"
@@ -14,8 +14,9 @@ const dynamic = 'force-dynamic'
 export const revalidate = 300;
 
 const PageSection = ({page} : any)=>{
-    const isLarge = useContext(isLargeContext);
-
+    const {isLarge , setIsLarge} = useContext(isLargeContext) as any;
+    const {setpage} = useContext(pageContext) as any;
+    setpage(false);
     const [items,setItems] = useState<any>([]);
     const [token,setToken] = useState('');
     const [loading,setLoading] = useState(true);
@@ -89,13 +90,13 @@ const PageSection = ({page} : any)=>{
 
 const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 
-  let views = item?.statistics.viewCount as any;
+  let views = item?.statistics?.viewCount as any;
   let viewss = views + '' as string;
   if(views >= 1000){views = views/1000; viewss = Math.trunc(views) + 'K'}
   if(views >= 1000){views = views/1000; viewss = Math.trunc(views) + 'M'}
   if(views >= 1000){views = views/1000; viewss = Math.trunc(views) + 'B'}
 
-  let d1 = new Date(item.snippet.publishedAt) as any;
+  let d1 = new Date(item?.snippet?.publishedAt) as any;
   let d2 = new Date() as any;
   let date = Math.abs(d2-d1) as any;
   date = date/(1000*60);

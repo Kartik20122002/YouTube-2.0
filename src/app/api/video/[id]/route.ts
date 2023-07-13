@@ -61,11 +61,13 @@ const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?re
   const relatedData = await RelatedVideos.json();
 
   // @ts-ignore
-      const video = VideoData?.data?.items[0];
+      const video = VideoData?.data?.items[0] || {};
   // @ts-ignore
-      const channel = ChannelData?.data?.items[0];
-  const comments = CommentsData.data.items;
-  const related = relatedData.items;
+      const channel = ChannelData?.data?.items[0] || {};
+  // @ts-ignore
+      const comments = CommentsData?.data?.items || [];
+  // @ts-ignore
+      const related = relatedData?.items || [];
   
   return NextResponse.json({video,channel,comments,related});
 

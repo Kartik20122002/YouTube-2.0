@@ -7,10 +7,13 @@ import { createContext, useState } from 'react'
 import { motion } from 'framer-motion'
 
 // @ts-ignore
-export const isLargeContext = createContext(true);
+export const isLargeContext = createContext();
 
 // @ts-ignore
 export const slideContext = createContext(-1);
+
+// @ts-ignore
+export const pageContext = createContext();
 
 
 export default function RootLayout({
@@ -21,6 +24,7 @@ export default function RootLayout({
 
   const [isLarge , setIsLarge ] = useState(true);
   const [slide,setSlide] = useState(-1);
+  const [IsVideoPage,setPage] = useState(false);
 
   function toggle(){
     setIsLarge(!isLarge);
@@ -28,6 +32,10 @@ export default function RootLayout({
 
   function setslide(val : any){
     setSlide(val)
+  }
+
+  function setpage(val:any){
+    setPage(val);
   }
 
   return (
@@ -43,14 +51,20 @@ export default function RootLayout({
 
       <body className='w-screen h-screen'>
       <SessionProvider>
-        <isLargeContext.Provider value={isLarge}>
+        <isLargeContext.Provider value={{isLarge , setIsLarge}}>
+        <pageContext.Provider value={{setpage} as any}>
         <slideContext.Provider value={{slide , setslide} as any}>
+
         <Header isLarge={isLarge} change={toggle}/>
-        <Sidebar isLarge={isLarge}/>
-        <motion.div layout transition={{duration : 0.5}} className={`${isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-20 fixed h-full `}>
+        <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage}/>
+        <motion.div layout transition={{duration : 0.5}}>
+        <motion.div layout transition={{duration : 0.5}} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-20 fixed h-full `}>
         {children}
         </motion.div>
+        </motion.div>
+
         </slideContext.Provider>
+        </pageContext.Provider>
         </isLargeContext.Provider>
 
       </SessionProvider>

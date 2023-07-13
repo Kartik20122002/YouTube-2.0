@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
 import Image from 'next/legacy/image';
 import { useSession } from 'next-auth/react';
@@ -8,6 +8,7 @@ import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import {motion} from 'framer-motion'
 import {DateConverter} from "@/utils/Functions/Converters/DateConverter";
 import {CountConverter} from "@/utils/Functions/Converters/CountConverter";
+import { isLargeContext, pageContext } from '@/app/layout';
 
 const Videopage = ({id,channelId} : any)=>{ 
 
@@ -16,7 +17,10 @@ const Videopage = ({id,channelId} : any)=>{
     const [commentDetails,setComments] = useState<any>([]);
     const [related,setRelated] = useState<any>([]);
     const [loading , setLoading] = useState(true);
-
+    const {setpage} = useContext(pageContext) as any;
+    const {isLarge , setIsLarge} = useContext(isLargeContext) as any;
+    setpage(true);
+    
     const getDetails = async ()=>{
         try{
             const res = await fetch(`/api/video/${id}`,{
@@ -44,6 +48,7 @@ const Videopage = ({id,channelId} : any)=>{
     
     useEffect(()=>{
        getDetails();
+       setIsLarge(false);
     },[])
 
     return (<>

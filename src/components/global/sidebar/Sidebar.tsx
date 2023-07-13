@@ -58,7 +58,7 @@ const SubSkel =()=>{
 }
 
 
-const Sidebar = ({isLarge } : any )=>{
+const Sidebar = ({isLarge , IsVideoPage } : any )=>{
 
   useEffect(()=>{
     console.log('sidebar rendered')
@@ -88,9 +88,9 @@ const Sidebar = ({isLarge } : any )=>{
 
     return <motion.div layout transition={{duration : 0.5}}>
 
-<motion.div layout transition={{duration : 0.5}} className ={`sidebar ${isLarge ? 'w-[15%]' : 'w-[6%]'} fixed overflow-hidden hidden md:block top-0 h-screen pt-24 z-[9] opacity-100 bg-white dark:bg-black`}>
+<motion.div layout transition={{duration : 0.5}} className ={`${ isLarge ? 'w-[15%]' : IsVideoPage ? 'w-0' :'w-[6%]'} fixed overflow-hidden hidden md:block top-0 h-screen pt-24 z-[9] opacity-100 bg-white dark:bg-black`}>
 
-  <motion.div layout transition={{duration : 0.5}} className="sidebar-util w-full h-full pb-10 overflow-y-auto">
+  <motion.div layout transition={{duration : 0.5}} className="w-full h-full pb-10 overflow-y-auto">
 
     <motion.div layout transition={{duration : 0.5}} className="shortcut-links pl-[3%] w-full">
 
