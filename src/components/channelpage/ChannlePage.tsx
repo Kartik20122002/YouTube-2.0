@@ -4,6 +4,9 @@ import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import Image from 'next/legacy/image';
 import { isLargeContext, pageContext } from '@/app/layout';
+import { CountConverter } from '@/utils/Functions/Converters/CountConverter';
+import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
+import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 
 export const revalidate = 300;
 
@@ -12,21 +15,10 @@ const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcC
 
 const ChannelPage = ({channelId} : any)=>{ 
 
-    const [loading , setLoading] = useState(true);
     const {setpage} = useContext(pageContext) as any;
-    setpage(false);
-    
-    const getDetails = async ()=>{
-        try{
-            setLoading(false);
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-    
+
     useEffect(()=>{
-       getDetails();
+        setpage(false);
     },[])
 
     return (<>
@@ -39,30 +31,63 @@ const ChannelPage = ({channelId} : any)=>{
 }
 
 const ChannelInfo = ({id}:any)=>{
-    const [sub,setSub] = useState<any>(0);
-    const toggleSub = ()=>{
-        setSub(1-sub);
+    const [sub,setSub] = useState<any>(false);
+    const [channel , setChannel] = useState<any>({});
+    const [loading,setLoading] = useState(true);
+    const [subs , setSubs] = useState('0');
+    const [videos , setVideos] = useState('0');
+    const toggleSub = ()=>{ setSub(1-sub); }
+
+    const getDetails = async()=>{
+      const results = await fetch('/api/channel',{
+        method : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body : JSON.stringify({id}),
+        next : {revalidate : 300}
+      })
+
+      console.log(results.status)
+
+      if(results.status !== 404 && results.status != 500){
+        const {channelDetails,isSub} = await results.json();
+        console.log(channelDetails)
+        if(isSub) setSub(isSub);
+        setChannel(channelDetails);
+        setLoading(false);
+      }
     }
+
+    useEffect(()=>{
+        getDetails()
+    },[])
+
     return <>
     <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap h-1/2 md:h-fit md:mt-6">
-
+     
         <motion.div layout transition={{duration : 0.5}} className="basis-full relative md:min-w-[15rem] h-1/2 md:h-auto md:basis-[15%] md:px-8 ">
             <motion.div layout transition={{duration : 0.5}} className="w-full h-full  md:h-full md:relative md:pb-[100%] overflow-hidden">
             <motion.div layout transition={{duration : 0.5}} className="absolute w-full h-full top-0 md:right-0 md:bottom-0 md:left-0">
-            <Image className='md:rounded-full md:!min-h-full md:!h-full !h-[10%]' src={img} layout='fill' alt='channelImg' loading='lazy' />
+            { loading ? <SekeltonImg className='md:!rounded-full'/> :
+            <Image className='md:rounded-full md:!min-h-full md:!h-full !h-[10%]' src={channel?.snippet?.thumbnails?.medium?.url} layout='fill' alt='channelImg' loading='lazy' />}
             </motion.div>
             </motion.div>
         </motion.div>
 
 
         <motion.div layout transition={{duration : 0.5}} className="basis-[60%] flex min-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
-            <motion.div layout transition={{duration : 0.5}} className="text-[2rem]">Kartik Hatwar</motion.div>
-            <motion.div layout transition={{duration : 0.5}} className="mb-2 flex text-[0.9rem]">
-                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] font-semibold">@Channel Tag</motion.div>
-                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">1.12M subcribers</motion.div>
-                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">80 videos</motion.div>
+            <motion.div layout transition={{duration : 0.5}} className="text-[2rem] w-full">{!loading ? channel?.snippet?.title : <SekeltonText height={'min-h-[2rem]'} width={'w-3/4'}/> }</motion.div>
+            <motion.div layout transition={{duration : 0.5}} className="mb-2 flex text-[0.9rem] w-1/2">
+                {loading ? <SekeltonText /> : <>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{channel?.snippet?.customUrl}</motion.div>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.subscriberCount)} Subcribers</motion.div>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
+                </>}
             </motion.div>
-            <Link href={''} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">Official YouTube Channel of the Indian Space Research Organisation </Link>
+            {loading ? <SekeltonText /> : 
+            <Link href={`channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">Official YouTube Channel of the Indian Space Research Organisation </Link>
+            }
         </motion.div>
 
         <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end px-6 grow">
@@ -107,8 +132,8 @@ const VideoGallery = ({id,see}:any)=>{
     return <>
     <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
         {items?.map((item,index)=>{
-            if(see) return <VideoCard index={index}/>;
-            else if(!isLarge ? index < 4 : index < 3) return <VideoCard index={index}/>;
+            if(see) return <VideoCard key={index} index={index}/>;
+            else if(!isLarge ? index < 4 : index < 3) return <VideoCard key={index} index={index}/>;
         })}
     </motion.div>
     </>
