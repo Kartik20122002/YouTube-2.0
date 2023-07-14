@@ -56,7 +56,7 @@ const ChannelInfo = ({id}:any)=>{
 
 
         <motion.div layout transition={{duration : 0.5}} className="basis-[60%] flex min-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
-            <motion.div layout transition={{duration : 0.5}} className="text-[2rem]">Channel Name</motion.div>
+            <motion.div layout transition={{duration : 0.5}} className="text-[2rem]">Kartik Hatwar</motion.div>
             <motion.div layout transition={{duration : 0.5}} className="mb-2 flex text-[0.9rem]">
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] font-semibold">@Channel Tag</motion.div>
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">1.12M subcribers</motion.div>
