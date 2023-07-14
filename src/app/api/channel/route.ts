@@ -41,6 +41,7 @@ const channelPromise = youtube.channels.list({
   id : id,
 });
 
+if(tokens && tokens?.access_token){
 const subPromise = youtube.subscriptions.list({
 part : ['id'],
 forChannelId : id,
@@ -56,6 +57,18 @@ const [results , subs] = await Promise.all([channelPromise,subPromise]);
   const isSub = (subs?.data?.pageInfo?.totalResults > 0) ? true : false;
   
   return  NextResponse.json({channelDetails,isSub});
+}
+else{
+  const result = await channelPromise;
+  if(result.status != 200)
+  return NextResponse.error();
+
+  const channelDetails = result?.data?.items[0];
+  const isSub = false;
+
+  return NextResponse.json({channelDetails,isSub});
+}
+
 
 }
 catch(err){
