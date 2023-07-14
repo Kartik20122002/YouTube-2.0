@@ -64,10 +64,10 @@ const ChannelInfo = ({id}:any)=>{
     },[])
 
     return <>
-    <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap h-1/2 md:h-fit md:mt-6">
+    <motion.div layout transition={{duration : 0.5}} className="flex relative flex-wrap  md:mt-6">
      
-        <motion.div layout transition={{duration : 0.5}} className="basis-full relative md:min-w-[15rem] h-1/2 md:h-auto md:basis-[15%] md:px-8 ">
-            <motion.div layout transition={{duration : 0.5}} className="w-full h-full  md:h-full md:relative md:pb-[100%] overflow-hidden">
+        <motion.div layout transition={{duration : 0.5}} className="basis-full relative md:min-w-[15rem] h-full md:basis-[15%] md:px-8 ">
+            <motion.div layout transition={{duration : 0.5}} className="w-full h-full md:relative md:pb-[100%] pb-[40%] overflow-hidden">
             <motion.div layout transition={{duration : 0.5}} className="absolute w-full h-full top-0 md:right-0 md:bottom-0 md:left-0">
             { loading ? <SekeltonImg className='md:!rounded-full'/> :
             <Image className='md:rounded-full md:!min-h-full md:!h-full !h-[10%]' src={channel?.snippet?.thumbnails?.medium?.url} layout='fill' alt='channelImg' loading='lazy' />}
@@ -76,21 +76,21 @@ const ChannelInfo = ({id}:any)=>{
         </motion.div>
 
 
-        <motion.div layout transition={{duration : 0.5}} className="basis-[60%] flex min-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
+        <motion.div layout transition={{duration : 0.5}} className="basis-[60%] mt-2 md:mt-0 flex min-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
             <motion.div layout transition={{duration : 0.5}} className="text-[2rem] w-full">{!loading ? channel?.snippet?.title : <SekeltonText height={'min-h-[2rem]'} width={'w-3/4'}/> }</motion.div>
-            <motion.div layout transition={{duration : 0.5}} className="mb-2 flex text-[0.9rem] w-1/2">
                 {loading ? <SekeltonText /> : <>
+            <motion.div layout transition={{duration : 0.5}} className="mb-2 mt-1 md:mt-0 flex text-[0.9rem]">
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{channel?.snippet?.customUrl}</motion.div>
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.subscriberCount)} Subcribers</motion.div>
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
-                </>}
             </motion.div>
+                </>}
             {loading ? <SekeltonText /> : 
             <Link href={`channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">Official YouTube Channel of the Indian Space Research Organisation </Link>
             }
         </motion.div>
 
-        <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end px-6 grow">
+        <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end my-1 px-6 grow">
         {sub == 1 ? 
          <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
          :
