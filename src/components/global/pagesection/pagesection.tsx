@@ -8,6 +8,8 @@ import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import { signOut } from "next-auth/react"
 import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
+import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
+import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
 
 const dynamic = 'force-dynamic'
 
@@ -90,22 +92,8 @@ const PageSection = ({page} : any)=>{
 
 const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 
-  let views = item?.statistics?.viewCount as any;
-  let viewss = views + '' as string;
-  if(views >= 1000){views = views/1000; viewss = Math.trunc(views) + 'K'}
-  if(views >= 1000){views = views/1000; viewss = Math.trunc(views) + 'M'}
-  if(views >= 1000){views = views/1000; viewss = Math.trunc(views) + 'B'}
-
-  let d1 = new Date(item?.snippet?.publishedAt) as any;
-  let d2 = new Date() as any;
-  let date = Math.abs(d2-d1) as any;
-  date = date/(1000*60);
-  let time = Math.trunc(date) + " mins" 
-  if(date >= 60){ date = date/60; time = Math.trunc(date) + " hours";
-  if(date >= 24){ date = date/24; time = Math.trunc(date) + " days";
-  if(date >= 31){ date = date/30.4167; time = Math.trunc(date) + " months";
-  if(date >= 12){ date = date/12; time = Math.trunc(date) + " years";
-  }}}}
+  const views = CountConverter(item?.statistics?.viewCount);
+  const time = DateConverter(item?.snippet?.publishedAt);
 
     return <>
 
@@ -121,7 +109,7 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 
 <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
-    <Link href="" className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
+    <Link href={`/channel/${item?.snippet?.channelId}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
     { imgs[index] ?
     <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={imgs[index]} loading="lazy" alt="channelImg" /> 
     : 
@@ -132,8 +120,8 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
     <motion.div layout transition={{duration : 0.5}} className="text-sm">
         <Link className="text-black dark:text-white font-semibold text-[15px] mb-[5px] truncate-2" href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>{item?.snippet?.title}</Link>
         <div className="flex md:flex-col w-full">
-        <Link className="text-[#979696] mr-2" href=""> <p>{item?.snippet?.channelTitle}</p></Link>
-        <p className="text-[#979696]"> <span className="mr-1">{viewss} Views</span> &bull; <span className="ml-1">{time} ago</span></p>
+        <Link className="text-[#979696] mr-2 hover:text-[#c0bebe]" href={`/channel/${item?.snippet?.channelId}`}> <p>{item?.snippet?.channelTitle}</p></Link>
+        <p className="text-[#979696]"> <span className="mr-1">{views} Views</span> &bull; <span className="ml-1">{time} ago</span></p>
         </div>
     </motion.div>
 </motion.div>

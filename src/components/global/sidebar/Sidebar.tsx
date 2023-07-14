@@ -33,7 +33,7 @@ const links = [
 
 const Sub = ({item , isLarge}:any)=>{
     return <motion.div layout transition={{duration : 0.5}} >
-    <Link href="#" className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]`}>
+    <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]`}>
     <motion.div layout transition={{duration : 0.5}} className="flex  w-fit items-center">
     <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className="rounded-full  bg-[#5a5a5a]" loading="lazy" alt="img" />
     </motion.div>

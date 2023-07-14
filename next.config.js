@@ -4,7 +4,7 @@ const nextConfig = {
         ignoreBuildErrors : true,
       },
     images : {
-        domains: ['i.ytimg.com' , 'lh3.googleusercontent.com' ,'yt3.ggpht.com','images.pexels.com'],
+        domains: ['i.ytimg.com' , 'lh3.googleusercontent.com' ,'yt3.ggpht.com','yt3.googleusercontent.com'],
     }
 }
 

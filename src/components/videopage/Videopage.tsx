@@ -86,7 +86,7 @@ const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
  <div className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
-  {loading ? <Sekelton height={'h-24'} className="mb-4"/> :    <Description loading={loading} video={video}/>}
+  {loading ? <Sekelton height={'h-24'} className="mb-4"/> : <Description loading={loading} video={video}/>}
 
    <h4 className='hidden md:block my-1'>{commentsCount} Comments</h4>
 
@@ -147,17 +147,17 @@ useEffect(()=>{
 <div className="justify-between flex w-full min-w-min md:basis-[40%] grow md:max-w-full md:text-md text-xs">
 
     <div className={`flex items-center w-[70%]`}>
-        <div className=" min-w-[45px] min-h-[45px]">
+        <Link href={`/channel/${channelId}`} className=" min-w-[45px] min-h-[45px]">
         {
             loading ? 
             <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle/>
             :
             <Image width={45} height={45} alt={'channel'} className='rounded-full' src={channel?.snippet?.thumbnails?.default?.url}/>
         }
-        </div>
+        </Link>
 
         <div className="ml-3">
-             {loading ? <Sekelton width={'w-full'}/> :<div className="text-lg font-bold text-black dark:text-white truncate-1 w-full overflow-hidden"> {video?.snippet?.channelTitle}</div>} 
+             {loading ? <Sekelton width={'w-full'}/> :<Link href={`/channel/${channelId}`} className="text-lg font-bold text-black dark:text-white truncate-1 w-full overflow-hidden"> {video?.snippet?.channelTitle}</Link>} 
              {loading ? <Sekelton width={'w-full'}/> : <div className="text-sm w-full"> {subscribers} subscribers </div> }
         </div>
     </div>
@@ -388,7 +388,7 @@ const time = DateConverter(item.snippet.publishedAt);
 
 <div className="basis-[64%] pt-1 ">
     <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
-    <p className="text-[#606060] font-medium text-sm"><Link href="#">{item?.snippet?.channelTitle}</Link></p>
+    <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888]' href={`/channel/${item?.snippet?.channelId}`}>{item?.snippet?.channelTitle}</Link></p>
     <p className="text-[#606060] font-medium text-sm">{time} ago</p>
 </div>
 
