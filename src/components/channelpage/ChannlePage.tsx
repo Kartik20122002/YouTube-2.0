@@ -52,7 +52,7 @@ const ChannelInfo = ({id}:any)=>{
         const {channelDetails,isSub} = await results.json();
         if(isSub) setSub(isSub);
         setChannel(channelDetails);
-        // setLoading(false);
+        setLoading(false);
       }
     }
 
