@@ -35,10 +35,9 @@ const Videopage = ({id,channelId} : any)=>{
               })
             
             if(res.status != 404 && res.status != 500){
-                const {video,channel,comments,related} = await res.json();
+                const {video,channel,related} = await res.json();
                 setVideoDetails(video);
                 setChannelDetails(channel);
-                setComments(comments);
                 setRelated(related);
                 setLoading(false);
             }
@@ -66,8 +65,6 @@ const Videopage = ({id,channelId} : any)=>{
 const VideoSection = ({video,channel,comments,loading,id,channelId} : any)=>{
 
 const {status , data : session } = useSession();
-
-
 
 const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 

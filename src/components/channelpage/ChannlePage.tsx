@@ -52,7 +52,6 @@ const ChannelInfo = ({id}:any)=>{
 
       if(results.status !== 404 && results.status != 500){
         const {channelDetails,isSub} = await results.json();
-        console.log(channelDetails)
         if(isSub) setSub(isSub);
         setChannel(channelDetails);
         setLoading(false);
@@ -126,7 +125,7 @@ const VideoSection = ({id} :any)=>{
     </>
 }
 
-const VideoGallery = ({id,see}:any)=>{
+export const VideoGallery = ({id,see}:any)=>{
     const items = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
