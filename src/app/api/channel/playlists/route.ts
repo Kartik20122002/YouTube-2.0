@@ -35,16 +35,16 @@ else{
  oauth2client.apiKey = ytApi;
 }
 
-const activitiesData = await youtube.activities.list({
-    part : ['snippet','contentDetails'],
-    channelId : id,
-    maxResults: 24,
-});
+const playlistData = await youtube.playlists.list({
+  part : ['snippet' , 'contentDetails'],
+  channelId : id,
+  maxResults : 25,
+})
 
-if(activitiesData.status != 200)
+if(playlistData.status != 200)
 return NextResponse.json([])
 
-const data = activitiesData?.data?.items;
+const data = playlistData?.data?.items;
 
 return NextResponse.json({data})
 
@@ -55,3 +55,4 @@ catch(err){
     return NextResponse.json(err);
 }
 }
+

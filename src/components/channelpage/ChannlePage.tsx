@@ -26,6 +26,7 @@ const ChannelPage = ({channelId} : any)=>{
     <motion.div layout transition={{duration : 0.5}} className='overflow-y-scroll h-screen pb-[10rem] dark:text-white'>
         <ChannelInfo id={channelId}/>
         <VideoSection id={channelId} type={"activities"} />
+        <VideoSection id={channelId} type={"playlists"} />
     </motion.div>
     </>)
 }
@@ -34,8 +35,6 @@ const ChannelInfo = ({id}:any)=>{
     const [sub,setSub] = useState<any>(false);
     const [channel , setChannel] = useState<any>({});
     const [loading,setLoading] = useState(true);
-    const [subs , setSubs] = useState('0');
-    const [videos , setVideos] = useState('0');
     const toggleSub = ()=>{ setSub(1-sub); }
 
     const getDetails = async()=>{
@@ -47,8 +46,6 @@ const ChannelInfo = ({id}:any)=>{
         body : JSON.stringify({id}),
         next : {revalidate : 300}
       })
-
-      console.log(results.status)
 
       if(results.status !== 404 && results.status != 500){
         const {channelDetails,isSub} = await results.json();
@@ -171,7 +168,7 @@ export const PlayListGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
     <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
-        {items?.map(({item,index}:any)=>{
+        {items?.map((item:any,index:any)=>{
             if(see) return <PlayListCard item={item} key={index} index={index}/>;
             else if(!isLarge ? index < 4 : index < 3) return <PlayListCard item={item} key={index} index={index}/>;
         })}
@@ -197,20 +194,19 @@ const VideoCard = ({index , item} : any)=>{
     </>
 }
 
-const PlayListCard = ({index} : any)=>{
+const PlayListCard = ({index,item} : any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
-    const views = '97k'
-    const time = '4 days'
+    const time = DateConverter(item?.snippet?.publishedAt);
     return <>
     <motion.div layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
         <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
-        <Link href={''} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-            <Image className='md:rounded-lg' src={videoImg} layout='fill' alt='videocardImg' />
+        <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+            <Image className='md:rounded-lg' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={''} className="truncate-2 whitespace-normal ">Everything Goes On (Sush & Yohan x @TASHIF Mashup) • Porter Robinson, Arijit Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo, laudantium!</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{views} views &bull; {time} ago</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
         </motion.div>
     </motion.div>
     </>
