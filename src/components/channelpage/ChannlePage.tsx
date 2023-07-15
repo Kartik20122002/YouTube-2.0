@@ -72,13 +72,13 @@ const ChannelInfo = ({id}:any)=>{
         </motion.div>
 
 
-        <motion.div layout transition={{duration : 0.5}} className="basis-[60%] mt-2 md:mt-0 flex min-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
+        <motion.div layout transition={{duration : 0.5}} className="basis-[60%] mt-2 md:mt-0 flex max-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
             <motion.div layout transition={{duration : 0.5}} className="text-[2rem] w-full">{!loading ? channel?.snippet?.title : <SekeltonText height={'min-h-[2rem]'} width={'w-3/4'}/> }</motion.div>
                 {loading ? <SekeltonText /> : <>
-            <motion.div layout transition={{duration : 0.5}} className="mb-2 mt-1 md:mt-0 flex text-[0.9rem]">
+            <motion.div layout transition={{duration : 0.5}} className="mb-2 mt-1 md:mt-0 flex flex-wrap text-[0.9rem]">
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{channel?.snippet?.customUrl}</motion.div>
-                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.subscriberCount)} Subcribers</motion.div>
-                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 text-center">{CountConverter(channel?.statistics?.subscriberCount)} Subcribers</motion.div>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 text-center">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
             </motion.div>
                 </>}
             {loading ? <SekeltonText /> : 
@@ -87,11 +87,11 @@ const ChannelInfo = ({id}:any)=>{
         </motion.div>
 
         <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end my-1 px-6 grow">
-        {sub == 1 ? 
+        { !loading && <>{sub == 1 ? 
          <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
          :
          <motion.button onClick={()=>toggleSub()} className='bg-white py-1 px-4 rounded-full md:text-lg text-black font-semibold hover:opacity-70'>Subscribe</motion.button>
-         }
+         }</>} 
         </motion.div>
     </motion.div>
     </>
@@ -187,8 +187,8 @@ const VideoCard = ({index , item} : any)=>{
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 text-[0.8rem] md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-[0.8rem] md:text-[1rem]">{time} ago &bull; {item?.snippet?.type}</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 text-[0.9rem] md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-[0.9rem] md:text-[1rem]">{time} ago &bull; {item?.snippet?.type}</motion.div>
         </motion.div>
     </motion.div>
     </>
@@ -205,8 +205,8 @@ const PlayListCard = ({index,item} : any)=>{
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 text-[0.8rem] md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-[0.8rem] md:text-[1rem]">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 text-[0.9rem] md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-[0.9rem] md:text-[1rem]">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
         </motion.div>
     </motion.div>
     </>
