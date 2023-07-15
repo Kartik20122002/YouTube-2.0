@@ -82,7 +82,7 @@ const ChannelInfo = ({id}:any)=>{
             </motion.div>
                 </>}
             {loading ? <SekeltonText /> : 
-            <Link href={`channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">Official YouTube Channel of the Indian Space Research Organisation </Link>
+            <Link href={`channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">{channel?.snippet?.description} </Link>
             }
         </motion.div>
 
@@ -153,7 +153,7 @@ const VideoSection = ({id,type} :any)=>{
 export const VideoGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
-    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex text-lg md:text-xl">
+    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex text-sm md:text-md">
         {
         items?.map((val : any ,index : any)=>{
             if(see) return <VideoCard key={index} item={val} index={index}/>;
@@ -167,7 +167,7 @@ export const VideoGallery = ({see,items}:any)=>{
 export const PlayListGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
-    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
+    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex text-sm md:text-md ">
         {items?.map((item:any,index:any)=>{
             if(see) return <PlayListCard item={item} key={index} index={index}/>;
             else if(!isLarge ? index < 4 : index < 3) return <PlayListCard item={item} key={index} index={index}/>;
