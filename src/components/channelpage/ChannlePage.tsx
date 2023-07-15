@@ -187,8 +187,8 @@ const VideoCard = ({index , item} : any)=>{
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 text-sm md:text-md whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-sm md:text-md">{time} ago &bull; {item?.snippet?.type}</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2  text-xs md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-xs md:text-[1rem]">{time} ago &bull; {item?.snippet?.type}</motion.div>
         </motion.div>
     </motion.div>
     </>
@@ -205,8 +205,8 @@ const PlayListCard = ({index,item} : any)=>{
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 text-sm md:text-md whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-sm md:text-md">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2  text-xs md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]  text-xs md:text-[1rem]">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
         </motion.div>
     </motion.div>
     </>
