@@ -42,11 +42,6 @@ const ChannelPromise = youtube.channels.list({
     maxResults: 1
 });
 
-const CommentsPromise = youtube.commentThreads.list({
-  part : ['snippet'],
-  videoId : id,
-  maxResults : 50
-});
 
 const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?relatedToVideoId=${id}&part=id%2Csnippet&type=video&maxResults=25`,{
   method: 'GET',
@@ -56,7 +51,7 @@ const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?re
   }
   });
 
-  const [VideoData , ChannelData , CommentsData , RelatedVideos] = await Promise.all([VideoPromise,ChannelPromise,CommentsPromise,RelatedVideosPromise]);
+  const [VideoData , ChannelData , RelatedVideos] = await Promise.all([VideoPromise,ChannelPromise,RelatedVideosPromise]);
 
   const relatedData = await RelatedVideos.json();
 
@@ -65,11 +60,9 @@ const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?re
   // @ts-ignore
       const channel = ChannelData?.data?.items[0] || {};
   // @ts-ignore
-      const comments = CommentsData?.data?.items || [];
-  // @ts-ignore
       const related = relatedData?.items || [];
   
-  return NextResponse.json({video,channel,comments,related});
+  return NextResponse.json({video,channel,related});
 
 }
 catch(err){

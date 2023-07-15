@@ -7,6 +7,7 @@ import { isLargeContext, pageContext } from '@/app/layout';
 import { CountConverter } from '@/utils/Functions/Converters/CountConverter';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
+import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
 
 export const revalidate = 300;
 
@@ -24,8 +25,7 @@ const ChannelPage = ({channelId} : any)=>{
     return (<>
     <motion.div layout transition={{duration : 0.5}} className='overflow-y-scroll h-screen pb-[10rem] dark:text-white'>
         <ChannelInfo id={channelId}/>
-        <VideoSection id={channelId} />
-        <VideoSection id={channelId} />
+        <VideoSection id={channelId} type={"activities"} />
     </motion.div>
     </>)
 }
@@ -100,13 +100,36 @@ const ChannelInfo = ({id}:any)=>{
     </>
 }
 
-const VideoSection = ({id} :any)=>{
+const VideoSection = ({id,type} :any)=>{
     const [see,setSee] = useState(false);
-    const heading = 'Recently Upload'
+    const heading = type == 'activities' ? 'Recently Upload' : 'Playlists';
     const icon =  <AiOutlineHistory/>
+    const [items,setItems] = useState([]);
+
+    const getDetails = async()=>{
+        const results = await fetch(`/api/channel/${type}`,{
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body : JSON.stringify({id}),
+          next : {revalidate : 300}
+        })
+  
+        if(results.status !== 404 && results.status != 500){
+          const {data} = await results.json();
+          setItems(data);
+        }
+      }
+
+    useEffect(()=>{
+        getDetails()
+    },[])
 
     const toggleSee =()=>{ setSee(!see)}
     return <>
+
+    { items.length > 0 && <>
     <motion.hr layout transition={{duration : 0.5}} className='my-6 border-none h-[0.1px] bg-[#69696945]' />
 
     <motion.div layout transition={{duration : 0.5}} className="md:mx-2">
@@ -119,26 +142,62 @@ const VideoSection = ({id} :any)=>{
                 <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSee()} className='flex items-center text-sm md:text-md dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-2 md:px-4 py-1 md:py-2 md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
             </motion.div>
         </motion.div>
-         
-        <VideoGallery id={id} see={see}/>
+         {
+            type == 'activities' ? <VideoGallery see={see} items={items}/> 
+            : <PlayListGallery see={see} items={items} />
+         }
+        
+    </motion.div>
+    </>
+    }
+    </>
+}
+
+export const VideoGallery = ({see,items}:any)=>{
+    const {isLarge} = useContext(isLargeContext) as any;
+    return <>
+    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
+        {
+        items.map((val : any ,index : any)=>{
+            if(see) return <VideoCard key={index} item={val} index={index}/>;
+            else if(!isLarge ? index < 4 : index < 3) return <VideoCard key={index} item={val} index={index}/>;
+        })
+        }
     </motion.div>
     </>
 }
 
-export const VideoGallery = ({id,see}:any)=>{
-    const items = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+export const PlayListGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
     <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
-        {items?.map((item,index)=>{
-            if(see) return <VideoCard key={index} index={index}/>;
-            else if(!isLarge ? index < 4 : index < 3) return <VideoCard key={index} index={index}/>;
+        {items?.map(({item,index}:any)=>{
+            if(see) return <PlayListCard item={item} key={index} index={index}/>;
+            else if(!isLarge ? index < 4 : index < 3) return <PlayListCard item={item} key={index} index={index}/>;
         })}
     </motion.div>
     </>
 }
 
-const VideoCard = ({index} : any)=>{
+const VideoCard = ({index , item} : any)=>{
+    const {isLarge} = useContext(isLargeContext) as any;
+    const time = DateConverter(item?.snippet?.publishedAt);
+    return <>
+    <motion.div layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
+        <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
+        <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+            <Image className='md:rounded-lg' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+        </Link>
+        </motion.div>
+        <motion.div layout transition={{duration : 0.5}} className="mt-1">
+            <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="truncate-2 whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{time} ago</motion.div>
+        </motion.div>
+    </motion.div>
+    </>
+}
+
+const PlayListCard = ({index} : any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     const views = '97k'
     const time = '4 days'
