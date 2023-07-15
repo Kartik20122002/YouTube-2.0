@@ -153,7 +153,7 @@ const VideoSection = ({id,type} :any)=>{
 export const VideoGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
-    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
+    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex text-lg md:text-xl">
         {
         items?.map((val : any ,index : any)=>{
             if(see) return <VideoCard key={index} item={val} index={index}/>;
