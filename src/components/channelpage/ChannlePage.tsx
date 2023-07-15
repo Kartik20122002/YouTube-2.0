@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
+import {RiPlayListLine} from 'react-icons/ri'
 import { motion } from 'framer-motion';
 import Image from 'next/legacy/image';
 import { isLargeContext, pageContext } from '@/app/layout';
@@ -51,7 +52,7 @@ const ChannelInfo = ({id}:any)=>{
         const {channelDetails,isSub} = await results.json();
         if(isSub) setSub(isSub);
         setChannel(channelDetails);
-        setLoading(false);
+        // setLoading(false);
       }
     }
 
@@ -72,22 +73,23 @@ const ChannelInfo = ({id}:any)=>{
         </motion.div>
 
 
-        <motion.div layout transition={{duration : 0.5}} className="basis-[60%] mt-2 md:mt-0 flex max-w-max pl-3 md:pl-0 flex-col justify-center items-start grow">
+        <motion.div layout transition={{duration : 0.5}} className="basis-[60%] shrink-0 mt-2 md:mt-0 flex min-w-min pl-3 md:pl-0 flex-col justify-center items-start grow">
             <motion.div layout transition={{duration : 0.5}} className="text-[2rem] w-full">{!loading ? channel?.snippet?.title : <SekeltonText height={'min-h-[2rem]'} width={'w-3/4'}/> }</motion.div>
                 {loading ? <SekeltonText /> : <>
             <motion.div layout transition={{duration : 0.5}} className="mb-2 mt-1 md:mt-0 flex flex-wrap text-[0.9rem]">
-                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{channel?.snippet?.customUrl}</motion.div>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{channel?.snippet?.customUrl || <SekeltonText />}</motion.div>
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 text-center">{CountConverter(channel?.statistics?.subscriberCount)} Subcribers</motion.div>
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3 text-center">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
             </motion.div>
                 </>}
+                
             {loading ? <SekeltonText /> : 
             <Link href={`/channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">{channel?.snippet?.description} </Link>
             }
         </motion.div>
 
         <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end my-1 px-6 grow">
-        { !loading && <>{sub == 1 ? 
+        {  <>{sub == 1 ? 
          <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
          :
          <motion.button onClick={()=>toggleSub()} className='bg-white py-1 px-4 rounded-full md:text-lg text-black font-semibold hover:opacity-70'>Subscribe</motion.button>
@@ -100,7 +102,7 @@ const ChannelInfo = ({id}:any)=>{
 const VideoSection = ({id,type} :any)=>{
     const [see,setSee] = useState(false);
     const heading = type == 'activities' ? 'Recently Upload' : 'Playlists';
-    const icon =  <AiOutlineHistory/>
+    const icon = type == 'activities' ? <AiOutlineHistory/> : <RiPlayListLine/>
     const [items,setItems] = useState([]);
 
     const getDetails = async()=>{
