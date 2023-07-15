@@ -129,7 +129,7 @@ const VideoSection = ({id,type} :any)=>{
     const toggleSee =()=>{ setSee(!see)}
     return <>
 
-    { items.length > 0 && <>
+    { items?.length > 0 && <>
     <motion.hr layout transition={{duration : 0.5}} className='my-6 border-none h-[0.1px] bg-[#69696945]' />
 
     <motion.div layout transition={{duration : 0.5}} className="md:mx-2">
@@ -158,7 +158,7 @@ export const VideoGallery = ({see,items}:any)=>{
     return <>
     <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex ">
         {
-        items.map((val : any ,index : any)=>{
+        items?.map((val : any ,index : any)=>{
             if(see) return <VideoCard key={index} item={val} index={index}/>;
             else if(!isLarge ? index < 4 : index < 3) return <VideoCard key={index} item={val} index={index}/>;
         })
@@ -185,13 +185,13 @@ const VideoCard = ({index , item} : any)=>{
     return <>
     <motion.div layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
         <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
-        <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+        <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
             <Image className='md:rounded-lg' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="truncate-2 whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{time} ago</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{time} ago &bull; {item?.snippet?.type}</motion.div>
         </motion.div>
     </motion.div>
     </>

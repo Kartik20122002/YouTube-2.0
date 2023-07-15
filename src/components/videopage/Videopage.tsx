@@ -255,7 +255,7 @@ const Description = ({loading , video} : any)=>{
     <span className='mr-2'>{time} ago</span>
     <div className="dark:text-white opacity-30 truncate-2">
          {
-            !loading && video?.snippet.tags.map((tag:any , index: any) =>{
+            !loading && video?.snippet?.tags?.map((tag:any , index: any) =>{
                  return  <span key={index} className='mr-1 '>#{tag}</span>
             })
          }
