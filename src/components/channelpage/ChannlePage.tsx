@@ -81,9 +81,9 @@ const ChannelInfo = ({id}:any)=>{
                 <motion.div layout transition={{duration : 0.5}} className="text-[#979696] mr-3">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
             </motion.div>
                 </>}
-            {loading ? <SekeltonText /> : 
+            {/* {loading ? <SekeltonText /> : 
             <Link href={`channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">{channel?.snippet?.description} </Link>
-            }
+            } */}
         </motion.div>
 
         <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end my-1 px-6 grow">
@@ -153,7 +153,7 @@ const VideoSection = ({id,type} :any)=>{
 export const VideoGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
-    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex text-sm md:text-md">
+    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex">
         {
         items?.map((val : any ,index : any)=>{
             if(see) return <VideoCard key={index} item={val} index={index}/>;
@@ -167,7 +167,7 @@ export const VideoGallery = ({see,items}:any)=>{
 export const PlayListGallery = ({see,items}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
-    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex text-sm md:text-md ">
+    <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex">
         {items?.map((item:any,index:any)=>{
             if(see) return <PlayListCard item={item} key={index} index={index}/>;
             else if(!isLarge ? index < 4 : index < 3) return <PlayListCard item={item} key={index} index={index}/>;
@@ -187,8 +187,8 @@ const VideoCard = ({index , item} : any)=>{
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{time} ago &bull; {item?.snippet?.type}</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 text-sm md:text-md whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-sm md:text-md">{time} ago &bull; {item?.snippet?.type}</motion.div>
         </motion.div>
     </motion.div>
     </>
@@ -205,8 +205,8 @@ const PlayListCard = ({index,item} : any)=>{
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
-            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-[#979696]">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 text-sm md:text-md whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-sm md:text-md">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
         </motion.div>
     </motion.div>
     </>
