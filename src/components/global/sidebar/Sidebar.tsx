@@ -7,7 +7,8 @@ import { MdLibraryAdd , MdOutlineLibraryAdd } from 'react-icons/md';
 import { useSession } from "next-auth/react";
 import { slideContext } from "@/app/layout";
 import Loader from "../loader/Loader";
-
+import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
+import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 export const dynamic = 'force-dynamic'
 
 const links = [
@@ -65,7 +66,8 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
   },[]);
     
     const {status } = useSession();
-    const [subs,setSubs] = useState([])
+    const [subs,setSubs] = useState([]);
+    const [loading,setLoading] = useState(true);
 
     useEffect(()=>{
      if(status == 'authenticated'){
@@ -74,11 +76,13 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
           const res = await fetch('/api/subs',{ next : {revalidate : 300}});
           const {subs,ptoken,ntoken} = await res.json();
           setSubs(subs);
+          setLoading(false);
         }
   
         catch(err){
           console.log(err);
           setSubs([]);
+          setLoading(false);
         }
       }
 
@@ -103,8 +107,8 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
         <motion.hr layout transition={{duration : 0.5}} className={`m-auto border-0 h-[1px] mt-[7%] bg-white ${isLarge ? 'w-[85%]' : 'w-3/4 mb-10'}`}/>
     </motion.div>
  
-    { status == 'authenticated' && 
-
+    { status == 'authenticated' && <>
+      { loading ? <SubSkeleton isLarge={isLarge} /> : 
     <motion.div layout transition={{duration : 0.5}} className="subscribed-list w-full pl-[3%] pb-[15%]">
        {isLarge && 
         <motion.h3 layout transition={{duration : 0.5}} initial={{opacity : isLarge ? 0 : 1}} animate={{opacity : isLarge ? 1 : 0}} className="text-[18px] dark:text-white ml-2 my-5 text-[#5a5a5a]">Subscriptions</motion.h3>
@@ -114,7 +118,9 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
          return <Sub item={item} isLarge={isLarge} key={item?.id}/>
         }) : <Loader/>}
 
-    </motion.div>
+    </motion.div> }
+    </>
+
     }
 
   </motion.div>
@@ -125,3 +131,32 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
 }
 
 export default Sidebar;
+
+
+const SubSkeleton = ({isLarge} : any)=>{
+   return <motion.div layout transition={{duration : 0.5}} className="subscribed-list w-full pl-[3%] pb-[15%]">
+   {isLarge && 
+    <motion.h3 layout transition={{duration : 0.5}} initial={{opacity : isLarge ? 0 : 1}} animate={{opacity : isLarge ? 1 : 0}} className="text-[18px] dark:text-white ml-2 my-5 text-[#5a5a5a]">Subscriptions</motion.h3>
+   }
+
+  <SubsSkeleton isLarge={isLarge}/>
+  <SubsSkeleton isLarge={isLarge}/>
+  <SubsSkeleton isLarge={isLarge}/>
+  <SubsSkeleton isLarge={isLarge}/>
+  <SubsSkeleton isLarge={isLarge}/>
+  <SubsSkeleton isLarge={isLarge}/>
+  <SubsSkeleton isLarge={isLarge}/>
+   
+</motion.div>
+}
+
+const SubsSkeleton = ({isLarge}:any)=>{
+  return <motion.div layout transition={{duration : 0.5}} >
+  <motion.div className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]`}>
+  <motion.div layout transition={{duration : 0.5}} className="flex w-fit items-center">
+  <Sekelton  width={isLarge ? 'min-w-[35px]' : 'min-w-[40px]'} height={isLarge ? 'min-h-[35px]' : 'min-h-[40px]'} circle />
+  </motion.div>
+  {isLarge && <motion.p layout transition={{duration : 0.5}} className="ml-[20px] flex w-full"><SekeletonTxt height={'min-h-[1.2rem]'}/></motion.p>}
+  </motion.div>
+  </motion.div>
+}
