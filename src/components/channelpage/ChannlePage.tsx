@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
-import {RiPlayListLine} from 'react-icons/ri'
+// import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
+// import {RiPlayListLine} from 'react-icons/ri'
 import { motion } from 'framer-motion';
 import Image from 'next/legacy/image';
 import { isLargeContext, pageContext } from '@/app/layout';
@@ -102,9 +102,10 @@ const ChannelInfo = ({id}:any)=>{
 const VideoSection = ({id,type} :any)=>{
     const [see,setSee] = useState(false);
     const heading = type == 'activities' ? 'Recently Upload' : 'Playlists';
-    const icon = type == 'activities' ? <AiOutlineHistory/> : <RiPlayListLine/>
+    // const icon = type == 'activities' ? <AiOutlineHistory/> : <RiPlayListLine/>
+    const icon = <></>
     const [items,setItems] = useState([]);
-
+    const [loading , setLoading] = useState(true);
     const getDetails = async()=>{
         const results = await fetch(`/api/channel/${type}`,{
           method : 'POST',
@@ -128,22 +129,30 @@ const VideoSection = ({id,type} :any)=>{
     const toggleSee =()=>{ setSee(!see)}
     return <>
 
-    { items?.length > 0 && <>
+    { (loading || items?.length > 0) && <>
     <motion.hr layout transition={{duration : 0.5}} className='my-6 border-none h-[0.1px] bg-[#69696945]' />
 
     <motion.div layout transition={{duration : 0.5}} className="md:mx-2">
+        {loading ? 
+        <motion.div layout transition={{duration : 0.5}} className='mb-5 mx-2 md:mx-0 flex justify-between'>
+        <SekeltonText height={'min-h-[2rem]'} width={'w-[20%]'} className="min-w-[12rem]" />
+        <SekeltonText height={'min-h-[2.5rem]'} width={'w-[6%]'} className="!rounded-full min-w-[4rem]" /> 
+        </motion.div> :
+
         <motion.div layout transition={{duration : 0.5}} className="flex mx-2 md:mx-0 mb-4 justify-between">
-            <motion.div layout transition={{duration : 0.5}} className="flex font-bold text-lg md:text-xl items-center">
-               <motion.span layout transition={{duration : 0.5}} className='mr-2'>{icon}</motion.span> 
-                {heading}
-            </motion.div>
-            <motion.div layout transition={{duration : 0.5}} className="actions">
-                <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSee()} className='flex items-center text-sm md:text-md dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-2 md:px-4 py-1 md:py-2 md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
-            </motion.div>
+        <motion.div layout transition={{duration : 0.5}} className="flex font-bold text-lg md:text-xl items-center">
+           <motion.span layout transition={{duration : 0.5}} className='mr-2'>{icon}</motion.span> 
+            {heading}
         </motion.div>
+        <motion.div layout transition={{duration : 0.5}} className="actions">
+            <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSee()} className='flex items-center text-sm md:text-md dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-3 md:px-4 py-[0.4rem] md:py-2 md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
+        </motion.div>
+    </motion.div>
+    }
+
          {
-            type == 'activities' ? <VideoGallery see={see} items={items}/> 
-            : <PlayListGallery see={see} items={items} />
+            type == 'activities' ? <VideoGallery loading={loading} see={see} items={items}/> 
+            : <PlayListGallery loading={loading} see={see} items={items} />
          }
         
     </motion.div>
@@ -152,11 +161,17 @@ const VideoSection = ({id,type} :any)=>{
     </>
 }
 
-export const VideoGallery = ({see,items}:any)=>{
+export const VideoGallery = ({see,items,loading}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
     <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex">
-        {
+        {loading ? <>
+        <SkeletonCard index={0} />
+        <SkeletonCard index={1} />
+        <SkeletonCard index={2} />
+        {!isLarge && <SkeletonCard index={3} />}
+        </> : 
+
         items?.map((val : any ,index : any)=>{
             if(see) return <VideoCard key={index} item={val} index={index}/>;
             else if(!isLarge ? index < 4 : index < 3) return <VideoCard key={index} item={val} index={index}/>;
@@ -166,11 +181,18 @@ export const VideoGallery = ({see,items}:any)=>{
     </>
 }
 
-export const PlayListGallery = ({see,items}:any)=>{
+export const PlayListGallery = ({see,items,loading}:any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     return <>
     <motion.div layout transition={{duration : 0.5}} className="justify-evenly flex-wrap flex">
-        {items?.map((item:any,index:any)=>{
+        {loading ? <>
+        <SkeletonCard index={0} />
+        <SkeletonCard index={1} />
+        <SkeletonCard index={2} />
+        {!isLarge && <SkeletonCard index={3} />}
+        </> :
+        
+        items?.map((item:any,index:any)=>{
             if(see) return <PlayListCard item={item} key={index} index={index}/>;
             else if(!isLarge ? index < 4 : index < 3) return <PlayListCard item={item} key={index} index={index}/>;
         })}
@@ -191,6 +213,23 @@ const VideoCard = ({index , item} : any)=>{
         <motion.div layout transition={{duration : 0.5}} className="mt-1">
             <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="truncate-2 text-[0.9rem] md:text-[1rem] whitespace-normal ">{item?.snippet?.title || 'no title'}</Link>
             <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-[0.8rem] md:text-[1rem]">{time} ago &bull; {item?.snippet?.type}</motion.div>
+        </motion.div>
+    </motion.div>
+    </>
+}
+
+const SkeletonCard = ({index} : any)=>{
+    const {isLarge} = useContext(isLargeContext) as any;
+    return <>
+    <motion.div layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
+        <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
+        <motion.div layout transition={{duration : 0.5}} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+            <SekeltonImg className="md:!rounded-lg" />
+        </motion.div>
+        </motion.div>
+        <motion.div layout transition={{duration : 0.5}} className="mt-1 w-full">
+            <motion.div layout transition={{duration : 0.5}} className="truncate-2 text-[0.9rem] md:text-[1rem] whitespace-normal "><SekeltonText /></motion.div>
+            <motion.div layout transition={{duration : 0.5}} className="text-[#979696] w-1/2 text-[0.8rem] md:text-[1rem]"><SekeltonText width={'min-w-[50%]'} /></motion.div>
         </motion.div>
     </motion.div>
     </>
