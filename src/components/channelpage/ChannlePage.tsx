@@ -36,7 +36,7 @@ const ChannelInfo = ({id}:any)=>{
     const [sub,setSub] = useState<any>(false);
     const [channel , setChannel] = useState<any>({});
     const [loading,setLoading] = useState(true);
-    const toggleSub = ()=>{ setSub(1-sub); }
+    const toggleSub = ()=>{ setSub(!sub); }
 
     const getDetails = async()=>{
       const results = await fetch('/api/channel',{
@@ -50,7 +50,7 @@ const ChannelInfo = ({id}:any)=>{
 
       if(results.status !== 404 && results.status != 500){
         const {channelDetails,isSub} = await results.json();
-        if(isSub) setSub(isSub);
+        setSub(isSub);
         setChannel(channelDetails);
         setLoading(false);
       }

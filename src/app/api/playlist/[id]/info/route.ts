@@ -6,18 +6,13 @@ import { signOut } from "next-auth/react";
 
 export const dynamic = 'force-dynamic'
 
-
 export async function POST(req : any ) {
-
   const body = await req.text();
-  const {id} = JSON.parse(body);
+  const {id , channelId} = JSON.parse(body);
 
   try{
-  const tokens = await getToken({req , secret});
 
-  if(tokens?.status != 200){
-    console.log('not right');
-  }
+  const tokens = await getToken({req , secret});
 
  if(tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
@@ -35,24 +30,25 @@ else{
  oauth2client.apiKey = ytApi;
 }
 
-const playlistData = await youtube.playlists.list({
-  part : ['snippet' , 'contentDetails'],
-  channelId : id,
-  maxResults : 24,
+const playlist = await youtube.playlists.list({
+    part : ['snippet' , 'contentDetails'],
+    maxResults: 2,
+    id: id,
 })
 
-if(playlistData.status != 200)
-return NextResponse.json([])
+if(playlist.status != 200) return NextResponse.json({});
 
-const data = playlistData?.data?.items;
+// @ts-ignore
+const info = playlist?.data?.items[0] as any;
 
-return NextResponse.json({data})
+return NextResponse.json({data : info});
 
 }
 catch(err){
     console.log('fetch error' , err);
     signOut();
     return NextResponse.json(err);
+
 }
 }
 

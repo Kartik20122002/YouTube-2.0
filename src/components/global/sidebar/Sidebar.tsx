@@ -50,14 +50,9 @@ const SideLinks = ({item , isLarge , index} : any) =>{
   onClick={()=>setslide(index)} 
   href={item.link} className={`w-full ${ 'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}> 
         <motion.div layout transition={{duration : 0.5}} > {slide == index ? item.icon1 : item.icon2} </motion.div> 
-        <motion.p layout transition={{duration : 0.5}} className={ isLarge ? 'ml-5' :'mt-1 text-center text-xs' }>{item.name}</motion.p> 
+        <motion.div layout transition={{duration : 0.5}} className={ isLarge ? 'ml-5' :'mt-1 text-center text-xs' }>{item.name}</motion.div> 
         </Link>
 }
-
-const SubSkel =()=>{
-    return <div className="text-white">...loading</div>
-}
-
 
 const Sidebar = ({isLarge , IsVideoPage } : any )=>{
 
@@ -156,7 +151,7 @@ const SubsSkeleton = ({isLarge}:any)=>{
   <motion.div layout transition={{duration : 0.5}} className="flex w-fit items-center">
   <Sekelton  width={isLarge ? 'min-w-[35px]' : 'min-w-[40px]'} height={isLarge ? 'min-h-[35px]' : 'min-h-[40px]'} circle />
   </motion.div>
-  {isLarge && <motion.p layout transition={{duration : 0.5}} className="ml-[20px] flex w-full"><SekeletonTxt height={'min-h-[1.2rem]'}/></motion.p>}
+  {isLarge && <motion.div layout transition={{duration : 0.5}} className="ml-[20px] flex w-full"><SekeletonTxt height={'min-h-[1.2rem]'}/></motion.div>}
   </motion.div>
   </motion.div>
 }

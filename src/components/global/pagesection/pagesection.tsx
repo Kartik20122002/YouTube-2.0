@@ -48,7 +48,7 @@ const PageSection = ({page} : any)=>{
 
      const fun = async () =>{
       let channelIds = [] as any;
-      items.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
+      items?.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
       const channelsImgRes = await fetch(`/api/channels_for_page`,{
         method : 'POST',
         headers: {

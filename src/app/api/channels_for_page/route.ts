@@ -3,7 +3,6 @@ import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextRequest, NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
-import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
 
