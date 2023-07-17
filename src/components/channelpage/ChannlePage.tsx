@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-// import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
-// import {RiPlayListLine} from 'react-icons/ri'
+import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
+import {RiPlayListLine} from 'react-icons/ri'
 import { motion } from 'framer-motion';
 import Image from 'next/legacy/image';
 import { isLargeContext, pageContext } from '@/app/layout';
@@ -102,8 +102,7 @@ const ChannelInfo = ({id}:any)=>{
 const VideoSection = ({id,type} :any)=>{
     const [see,setSee] = useState(false);
     const heading = type == 'activities' ? 'Recently Upload' : 'Playlists';
-    // const icon = type == 'activities' ? <AiOutlineHistory/> : <RiPlayListLine/>
-    const icon = <></>
+    const icon = type == 'activities' ? <AiOutlineHistory/> : <RiPlayListLine/>
     const [items,setItems] = useState([]);
     const [loading , setLoading] = useState(true);
     const getDetails = async()=>{
@@ -119,6 +118,7 @@ const VideoSection = ({id,type} :any)=>{
         if(results.status !== 404 && results.status != 500){
           const {data} = await results.json();
           setItems(data);
+          setLoading(false);
         }
       }
 
