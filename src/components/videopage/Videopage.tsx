@@ -259,12 +259,12 @@ const Description = ({loading , video} : any)=>{
     </motion.div>
     </motion.div>
 
-    <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden whitespace-normal mt-1`}>
+    <motion.div onClick={()=>setLargeDesc(!largeDesc)} layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-1' : 'h-fit'} hidden md:block overflow-hidden mt-1`}>
         {video?.snippet?.description}
     </motion.div>
-    {largeDesc && 
+    {/* {largeDesc && 
     <motion.div layout transition={{duration : 0.5}} onClick={()=>setLargeDesc(false)} className="mt-3 text-white hover:opacity-80 cursor-pointer">Show Less</motion.div>
-    }
+    } */}
 
     </motion.div>
  </>)
