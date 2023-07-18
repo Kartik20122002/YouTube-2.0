@@ -149,7 +149,7 @@ const PlayListItem = ({index,item} : any)=>{
    <div className="hidden md:flex items-center justify-center basis-[4%]">{index}</div>
    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.contentDetails?.videoId}`} className="basis-[20%] shrink-0 h-full ">
     <div className="w-full h-full relative pt-[56.25%] overflow-hidden">
-        <Image src={item?.snippet?.thumbnails?.default?.url || videoImg} loading='lazy' className='absolute md:rounded-lg top-0 dark:bg-[#202324] bg-[#b8b8b8] right-0 bottom-0 left-0 !w-full !h-full !min-w-0 !min-h-0' layout='fill'  alt='itemImg' />
+        <Image src={item?.snippet?.thumbnails?.medium?.url || videoImg} loading='lazy' className='absolute md:rounded-lg top-0 dark:bg-[#202324] bg-[#b8b8b8] right-0 bottom-0 left-0 !w-full !h-full !min-w-0 !min-h-0' layout='fill'  alt='itemImg' />
     </div>
    </Link>
    <div className="grow shrink basis-[60%] ml-3 mb-auto">
