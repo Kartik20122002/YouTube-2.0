@@ -109,7 +109,7 @@ const PlayListInfo = ({id} : any)=>{
 
 const PlayListItems = ({id} : any)=>{
 
-    const [items,setItems] = useState<any>({});
+    const [items,setItems] = useState<any>([]);
     const [loading,setLoading] = useState(true);
     const getDetails = async ()=>{
         const res = await fetch(`/api/playlist/${id}/items`,{
