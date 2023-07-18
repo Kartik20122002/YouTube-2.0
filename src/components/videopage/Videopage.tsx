@@ -149,7 +149,7 @@ useEffect(()=>{
             loading ? 
             <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle/>
             :
-            <Image width={45} height={45} alt={'channel'} className='rounded-full' src={channel?.snippet?.thumbnails?.default?.url}/>
+            <Image width={45} height={45} alt={'channel'} className='rounded-full dark:bg-[#202324] bg-[#b8b8b8]' src={channel?.snippet?.thumbnails?.default?.url}/>
         }
         </Link>
 
@@ -379,7 +379,7 @@ const time = DateConverter(item.snippet.publishedAt);
 
 <div className="basis-[35%]">
 <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center"> 
-<Image layout='fill' className='bg-[#5a5a5a] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.snippet?.thumbnails?.default?.url || item?.snippet?.thumbnails?.medium?.url}  /> 
+<Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.snippet?.thumbnails?.default?.url || item?.snippet?.thumbnails?.medium?.url}  /> 
 </Link>
 </div>
 
