@@ -89,7 +89,7 @@ const ChannelInfo = ({id}:any)=>{
         </motion.div>
 
         <motion.div layout transition={{duration : 0.5}} className="flex items-center justify-end my-1 px-6 grow">
-        {  <>{sub == 1 ? 
+        {loading ? <SekeltonText width={'max-w-[7rem]'} height={'min-h-[2.3rem]'} className='w-[7rem] h-[2.3rem] !rounded-full cursor-pointer'/> :  <>{sub ? 
          <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
          :
          <motion.button onClick={()=>toggleSub()} className='bg-white py-1 px-4 rounded-full md:text-lg text-black font-semibold hover:opacity-70'>Subscribe</motion.button>
