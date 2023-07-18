@@ -59,11 +59,11 @@ const PageSection = ({page} : any)=>{
       });
       const channelsImgData = await channelsImgRes.json();
 
-      for(let i = 0 ; i < items.length ; i++){
-        for(let j = 0 ; j < channelsImgData.length ; j++){
-          if(items[i].snippet.channelTitle == channelsImgData[j].snippet.title){
+      for(let i = 0 ; i < items?.length ; i++){
+        for(let j = 0 ; j < channelsImgData?.length ; j++){
+          if(items[i]?.snippet?.channelTitle == channelsImgData[j]?.snippet?.title){
             const newArray = imgs;
-            newArray[i] = channelsImgData[j].snippet.thumbnails.default.url;
+            newArray[i] = channelsImgData[j]?.snippet?.thumbnails?.default?.url;
             setImgs(newArray);
           }
         }
