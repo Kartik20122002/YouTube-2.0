@@ -246,21 +246,18 @@ const VideoInfoSkeleton = ()=>{
 const Description = ({loading , video} : any)=>{
     const [largeDesc , setLargeDesc] = useState(false);
 
-    const views = CountConverter(video?.statistics?.viewCount || 0);
-    const time = DateConverter(video?.snippet?.publishedAt);
-
     return (<> <motion.div layout transition={{duration : 0.5}} onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
-    <div className="flex flex-wrap">
-    <span className='mr-2'>{views} views</span>
-    <span className='mr-2'>{time} ago</span>
-    <div className="dark:text-white opacity-30 truncate-2">
+    <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap">
+    <motion.span layout transition={{duration : 0.5}}className='mr-2'>{CountConverter(video?.statistics?.viewCount)} views</motion.span>
+    <motion.span layout transition={{duration : 0.5}} className='mr-2'>{DateConverter(video?.snippet?.publishedAt)} ago</motion.span>
+    <motion.div layout transition={{duration : 0.5}} className="dark:text-white opacity-30 truncate-2">
          {
             !loading && video?.snippet?.tags?.map((tag:any , index: any) =>{
-                 return  <span key={index} className='mr-1 '>#{tag}</span>
+                 return  <motion.span key={index} className='mr-1 '>#{tag}</motion.span>
             })
          }
-    </div>
-    </div>
+    </motion.div>
+    </motion.div>
 
     <motion.div layout transition={{duration : 0.5}} className={`${!largeDesc ? 'h-0' : 'h-fit'}  overflow-hidden whitespace-normal mt-1`}>
         {video?.snippet?.description}
@@ -288,23 +285,23 @@ const CommentForm = ({img} : any)=>{
     }
     
 
-    <div className="basis-auto w-full ml-6 flex flex-col">
+    <motion.div layout transition={{duration : 0.5}} className="basis-auto w-full ml-6 flex flex-col">
 
     <input value={comment} onChange={(e)=>setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:border-white transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
 
-    <div className="btns w-full flex justify-end transition-colors mt-3">
+    <motion.div layout transition={{duration : 0.5}} className="btns w-full flex justify-end transition-colors mt-3">
         <button className='mr-4 opacity-90 hover:opacity-100'>Cancel</button>
         <button className={`ml-4 ${comment =='' ? 'bg-[#212121] cursor-not-allowed' : 'bg-[#3ea6ff] hover:bg-[#77bcf8]'} py-[.3rem] px-3 rounded-full dark:text-black`}>Comment</button>
-    </div>
+    </motion.div>
 
-    </div>
+    </motion.div>
   </form>
     </>)
 }
 
 const Comments = ()=>{
     return (<>
-    <div className="comments hidden md:block">
+    <motion.div layout transition={{duration : 0.5}} className="comments hidden md:block">
 
 {/* <% for(let i = 0 ; i < comments.length ; i++){ %>
 
@@ -344,13 +341,13 @@ const Comments = ()=>{
 
 {/* <%}%> */}
 
-</div>
+</motion.div>
     </>)
 }
 
 const SideRow = ({loading , related}:any)=>{
    return (<>
-   <div className="md:basis-[33%] mt-6 md:mt-0 basis-full flex flex-col px-1">
+   <motion.div layout transition={{duration : 0.5}} className="md:basis-[33%] mt-6 md:mt-0 basis-full flex flex-col px-1">
     {
         loading ? <>
           <SideVideoSkeleton/>
@@ -366,7 +363,7 @@ const SideRow = ({loading , related}:any)=>{
            return <SideVideo key={index} item={item} />
         })
     }
-    </div>
+    </motion.div>
    </>)
 }
 
@@ -375,41 +372,41 @@ const SideVideo = ({item} : any)=>{
 const time = DateConverter(item.snippet.publishedAt);
 
     return (<>
-<div className="flex flex-wrap w-full justify-between mb-8 px-3 md:px-0">
+<motion.div layout transition={{duration : 0.5}} className="flex flex-wrap w-full justify-between mb-8 px-3 md:px-0">
 
-<div className="basis-[35%]">
+<motion.div layout transition={{duration : 0.5}} className="basis-[35%]">
 <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center"> 
 <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.snippet?.thumbnails?.default?.url || item?.snippet?.thumbnails?.medium?.url}  /> 
 </Link>
-</div>
+</motion.div>
 
-<div className="basis-[64%] pt-1 ">
+<motion.div layout transition={{duration : 0.5}} className="basis-[64%] pt-1 ">
     <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
     <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888]' href={`/channel/${item?.snippet?.channelId}`}>{item?.snippet?.channelTitle}</Link></p>
     <p className="text-[#606060] font-medium text-sm">{time} ago</p>
-</div>
+</motion.div>
 
-</div>
+</motion.div>
     </>)
 }
 
 const SideVideoSkeleton = ()=>{
     return (<>
-    <div className="flex w-full justify-between mb-6 px-3 md:px-0">
-    <div className="basis-[35%]">
-    <div className="w-full h-full relative pt-[56.25%] overflow-hidden"> 
+    <motion.div layout transition={{duration : 0.5}} className="flex w-full justify-between mb-6 px-3 md:px-0">
+    <motion.div layout transition={{duration : 0.5}} className="basis-[35%]">
+    <motion.div layout transition={{duration : 0.5}} className="w-full h-full relative pt-[56.25%] overflow-hidden"> 
     <SekeltonImg className="rounded-md absolute top-0 right-0 bottom-0 left-0 w-full h-full"/>
-    </div>
-    </div>
+    </motion.div>
+    </motion.div>
 
-<div className="flex flex-col basis-[64%] shrink-0 pt-1">
+<motion.div layout transition={{duration : 0.5}} className="flex flex-col basis-[64%] shrink-0 pt-1">
     <Sekelton className="mb-1"/>
     <Sekelton className="mb-1"/>
     <Sekelton width={'w-1/2'} height={'h-3'}/>
     <Sekelton width={'w-1/3'} height={'h-3'}/>
-</div>
+</motion.div>
 
-</div>
+</motion.div>
     </>)
 }
 
