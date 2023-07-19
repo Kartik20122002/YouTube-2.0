@@ -117,6 +117,13 @@ body {
     overflow: hidden;
 }
 
+.truncate-5{
+  display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .skeleton-loader{
    background-color: #b8b8b8;
 }

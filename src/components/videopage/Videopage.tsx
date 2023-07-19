@@ -9,9 +9,10 @@ import {motion} from 'framer-motion'
 import {DateConverter} from "@/utils/Functions/Converters/DateConverter";
 import {CountConverter} from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext } from '@/app/layout';
+import parse from 'html-react-parser'
 
 export const revalidate = 300;
-
+const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const Videopage = ({id,channelId} : any)=>{ 
 
     const [videoDetails , setVideoDetails] = useState<any>({});
@@ -69,7 +70,7 @@ const {status , data : session } = useSession();
 const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
     return (<>
-<motion.div layout transition={{duration : 0.5}} className=" md:basis-[64%] shrink  h-[89vh] overflow-y-scroll">
+<motion.div layout transition={{duration : 0.5}} className=" md:basis-[64%] shrink md:pb-[5rem] h-[89vh] overflow-y-scroll">
 
 <motion.div layout transition={{duration : 0.5}} className="w-full relative pt-[56.25%] overflow-hidden">
 
@@ -85,11 +86,13 @@ const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
   {loading ? <Sekelton height={'h-24'} className="mb-4"/> : <Description loading={loading} video={video}/>}
 
-   <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>
+   {loading ? <Sekelton width="min-w-[20%] max-w-[20%]" className="my-1"/> : <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>}
 
 { status == 'authenticated' && 
     <CommentForm img={session?.user?.image}/>
 }
+
+<Comments id={id} />
 
  </motion.div>
 </motion.div>
@@ -98,7 +101,7 @@ const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
 const VideoInfo = ({status ,id , channelId, video,channel,loading} : any)=>{
     const [rate,setRate] = useState<any>(0)
-    const [sub,setSub] = useState<any>(0);
+    const [sub,setSub] = useState<any>(false);
 
 const getAuthDetails = async ()=>{
     try{
@@ -116,8 +119,7 @@ const getAuthDetails = async ()=>{
             if(rating[0].rating == 'none') setRate(0);
             if(rating[0].rating == 'like') setRate(1);
             if(rating[0].rating == 'dislike') setRate(-1);
-            if(subscription.length > 0) setSub(1);
-            else setSub(0);
+            if(subscription.length > 0) setSub(true);
         }
     }
     catch(err){
@@ -132,7 +134,7 @@ useEffect(()=>{
 },[status])
 
     const toggleSub = ()=>{
-        setSub(1-sub);
+        setSub(!sub);
     }
 
     const likes = CountConverter(video?.statistics?.likeCount || 0);
@@ -160,7 +162,7 @@ useEffect(()=>{
     </motion.div>
 
     <motion.div layout transition={{duration : 0.5}} className="w-min items-center justify-center flex">
-        {sub == 1 ? 
+        {sub == true ? 
          <motion.button onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
          :
          <motion.button onClick={()=>toggleSub()} className='bg-white py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</motion.button>
@@ -277,7 +279,7 @@ const CommentForm = ({img} : any)=>{
 
     return (<>
     
-    <motion.form method="post" className="mt-2 hidden md:flex items-start">
+    <motion.form method="post" className="mt-4 hidden md:flex items-start">
 
     {
     img ? <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full' /> :
@@ -299,50 +301,71 @@ const CommentForm = ({img} : any)=>{
     </>)
 }
 
-const Comments = ()=>{
+const Comments = ({id}:any)=>{
+
+    const [comments,setComments] = useState([]);
+    const [loading,setLoading] = useState(true);
+
+    const getDetails = async ()=>{
+        try{
+            const res = await fetch(`/api/video/${id}/comments`,{
+                method : 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({id}),
+                next : {revalidate : 300}
+              })
+            
+            if(res.status != 404 && res.status != 500){
+                const {data} = await res.json();
+                setComments(data);
+                setLoading(false);
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    useEffect(()=>{
+        getDetails();
+    },[]);
+
     return (<>
-    <motion.div layout transition={{duration : 0.5}} className="comments hidden md:block">
-
-{/* <% for(let i = 0 ; i < comments.length ; i++){ %>
-
-<%  let d1 = new Date(comments[i].snippet.topLevelComment.snippet.publishedAt);%>
-<%  let d2 = new Date();%>
-<%  let date = Math.abs(d2-d1);%>
-<%  let time = 0;%>
-<%  date = date/(1000*60); time = Math.trunc(date) +" mins" %>
-<%  if(date >= 60){ date = date/60; time = Math.trunc(date) + " hours";%>
-<%  if(date >= 24){ date = date/24; time = Math.trunc(date) + " days"%>
-<%  if(date >= 31){ date = date/30.4167; time = Math.trunc(date) + " months"%>
-<%  if(date >= 12){ date = date/12; time = Math.trunc(date) + " years"}%>
-<%  }}}%>
-
-<% let authorImage = comments[i].snippet.topLevelComment.snippet.authorProfileImageUrl %>
-<% let authorName =  comments[i].snippet.topLevelComment.snippet.authorDisplayName%>
-<% let authorChannel = "/channelpage?c=" + comments[i].snippet.topLevelComment.snippet.authorChannelId.value%>
-
-<% let comment = comments[i].snippet.topLevelComment.snippet.textOriginal%>
-<% let likes = comments[i].snippet.topLevelComment.snippet.likeCount%> */}
-
-{/* <div className="commentsection">
-  <a href='<%=authorChannel%>'>  <img src="<%=authorImage%>" loading="lazy" /> </a>
-    <div className="person-details">
-        <a href='<%=authorChannel%>'> <h3>authorName <span>2 hours ago</span></h3> </a>
-        <p className="person-comment"> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam itaque hic sit.comment</p>
-
-        <div className="comment-actions">
-            <img src="./images/like.png" loading="lazy" />
-            <span>4k</span>
-            <img src="./images/dislike.png" loading="lazy" />
-        </div>
-
-    </div>
-
-</div> */}
-
-{/* <%}%> */}
-
+    <motion.div layout transition={{duration : 0.5}} className="hidden md:block pb-2">
+     {
+     loading ? <></> : 
+     comments?.map((item : any , index : any)=>{
+        return <Comment key={index} item={item} />
+     })
+     }
 </motion.div>
     </>)
+}
+
+const Comment = ({item}:any)=>{
+    const [readmore , setReadmore] = useState(false);
+    
+    return <div className="flex mt-6 justify-between">
+    <div className="basis-[5%] flex justify-center items-start">
+        <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`} className="w-[45px] h-[45px] rounded-full">
+            <Image width={45} height={45} src={item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className='rounded-full' loading='lazy' alt='commentImg' />
+        </Link>
+    </div>
+
+    <div className="basis-[95%] grow ml-3 flex flex-col">
+        <div className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link> <span className='ml-3 font-[500] text-[#959595cd] text-'>{DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</span></div>
+
+        <div onClick={()=>{setReadmore(!readmore)}} className={`text-[0.95rem] ${!readmore && 'truncate-5'} mt-1 font-[500]`}>{parse(item?.snippet?.topLevelComment?.snippet?.textDisplay)}</div>
+
+        <div className="flex items-center mt-3">
+            <AiOutlineLike className='text-[1.5rem] mr-2'/>
+            <span className='text-[0.9rem]'>{CountConverter(item?.snippet?.topLevelComment?.snippet?.likeCount)}</span>
+            <AiOutlineDislike className='text-[1.5rem] ml-2' />
+        </div>
+    </div>
+   </div>
 }
 
 const SideRow = ({loading , related}:any)=>{
