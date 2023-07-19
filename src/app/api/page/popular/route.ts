@@ -18,15 +18,11 @@ export async function GET(req : any ) {
   try{
 
   
-  const tokens = await getToken({req , secret});
-  cookieStore.set('tokens',JSON.stringify(tokens));
+const tokens = await getToken({req , secret});
 
-  const access_tokenTrial = cookieStore.get('aToken');
-  const refresh_tokenTrial = cookieStore.get('rToken');
-
- if(access_tokenTrial){ 
-  const accessToken = access_tokenTrial.value;
-  const refreshToken = refresh_tokenTrial?.value;
+ if(tokens && tokens?.access_token){ 
+  const accessToken = tokens?.access_token;
+  const refreshToken = tokens?.refresh_token;
 
   oauth2client.credentials = {
     access_token : accessToken as string, 
@@ -49,34 +45,6 @@ else{
   regionCode : 'In',
   });
 
-  if(results.status == 401){
-    const newAccessToken = await refreshedToken(refresh_tokenTrial?.value);
-      if(cookieStore.has('aToken')) cookieStore.delete('aToken');
-      cookieStore.set('aToken' , newAccessToken);
-    
-      oauth2client.credentials = {
-        access_token : newAccessToken as string, 
-        refresh_token : refresh_tokenTrial?.value as string
-      }
-
-      const newResults = await youtube.videos.list({ 
-        part:['snippet','statistics'], 
-        maxResults : 48,
-        chart : 'mostPopular',
-        regionCode : 'In',
-        });
-
-        if(newResults.status !== 200) 
-        return  NextResponse.json({});
-    
-        const videos = newResults.data.items;
-        const ptoken = newResults.data.prevPageToken;
-        const ntoken = newResults.data.nextPageToken;
-     
-        return NextResponse.json({videos , ptoken , ntoken});
-  }
-  else{
-
     if(results.status !== 200) 
     return  NextResponse.json({});
 
@@ -85,8 +53,6 @@ else{
     const ntoken = results.data.nextPageToken;
  
     return NextResponse.json({videos , ptoken , ntoken});
-  }
-
 
 }
 catch(err){

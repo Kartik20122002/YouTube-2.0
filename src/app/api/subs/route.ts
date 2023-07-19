@@ -16,14 +16,11 @@ export async function GET(req : any ) {
   
   const tokens = await getToken({req , secret});
 
-  const access_tokenTrial = cookieStore.get('aToken');
-  const refresh_tokenTrial = cookieStore.get('rToken');
-
   const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
   oauth2client.credentials = {
-    access_token : access_tokenTrial?.value as string, 
+    access_token : accessToken as string, 
     refresh_token : refreshToken as string
   }
 
@@ -33,39 +30,13 @@ export async function GET(req : any ) {
     mine : true,
     });
 
-    if(results.status == 401){
-      const newAccessToken = await refreshedToken(refresh_tokenTrial?.value);
-      if(cookieStore.has('aToken')) cookieStore.delete('aToken');
-      cookieStore.set('aToken' , newAccessToken);
-
-      oauth2client.credentials = {
-        access_token : newAccessToken as string, 
-        refresh_token : refreshToken as string
-      }
-    
-        const newResults = await youtube.subscriptions.list({
-        part : ['snippet','contentDetails'],
-        maxResults : 50,
-        mine : true,
-        });
-
-        const subs = newResults.data.items;
-        const ptoken = newResults.data.prevPageToken;
-        const ntoken = newResults.data.nextPageToken;
-     
-        return NextResponse.json({subs , ptoken , ntoken});
-
-    }
-    else{
 
       const subs = results.data.items;
       const ptoken = results.data.prevPageToken;
       const ntoken = results.data.nextPageToken;
    
       return NextResponse.json({subs , ptoken , ntoken});
-    }
-
-
+    
 }
 catch(err){
   console.log('fetch error' , err);
