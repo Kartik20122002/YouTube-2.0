@@ -48,10 +48,8 @@ const authOptions : NextAuthOptions = {
         try {
         if (account && account?.access_token) {
           token.access_token = account?.access_token;
-          sessionStorage.setItem('rToken',account?.refresh_token);
           const byanother = account?.refresh_token;
           cookieStore.set('byother',byanother);
-          sessionStorage.setItem('aToken',account?.access_token);
         }
         return token;
 
