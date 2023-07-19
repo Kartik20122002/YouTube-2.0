@@ -70,7 +70,7 @@ const {status , data : session } = useSession();
 const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 
     return (<>
-<motion.div layout transition={{duration : 0.5}} className=" md:basis-[64%] shrink md:pb-[5rem] h-[89vh] overflow-y-scroll">
+<motion.div layout transition={{duration : 0.5}} className=" md:basis-[64%] shrink md:pb-[5rem] md:h-[89vh] overflow-y-scroll">
 
 <motion.div layout transition={{duration : 0.5}} className="w-full relative pt-[56.25%] overflow-hidden">
 
