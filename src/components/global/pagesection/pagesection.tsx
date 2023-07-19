@@ -11,8 +11,6 @@ import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
 
-const dynamic = 'force-dynamic'
-
 export const revalidate = 300;
 
 const PageSection = ({page} : any)=>{

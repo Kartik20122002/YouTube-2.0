@@ -392,23 +392,21 @@ const SideRow = ({loading , related}:any)=>{
 
 const SideVideo = ({item} : any)=>{
 
-const time = DateConverter(item.snippet.publishedAt);
-
     return (<>
-<motion.div layout transition={{duration : 0.5}} className=" flex flex-wrap w-full h-max min-h-max justify-between mb-3 px-3 md:px-0">
+<motion.div layout transition={{duration : 0.5}} className=" flex flex-wrap w-fulljustify-between mb-3 px-3 md:px-0">
 
-<motion.div layout transition={{duration : 0.5}} className="basis-[35%] relative mr-2 grow h-full">
+<motion.div layout transition={{duration : 0.5}} className="basis-[35%] mr-2 h-full">
 
 <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center"> 
 <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.snippet?.thumbnails?.medium?.url || item?.snippet?.thumbnails?.default?.url}  /> 
 </Link>
 </motion.div>
 
-<motion.div layout transition={{duration : 0.5}} className="basis-[60%] grow relative pt-1 ">
-    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
+<motion.div layout transition={{duration : 0.5}} className="basis-[60%] pt-1 overflow-hidden ">
+    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
     <div className="flex flex-wrap">
     <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.snippet?.channelId}`}>{item?.snippet?.channelTitle} &bull;</Link></p>
-    <p className="text-[#606060] font-medium text-sm ">{time} ago</p>
+    <p className="text-[#606060] font-medium text-sm ">{DateConverter(item.snippet.publishedAt)} ago</p>
     </div>
 </motion.div>
 
