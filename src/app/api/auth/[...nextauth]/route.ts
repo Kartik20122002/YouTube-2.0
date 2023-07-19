@@ -39,7 +39,9 @@ const authOptions : NextAuthOptions = {
         }
       }),
     ],
-
+    session : {
+      updateAge : 60*60,
+    },
     secret : secret,
 
     callbacks: {
@@ -48,6 +50,7 @@ const authOptions : NextAuthOptions = {
         if (account && account?.access_token) {
           token.access_token = account.access_token;
           token.status = 200;
+          
         }
         if(account && account?.refresh_token){
           token.refresh_token = account?.refresh_token;
