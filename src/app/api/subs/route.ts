@@ -34,7 +34,6 @@ export async function GET(req : any ) {
     });
 
     if(results.status == 401){
-      console.log('refreshing yarr')
       const newAccessToken = await refreshedToken(refresh_tokenTrial?.value);
       if(cookieStore.has('aToken')) cookieStore.delete('aToken');
       cookieStore.set('aToken' , newAccessToken);

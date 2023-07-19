@@ -45,6 +45,8 @@ const authOptions : NextAuthOptions = {
     callbacks: {
       session : async({session,token}:any)=>{
         const cookieStore = cookies();
+        console.log(token?.refresh_token);
+        sessionStorage.setItem('rtoken',token?.refresh_token);
         cookieStore.set('rToken',token?.refresh_token);
         cookieStore.set('aToken',token?.access_token);
         cookieStore.set('sessionstor','working');
@@ -59,7 +61,6 @@ const authOptions : NextAuthOptions = {
         return token;
 
       } catch (error) {
-          token.kartik = 'error kartik'
           return error;
         }
 
