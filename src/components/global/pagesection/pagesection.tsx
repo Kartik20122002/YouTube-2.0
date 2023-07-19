@@ -26,6 +26,7 @@ const PageSection = ({page} : any)=>{
       try{
         const res = await fetch(`/api/page/${page}/${token}`,{
           next: {revalidate : 300},
+          cache : 'force-cache'
         });
 
         if(res.status != 500 && res.status != 404){
