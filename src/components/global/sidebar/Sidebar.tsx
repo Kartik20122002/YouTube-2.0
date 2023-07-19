@@ -68,7 +68,7 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
      if(status == 'authenticated'){
         const fun = async ()=>{
         try{
-          const res = await fetch('/api/subs',{ next : {revalidate : 300} , cache : 'force-cache'});
+          const res = await fetch('/api/subs',{ next : {revalidate : 300} , cache : 'default'});
           const {subs,ptoken,ntoken} = await res.json();
           setSubs(subs);
           setLoading(false);
