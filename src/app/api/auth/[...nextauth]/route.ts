@@ -2,6 +2,7 @@ import { refreshedToken } from '@/utils/auth/refreshed';
 import { clientId, clientSecret, scopesStr, secret } from '@/utils/secrets/secrets';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
+import { cookies } from 'next/headers';
 
 const getNewToken = async (token : any)=>{
   try {
@@ -46,14 +47,16 @@ const authOptions : NextAuthOptions = {
 
     callbacks: {
       jwt: async ({token , account } : any)=> {
+        const cookieStore = cookies();
         try {
         if (account && account?.access_token) {
-          token.access_token = account.access_token;
+          token.access_token = account?.access_token;
+          cookieStore.set('aToken',account?.access_token);
           token.status = 200;
-          
         }
         if(account && account?.refresh_token){
           token.refresh_token = account?.refresh_token;
+          cookieStore.set('rToken',account?.refresh_token);
         }
 
         return token;
