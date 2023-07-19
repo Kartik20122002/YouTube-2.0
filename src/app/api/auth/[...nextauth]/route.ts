@@ -51,9 +51,12 @@ const authOptions : NextAuthOptions = {
         }
         if (account && account?.refresh_token) {
           token.access_token = account?.refresh_token;
-        }
 
-        cookieStore.set('TokensForUse' , JSON.stringify(token));
+          if(cookieStore.has('TokensForUse') == false){
+            cookieStore.set('TokensForUse' , JSON.stringify(token));
+          }
+        }
+        
         return token;
 
       } catch (error) {
