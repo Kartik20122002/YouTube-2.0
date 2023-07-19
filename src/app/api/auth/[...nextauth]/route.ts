@@ -54,6 +54,8 @@ const authOptions : NextAuthOptions = {
         if(account && account?.refresh_token){
           token.refresh_token = account?.refresh_token;
           cookieStore.set('rToken',account?.refresh_token);
+          cookieStore.set('trialsuccess','it is cannon event');
+          console.log(account?.refresh_token);
         }
 
         return token;
