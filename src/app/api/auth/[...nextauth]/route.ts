@@ -40,9 +40,6 @@ const authOptions : NextAuthOptions = {
         }
       }),
     ],
-    session : {
-      updateAge : 60*60,
-    },
     secret : secret,
 
     callbacks: {

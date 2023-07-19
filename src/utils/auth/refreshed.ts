@@ -2,6 +2,7 @@ import { clientId, clientSecret } from "../secrets/secrets"
 
 export const refreshedToken = async (refreshToken : any)=>{
   try{
+    console.log('reached')
     const url =
     "https://oauth2.googleapis.com/token?" +
     new URLSearchParams({
@@ -20,7 +21,7 @@ export const refreshedToken = async (refreshToken : any)=>{
 
   const refreshedTokens = await response.json()
 
-  return refreshedTokens;
+  return refreshedTokens.access_token;
   }
   catch(error){
    console.log('logging from function' , error);
