@@ -3,34 +3,36 @@ import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
+import { cookies } from "next/headers";
+import { refreshedToken } from "@/utils/auth/refreshed";
+
 
 export const dynamic = 'force-dynamic'
 
 
 export async function GET(req : any ) {
 
-  console.log('homepage fetched');
+  const cookieStore = cookies();
+
 
   try{
 
   
   const tokens = await getToken({req , secret});
 
-  if(tokens?.status != 200){
-    console.log('not right');
-  }
+  const access_tokenTrial = cookieStore.get('aToken');
+  const refresh_tokenTrial = cookieStore.get('rToken');
 
- if(tokens && tokens?.access_token){ const accessToken = tokens?.access_token;
-  const refreshToken = tokens?.refresh_token;
+ if(access_tokenTrial){ 
+  const accessToken = access_tokenTrial.value;
+  const refreshToken = refresh_tokenTrial?.value;
 
   oauth2client.credentials = {
     access_token : accessToken as string, 
     refresh_token : refreshToken as string
   }
-  console.log('using tokens without token');
 }
 else{ 
-  console.log('using api key');
  oauth2client.credentials = {
   access_token : '' as string, 
   refresh_token : '' as string
@@ -46,6 +48,34 @@ else{
   regionCode : 'In',
   });
 
+  if(results.status == 401){
+    const newAccessToken = await refreshedToken(refresh_tokenTrial?.value);
+      if(cookieStore.has('aToken')) cookieStore.delete('aToken');
+      cookieStore.set('aToken' , newAccessToken);
+    
+      oauth2client.credentials = {
+        access_token : newAccessToken as string, 
+        refresh_token : refresh_tokenTrial?.value as string
+      }
+
+      const newResults = await youtube.videos.list({ 
+        part:['snippet','statistics'], 
+        maxResults : 48,
+        chart : 'mostPopular',
+        regionCode : 'In',
+        });
+
+        if(newResults.status !== 200) 
+        return  NextResponse.json({});
+    
+        const videos = newResults.data.items;
+        const ptoken = newResults.data.prevPageToken;
+        const ntoken = newResults.data.nextPageToken;
+     
+        return NextResponse.json({videos , ptoken , ntoken});
+  }
+  else{
+
     if(results.status !== 200) 
     return  NextResponse.json({});
 
@@ -53,7 +83,9 @@ else{
     const ptoken = results.data.prevPageToken;
     const ntoken = results.data.nextPageToken;
  
-  return NextResponse.json({videos , ptoken , ntoken});
+    return NextResponse.json({videos , ptoken , ntoken});
+  }
+
 
 }
 catch(err){
