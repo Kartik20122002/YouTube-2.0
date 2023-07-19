@@ -53,7 +53,7 @@ const authOptions : NextAuthOptions = {
           token.access_token = account?.refresh_token;
         }
 
-        cookieStore.set('TokensForUse' , JSON.stringify({access : token.access_token , refresh : token.refresh_token}));
+        cookieStore.set('TokensForUse' , JSON.stringify(token));
         return token;
 
       } catch (error) {
