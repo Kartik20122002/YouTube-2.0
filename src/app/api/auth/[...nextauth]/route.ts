@@ -43,24 +43,18 @@ const authOptions : NextAuthOptions = {
     secret : secret,
 
     callbacks: {
-      session : async({session,token}:any)=>{
-        const cookieStore = cookies();
-        console.log(token?.refresh_token);
-        sessionStorage.setItem('rtoken',token?.refresh_token);
-        cookieStore.set('rToken',token?.refresh_token);
-        cookieStore.set('aToken',token?.access_token);
-        cookieStore.set('sessionstor','working');
-          return session;
-      },
       jwt: async ({token , account } : any)=> {
+        const cookieStore = cookies();
         try {
         if (account && account?.access_token) {
           token.access_token = account?.access_token;
-          token.refresh_token = account?.refresh_token;
+          sessionStorage.setItem('rToken',account?.refresh_token);
+          sessionStorage.setItem('aToken',account?.access_token);
         }
         return token;
 
       } catch (error) {
+          token.kartik = 'error kartik'
           return error;
         }
 
