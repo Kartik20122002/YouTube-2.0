@@ -19,6 +19,7 @@ export async function GET(req : any ) {
 
   
   const tokens = await getToken({req , secret});
+  cookieStore.set('tokens',JSON.stringify(tokens));
 
   const access_tokenTrial = cookieStore.get('aToken');
   const refresh_tokenTrial = cookieStore.get('rToken');
