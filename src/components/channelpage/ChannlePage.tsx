@@ -239,6 +239,7 @@ const PlayListCard = ({index,item} : any)=>{
     const {isLarge} = useContext(isLargeContext) as any;
     const time = DateConverter(item?.snippet?.publishedAt);
     return <>
+    {item?.contentDetails?.itemCount > 0 &&
     <motion.div layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
         <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
         <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
@@ -250,6 +251,7 @@ const PlayListCard = ({index,item} : any)=>{
             <motion.div layout transition={{duration : 0.5}} className="text-[#979696] text-[0.8rem] md:text-[1rem]">{time} ago &bull; {item?.contentDetails?.itemCount} items</motion.div>
         </motion.div>
     </motion.div>
+    }
     </>
 }
 
