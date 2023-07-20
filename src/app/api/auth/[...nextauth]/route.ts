@@ -40,7 +40,6 @@ const authOptions : NextAuthOptions = {
       }),
     ],
     secret : secret,
-
     callbacks: {
       jwt: async ({token , account } : any)=> {
         try {
