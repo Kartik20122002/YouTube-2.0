@@ -347,25 +347,25 @@ const Comments = ({id}:any)=>{
 const Comment = ({item}:any)=>{
     const [readmore , setReadmore] = useState(false);
     
-    return <div className="flex mt-6 justify-between">
-    <div className="basis-[5%] flex justify-center items-start">
+    return <motion.div layout transition={{duration : 0.5}} className="flex mt-6 justify-between">
+    <motion.div layout transition={{duration : 0.5}} className="basis-[5%] flex justify-center items-start">
         <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`} className="w-[45px] h-[45px] rounded-full">
             <Image width={45} height={45} src={item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className='rounded-full' loading='lazy' alt='commentImg' />
         </Link>
-    </div>
+    </motion.div>
 
-    <div className="basis-[95%] grow ml-3 flex flex-col">
-        <div className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link> <span className='ml-3 font-[500] text-[#959595cd] text-'>{DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</span></div>
+    <motion.div layout transition={{duration : 0.5}} className="basis-[95%] grow ml-3 flex flex-col">
+        <motion.div layout transition={{duration : 0.5}} className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link> <span className='ml-3 font-[500] text-[#959595cd] text-'>{DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</span></motion.div>
 
-        <div onClick={()=>{setReadmore(!readmore)}} className={`text-[0.95rem] ${!readmore && 'truncate-5'} mt-1 font-[500]`}>{parse(item?.snippet?.topLevelComment?.snippet?.textDisplay)}</div>
+        <motion.div layout transition={{duration : 0.5}} onClick={()=>{setReadmore(!readmore)}} className={`text-[0.95rem] ${!readmore && 'truncate-5'} mt-1 font-[500]`}>{parse(item?.snippet?.topLevelComment?.snippet?.textDisplay)}</motion.div>
 
-        <div className="flex items-center mt-3">
+        <motion.div layout transition={{duration : 0.5}} className="flex items-center mt-3">
             <AiOutlineLike className='text-[1.5rem] mr-2'/>
             <span className='text-[0.9rem]'>{CountConverter(item?.snippet?.topLevelComment?.snippet?.likeCount)}</span>
             <AiOutlineDislike className='text-[1.5rem] ml-2' />
-        </div>
-    </div>
-   </div>
+        </motion.div>
+    </motion.div>
+   </motion.div>
 }
 
 const SideRow = ({loading , related}:any)=>{
@@ -404,10 +404,10 @@ const SideVideo = ({item} : any)=>{
 
 <motion.div layout transition={{duration : 0.5}} className="basis-[60%] pt-1 overflow-hidden ">
     <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
-    <div className="flex flex-wrap">
+    <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap">
     <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.snippet?.channelId}`}>{item?.snippet?.channelTitle} &bull;</Link></p>
     <p className="text-[#606060] font-medium text-sm ">{DateConverter(item.snippet.publishedAt)} ago</p>
-    </div>
+    </motion.div>
 </motion.div>
 
 </motion.div>

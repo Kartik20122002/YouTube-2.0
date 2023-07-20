@@ -145,7 +145,7 @@ const VideoSection = ({id,type} :any)=>{
             {heading}
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="actions">
-            <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSee()} className='flex items-center text-sm md:text-md dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-3 md:px-4 py-[0.4rem] md:py-2 md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
+            <motion.button layout transition={{duration : 0.5}} onClick={()=>toggleSee()} className='flex items-center text-sm md:text-md hover:bg-[#1e2d40] text-[#45aeff] rounded-full px-3 py-[0.1rem] md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
         </motion.div>
     </motion.div>
     }

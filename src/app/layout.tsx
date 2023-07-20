@@ -15,6 +15,14 @@ export const slideContext = createContext(-1);
 // @ts-ignore
 export const pageContext = createContext();
 
+import { Roboto } from 'next/font/google'
+ 
+const roboto = Roboto({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+})
+
 
 export default function RootLayout({
   children,
@@ -39,9 +47,9 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en">
+    <html lang="en" className={roboto.className}>
       <head>
-      <title>YouTube 2</title>
+      <title>YouTube Pro</title>
       <meta name="description" content="This is YouTube 2 Web App" />
       <meta charSet="UTF-8" />
       <meta name="keywords" content="youtube, youtube-2, youtube 2" />
