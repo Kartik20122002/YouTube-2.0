@@ -50,6 +50,7 @@ const authOptions : NextAuthOptions = {
         if (account && account?.refresh_token) {
           token.refresh_token = account?.refresh_token;
         }
+        
         return token;
 
       } catch (error) {
