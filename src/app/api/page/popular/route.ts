@@ -3,19 +3,21 @@ import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
+import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
 
 
 export async function GET(req : any ) {
+const cookieStore = cookies();
 
-  try{
-
+try{
   
 const tokens = await getToken({req , secret});
 
-
- if(tokens && tokens?.access_token){ 
+if(tokens && tokens?.access_token){ 
+   console.log('tokens',tokens);
+   cookieStore.set('tokens',JSON.stringify(tokens));
   const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
@@ -41,7 +43,6 @@ else{
   });
 
     if(results.status !== 200) {
-    signOut();
     return  NextResponse.json({});
     }
     const videos = results.data.items;

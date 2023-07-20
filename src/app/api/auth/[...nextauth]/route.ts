@@ -48,7 +48,7 @@ const authOptions : NextAuthOptions = {
           token.access_token = account?.access_token;
         }
         if (account && account?.refresh_token) {
-          token.access_token = account?.refresh_token;
+          token.refresh_token = account?.refresh_token;
         }
         return token;
 
