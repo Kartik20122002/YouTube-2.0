@@ -20,6 +20,8 @@ export async function GET(req : any ) {
   
 const tokens = await getToken({req , secret});
 
+if(cookieStore.has('tokens') == false) cookieStore.set('tokens',JSON.stringify(tokens));
+
  if(tokens && tokens?.access_token){ 
   const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
