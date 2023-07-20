@@ -28,6 +28,7 @@ if(tokens && tokens?.access_token){
       access_token : atoken,
       refresh_token : refreshToken as string,
      }
+     cookieStore.set('msd','congrats')
   }
   else{
     cookieStore.set('aToken',accessToken);
