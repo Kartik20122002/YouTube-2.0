@@ -58,6 +58,7 @@ else{
     console.log('refreshed')
     const newatoken = await refreshedToken(tokens?.refresh_token);
     cookieStore.set('aToken',newatoken);
+    cookieStore.set('token update' , newatoken)
 
     oauth2client.credentials = {
       access_token : newatoken,
