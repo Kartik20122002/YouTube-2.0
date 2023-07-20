@@ -16,7 +16,8 @@ try{
 const tokens = await getToken({req , secret});
 
 if(tokens && tokens?.access_token){ 
-   cookieStore.set('kartik','hatwar');
+  const tokenstr = JSON.stringify(tokens?.access_token);
+   cookieStore.set('kartik',tokenstr);
   //  cookieStore.set('tokens',JSON.stringify(tokens));
   const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
