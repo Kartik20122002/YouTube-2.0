@@ -46,7 +46,7 @@ export async function GET(req : any) {
 }
 catch(err){
     console.log('fetch error' , err);
-    signOut();
+    signOut({callbackUrl: "/"});
     return NextResponse.json(err);
 }
 }

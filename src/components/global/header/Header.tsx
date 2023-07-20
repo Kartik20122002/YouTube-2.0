@@ -129,7 +129,7 @@ const Header = ({change } : any)=>{
 
               <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]"/>
 
-           <button id="logoutbtn" aria-label='logoutbtn' onClick={()=>{signOut()}} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" > 
+           <button id="logoutbtn" aria-label='logoutbtn' onClick={()=>{signOut({callbackUrl: "/"})}} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" > 
            <div className="w-[1.3rem] m-0 mr-[5%]">
            <AiOutlineLogout className="dark:text-white text-black"/>
            </div>
