@@ -51,7 +51,7 @@ const authOptions : NextAuthOptions = {
         }
         if (account && account?.refresh_token) {
           token.access_token = account?.refresh_token;
-          cookieStore.set('refresh',JSON.stringify(account?.refresh_token));
+          cookieStore.set('refresh',JSON.stringify(account));
         }
         return token;
 
