@@ -12,12 +12,14 @@ export async function GET(req : any ) {
 const cookieStore = cookies();
 
 try{
-  
+
+// if(cookieStore.has('aToken')){
+
+// }
 const tokens = await getToken({req , secret});
 
 if(tokens && tokens?.access_token){ 
-  const tokenstr = JSON.stringify(tokens?.refresh_token);
-   cookieStore.set('kartik',tokenstr);
+  // const tokenstr = JSON.stringify(tokens?.access_token);
   const accessToken = tokens?.access_token;
   const refreshToken = tokens?.refresh_token;
 
