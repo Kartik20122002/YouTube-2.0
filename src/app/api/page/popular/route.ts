@@ -29,10 +29,10 @@ if(tokens && tokens?.access_token){
       refresh_token : refreshToken as string,
      }
      cookieStore.set('msd','congrats')
-  }
-  else{
-    cookieStore.set('aToken',accessToken);
-    console.log('from auth')
+    }
+    else{
+      cookieStore.set('aToken',accessToken);
+      cookieStore.set('msd','not congrats')
     oauth2client.credentials = {
       access_token : accessToken as string, 
       refresh_token : refreshToken as string
