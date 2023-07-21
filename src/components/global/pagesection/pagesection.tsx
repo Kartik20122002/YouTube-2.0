@@ -115,12 +115,12 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
     }
     </Link> 
 
-    <motion.div layout transition={{duration : 0.5}} className="text-sm">
+    <motion.div layout transition={{duration : 0.5}} className="text-sm w-full">
         <Link className="text-black dark:text-white font-semibold text-[15px] mb-[5px] truncate-2" href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>{item?.snippet?.title}</Link>
-        <div className="flex md:flex-col w-full">
-        <Link className="text-[#979696] mr-2 hover:text-[#c0bebe]" href={`/channel/${item?.snippet?.channelId}`}> <p>{item?.snippet?.channelTitle}</p></Link>
-        <p className="text-[#979696]"> <span className="mr-1">{views} Views</span> &bull; <span className="ml-1">{time} ago</span></p>
-        </div>
+        <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap md:flex-col w-full">
+        <Link className="text-grey mr-2 basis-auto shrink truncate-1 hover:text-[#c0bebe]" href={`/channel/${item?.snippet?.channelId}`}> <p>{item?.snippet?.channelTitle}</p></Link>
+        <motion.div layout transition={{duration : 0.5}} className="text-grey flex flex-wrap grow truncate-1 whitespace-normal"> <span className="mr-1">{views} Views</span> &bull; <span className="ml-1">{time} ago</span></motion.div>
+        </motion.div>
     </motion.div>
 </motion.div>
 </motion.div> 
