@@ -117,7 +117,7 @@ useEffect(()=>{
         </motion.div> :
 
         <motion.div layout transition={{duration : 0.5}} className="flex mx-2 md:mx-1 mb-4 justify-between">
-        <motion.div layout transition={{duration : 0.5}} className="flex font-bold text-[1.12rem] md:text-xl justify-center items-center">
+        <motion.div layout transition={{duration : 0.5}} className={`flex font-bold text-[1.12rem] md:text-xl ${items?.length > 5 && '!justify-center'} justify-start items-center`}>
            <motion.span layout transition={{duration : 0.5}} className='mr-2 text-[1.7rem] '>{icon}</motion.span> 
             {title}
         </motion.div>
