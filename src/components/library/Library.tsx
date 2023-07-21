@@ -230,13 +230,13 @@ const ActivitiesCard = ({item}:any)=>{
 
 <motion.div layout transition={{duration : 0.5}} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
         <motion.div layout transition={{duration : 0.5}} className="relative w-full pt-[56.25%] overflow-hidden">
-        <Link href={url} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+        <Link href={url} className="h-full absolute top-0 right-0 left-0 bottom-0">
             <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-2 pr-6">
             <Link href={url} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title || item?.snippet?.channelTitle}</Link>
-            {isChannel && 
+            {!isChannel && 
             <Link href={channelUrl} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link>
             }
             {item?.statistics?.viewCount ? 

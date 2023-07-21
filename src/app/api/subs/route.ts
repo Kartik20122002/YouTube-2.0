@@ -30,7 +30,8 @@ export async function GET(req : any ) {
     mine : true,
     });
 
-
+    if(results.status == 401) signOut({callbackUrl: "/"});
+    
       const subs = results.data.items;
       const ptoken = results.data.prevPageToken;
       const ntoken = results.data.nextPageToken;
