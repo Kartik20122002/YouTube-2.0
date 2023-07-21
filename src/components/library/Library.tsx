@@ -42,7 +42,6 @@ const UserDetails = ()=>{
    const getDetails = async()=>{
     const results = await fetch(`/api/library/user`,{
       next : {revalidate : 300},
-      cache : 'force-cache'
     })
 
     if(results.status !== 404 && results.status != 500){
