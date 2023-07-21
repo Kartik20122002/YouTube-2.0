@@ -249,9 +249,9 @@ const Description = ({loading , video} : any)=>{
     const [largeDesc , setLargeDesc] = useState(false);
 
     return (<> <motion.div layout transition={{duration : 0.5}} onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
-    <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap">
-    <motion.span layout transition={{duration : 0.5}}className='mr-2 text-sm'>{CountConverter(video?.statistics?.viewCount)} views</motion.span>
-    <motion.span layout transition={{duration : 0.5}} className='mr-2 text-sm'>{DateConverter(video?.snippet?.publishedAt)} ago</motion.span>
+    <motion.div layout transition={{duration : 0.5}} className="flex w-full flex-wrap">
+    <motion.span layout transition={{duration : 0.5}}className='mr-2 w-[50%] text-[0.8rem]'>{CountConverter(video?.statistics?.viewCount)} views</motion.span>
+    <motion.span layout transition={{duration : 0.5}} className='mr-2 w-[50%] text-[0.8rem]'>{DateConverter(video?.snippet?.publishedAt)} ago</motion.span>
     <motion.div layout transition={{duration : 0.5}} className="dark:text-white opacity-30 truncate-2">
          {
             !loading && video?.snippet?.tags?.map((tag:any , index: any) =>{
