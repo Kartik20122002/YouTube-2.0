@@ -145,7 +145,6 @@ useEffect(()=>{
 
 const VideoCard = ({item,id}:any)=>{
   
-  const {isLarge} = useContext(isLargeContext) as any;
   return <>
 
 <motion.div layout transition={{duration : 0.5}} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
