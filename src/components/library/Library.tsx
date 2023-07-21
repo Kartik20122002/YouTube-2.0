@@ -2,13 +2,14 @@
 import { isLargeContext, pageContext, slideContext } from "@/app/layout";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/legacy/image";
-import { AiOutlineLike } from "react-icons/ai";
+import { AiOutlineHistory, AiOutlineLike } from "react-icons/ai";
 import SekeltonImg from "../global/skeletonComponents/ImgSkeleton";
 import SekeltonText from "../global/skeletonComponents/TextSkeleton";
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
+import { RiPlayListLine } from "react-icons/ri";
 const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
 
@@ -20,10 +21,12 @@ const Library = ()=>{
 
 
     return <>
-     <motion.div layout transition={{duration : 0.5}} className='md:pl-3 h-full overflow-y-scroll flex dark:text-white'>
-        <motion.div layout transition={{duration : 0.5}} className="basis-[80%] h-full grow">
+     <motion.div layout transition={{duration : 0.5}} className='md:pl-3 h-[90vh] pb-10 overflow-y-scroll flex flex-col-reverse md:flex-row dark:text-white'>
+        <motion.div layout transition={{duration : 0.5}} className="basis-[80%] grow">
 
-          <VideoSection id="liked" />
+          <VideoSection key={1} id="playlists" />
+          <VideoSection key={2}  id="history" />
+          <VideoSection key={3} id="liked" />
 
         </motion.div>
         
@@ -33,38 +36,75 @@ const Library = ()=>{
 }
 
 const UserDetails = ()=>{
- return <div className="basis-[20%] grow-0 hidden items-center pt-[4rem] md:flex flex-col bg-[3red]">
-  <div className="flex flex-col items-center">
-            <div className="mb-2">
-              <Image width={80} height={80} className="rounded-full" alt="userImg" src={img} />
-            </div>
-            <div className="font-[500]">Kartik Hatwar</div>
-           </div>
-           <div className="mt-7 w-full px-6">
-            <hr className="mb-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
-            <div className="flex justify-between text-[0.75rem] font-[400] px-5 text-[#b2aca2]"><span>Subscriptions</span> <span className="ml-2">81</span></div>
-            <hr className="my-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
-            <div className="flex justify-between text-[0.75rem] font-[400] px-5 text-[#b2aca2]"><span>Uploads</span> <span className="ml-2">0</span></div>
-            <hr className="my-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
-            <div className="flex justify-between text-[0.75rem] font-[400] px-5 text-[#b2aca2]"><span>Likes</span> <span className="ml-2">3,850</span></div>
-            <hr className="mt-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
-           </div>
-  </div>
+   const [info , setInfo] = useState<any>({});
+   const [loading,setLoading] = useState(true);
+
+   const getDetails = async()=>{
+    const results = await fetch(`/api/library/user`,{
+      next : {revalidate : 300}
+    })
+
+    if(results.status !== 404 && results.status != 500){
+      const {data} = await results.json();
+      setInfo(data);
+      setLoading(false);
+    }
+  }
+
+useEffect(()=>{
+    getDetails()
+},[])
+
+ return <motion.div layout transition={{duration : 0.5}} className="basis-[20%] min-h-max grow-0 items-center pt-[4rem] md:flex flex-col bg-[3red]">
+  <motion.div layout transition={{duration : 0.5}} className="flex flex-col items-center">
+            <motion.div layout transition={{duration : 0.5}} className="mb-2">
+              <Image width={80} height={80} className="rounded-full bg-grey" alt="userImg" src={info?.snippet?.thumbnails?.medium?.url || img} />
+            </motion.div>
+            <motion.div layout transition={{duration : 0.5}} className="font-[500]">{info?.snippet?.title}</motion.div>
+           </motion.div>
+           <motion.div layout transition={{duration : 0.5}} className="my-7 w-full px-6">
+            <motion.hr className="mb-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
+            <motion.div layout transition={{duration : 0.5}} className="flex justify-between text-[0.75rem] font-[400] px-5 text-[#b2aca2]"><motion.span transition={{duration : 0.5}}>Subscriptions</motion.span> <motion.span transition={{duration : 0.5}} className="ml-2">{info?.statistics?.subscriberCount}</motion.span></motion.div>
+            <motion.hr className="my-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
+            <motion.div layout transition={{duration : 0.5}} className="flex justify-between text-[0.75rem] font-[400] px-5 text-[#b2aca2]"><motion.span transition={{duration : 0.5}}>Uploads</motion.span> <motion.span transition={{duration : 0.5}} className="ml-2">{info?.statistics?.videoCount}</motion.span></motion.div>
+            <motion.hr className="my-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
+            <motion.div layout transition={{duration : 0.5}} className="flex justify-between text-[0.75rem] font-[400] px-5 text-[#b2aca2]"><motion.span transition={{duration : 0.5}}>Views</motion.span> <motion.span transition={{duration : 0.5}} className="ml-2">{info?.statistics?.viewCount}</motion.span></motion.div>
+            <motion.hr className="my-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
+           </motion.div>
+  </motion.div>
 }
 
 const VideoSection = ({id} : any)=>{
-   const loading = false;
-   const title = id == 'history' ? 'History' : id == 'liked' ? 'Liked Videos' : 'Playlists';
-   const icon = <AiOutlineLike/>
+   const title = id == 'history' ? 'Activities' : id == 'liked' ? 'Liked Videos' : 'Playlists';
+   const icon =  id == 'history' ? <AiOutlineHistory/> : id == 'liked' ? <AiOutlineLike/>: <RiPlayListLine/>
    const [see,setSee] = useState(false);
    const toggleSee = ()=>{
          setSee(!see);
    }
 
+   const [items , setItems] = useState<any>([]);
+   const [loading,setLoading] = useState(true);
+
+   const getDetails = async()=>{
+    const results = await fetch(`/api/library/${id}`,{
+      next : {revalidate : 300}
+    })
+
+    if(results.status !== 404 && results.status != 500){
+      const {data} = await results.json();
+      setItems(data);
+      setLoading(false);
+    }
+  }
+
+useEffect(()=>{
+    getDetails()
+},[])
+
    return <>
-    <motion.div layout transition={{duration : 0.5}}>
+    <motion.div layout transition={{duration : 0.5}} className="min-h-max">
         {loading ? 
-        <motion.div layout transition={{duration : 0.5}} className='mb-5 mx-2 md:mx-0 flex justify-between'>
+        <motion.div layout transition={{duration : 0.5}} className='mb-5 mx-2 flex justify-between'>
         <SekeltonText height={'min-h-[2rem]'} width={'w-[20%]'} className="min-w-[12rem]" />
         <SekeltonText height={'min-h-[2.5rem]'} width={'w-[6%]'} className="!rounded-full min-w-[4rem]" /> 
         </motion.div> :
@@ -80,50 +120,67 @@ const VideoSection = ({id} : any)=>{
     </motion.div>
      }
 
-     <motion.div layout transition={{duration : 0.5}} className="flex w-full justify-center flex-wrap">
-      <VideoCard index={0} />
-      <VideoCard index={1} />
-      <VideoCard index={2} />
-      <VideoCard index={3} />
-      {see && 
-      <>
-      <VideoCard index={4} />
-      <VideoCard index={5} />
-      <VideoCard index={6} />
-      <VideoCard index={7} />
-      <VideoCard index={8} />
-      <VideoCard index={9} />
-      <VideoCard index={10} />
-      <VideoCard index={11} />
-      </>
+     <motion.div layout transition={{duration : 0.5}} className={`flex w-screen md:w-full md:overflow-x-auto ${see && 'justify-evenly flex-wrap'} overflow-x-scroll md:justify-evenly md:flex-wrap`}>
+      
+      { id !== 'playlists' ? 
+        items?.map((item : any , index : any)=>{
+          return <>
+          {see ? <VideoCard key={index} item={item} /> : index < 5 ? <VideoCard key={index} item={item} id={id} /> : <></> }
+          </>
+        }
+        ) :
+        items?.map((item : any , index : any)=>{
+          return <PlaylistCard key={index} item={item} />
+        })
       }
    
      </motion.div>
+
+     <motion.hr className="my-4 border-none h-[0.07px] bg-[#5e5e5e36]" />
 
      </motion.div>
     
     </>
 }
 
-const VideoCard = ({index} : any)=>{
+const VideoCard = ({item,id}:any)=>{
+  
   const {isLarge} = useContext(isLargeContext) as any;
-  const title = 'lkjadfkj kajdsfh; jads; jksad; fjkhadspdiufhlkadsjhflkahdsfiuasdflkjnkj'
-  const channelName = 'akdjf hlakjdf lkajfd  lkjha sdfkj'
-  const views = 61234324;
-  const date = Date.now();
-
   return <>
 
-<motion.div layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className="flex flex-col md:mx-[0.1rem] my-2 md:max-w-[13rem] min-w-4 w-full">
-        <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
-        <Link href={`/channel/${channelName}/${title}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-            <Image className='md:rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={videoImg} layout='fill' alt='videocardImg' />
+<motion.div layout transition={{duration : 0.5}} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
+        <motion.div layout transition={{duration : 0.5}} className="relative w-full pt-[56.25%] overflow-hidden">
+        <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+            <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
         </Link>
         </motion.div>
         <motion.div layout transition={{duration : 0.5}} className="mt-2 pr-6">
-            <Link href={`/channel/${channelName}/${title}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{title}</Link>
-            <Link href={`/channel/${channelName}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{channelName}</Link>
-            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {CountConverter(views)} views &bull; {DateConverter(date)} ago</motion.div>
+            <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title}</Link>
+            <Link href={`/channel/${item?.snippet?.channelId}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link>
+            {id == 'history' ? 
+            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {DateConverter(item?.snippet?.publishedAt)} ago</motion.div> :
+            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {CountConverter(item?.statistics?.viewCount)} views &bull; {DateConverter(item?.snippet?.publishedAt)} ago</motion.div>
+            }
+        </motion.div>
+    </motion.div>
+
+  </>
+}
+
+const PlaylistCard = ({item}:any)=>{
+  const {isLarge} = useContext(isLargeContext) as any;
+  return <>
+
+<motion.div layout transition={{duration : 0.5}} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
+        <motion.div layout transition={{duration : 0.5}} className="relative w-full h-full pt-[56.25%] overflow-hidden">
+        <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+            <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+        </Link>
+        </motion.div>
+        <motion.div layout transition={{duration : 0.5}} className="mt-2 pr-6">
+            <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title}</Link>
+            <Link href={`/channel/${item?.snippet?.channelId}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link>
+            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {item?.contentDetails?.itemCount} Items &bull; {DateConverter(item?.snippet?.publishedAt)} ago</motion.div>
         </motion.div>
     </motion.div>
 

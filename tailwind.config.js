@@ -19,6 +19,7 @@ module.exports = {
         'faint10Black' : 'rgba(0, 0, 0, 0.1)',
         'black' : '#0f0f0f',
         'white' : '#f1f1f1',
+        'grey' : '#b2aca2',
         'skeleton' :'#b8b8b8',
         'skeletonDark' : '#202324'
       },
