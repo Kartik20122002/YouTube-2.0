@@ -125,7 +125,7 @@ useEffect(()=>{
       { id !== 'playlists' ? 
         items?.map((item : any , index : any)=>{
           return <>
-          {see ? <VideoCard key={index} item={item} id={id} /> : index < 5 ? <VideoCard key={index} item={item} id={id} /> : <></> }
+          {see ? <VideoCard key={index} item={item} /> : index < 5 ? <VideoCard key={index} item={item} /> : <></> }
           </>
         }
         ) :
@@ -143,7 +143,7 @@ useEffect(()=>{
     </>
 }
 
-const VideoCard = ({item,id}:any)=>{
+const VideoCard = ({item}:any)=>{
   
   return <>
 
@@ -156,9 +156,9 @@ const VideoCard = ({item,id}:any)=>{
         <motion.div layout transition={{duration : 0.5}} className="mt-2 pr-6">
             <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title}</Link>
             <Link href={`/channel/${item?.snippet?.channelId}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link>
-            {id === 'history' ? 
-            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {DateConverter(item?.snippet?.publishedAt)} ago</motion.div> :
-            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {CountConverter(item?.statistics?.viewCount)} views &bull; {DateConverter(item?.snippet?.publishedAt)} ago</motion.div>
+            {item?.statistics?.viewCount ? 
+            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {CountConverter(item?.statistics?.viewCount)} views &bull; {DateConverter(item?.snippet?.publishedAt)} ago</motion.div>:
+            <motion.div layout transition={{duration : 0.5}} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {DateConverter(item?.snippet?.publishedAt)} ago</motion.div> 
             }
         </motion.div>
     </motion.div>
