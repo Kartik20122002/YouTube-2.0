@@ -63,7 +63,10 @@ useEffect(()=>{
               <Image width={80} height={80} className="rounded-full bg-grey" alt="userImg" src={info?.snippet?.thumbnails?.medium?.url || img} />
               }
             </motion.div>
+            { loading ? 
+              <SekeltonText /> :  
             <motion.div layout transition={{duration : 0.5}} className="font-[500]">{info?.snippet?.title}</motion.div>
+            }
            </motion.div>
            <motion.div layout transition={{duration : 0.5}} className="my-7 w-full px-6">
             <motion.hr className="mb-[0.6rem] border-none h-[0.07px] bg-[#5e5e5e36]"/>
