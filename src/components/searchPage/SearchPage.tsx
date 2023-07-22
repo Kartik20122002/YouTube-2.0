@@ -54,7 +54,7 @@ const SearchPage = ({query}:any)=>{
 
 const VideoCard = ({item} : any)=>{
     return <>
-    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.kind?.videoId}`} className="md:w-[90%] md:max-w-[1200px] mx-auto mb-4 dark:text-white flex flex-col md:flex-row w-full">
+    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="md:w-[90%] md:max-w-[1200px] mx-auto mb-4 dark:text-white flex flex-col md:flex-row w-full">
         <div  className="basis-[25%] shrink-0 md:min-w-[200px] grow">
         <div className="w-full h-full relative overflow-hidden pt-[56.25%]">
             <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey md:rounded-lg !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" layout="fill" alt="videoImg" loading="lazy" />
@@ -72,7 +72,7 @@ const VideoCard = ({item} : any)=>{
 
 const PlaylistCard = ({item}:any)=>{
     return <>
-    <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id?.kind?.playlistId}`} className="md:w-[90%] md:max-w-[1200px] mx-auto mb-4 dark:text-white flex flex-col md:flex-row w-full">
+    <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id?.playlistId}`} className="md:w-[90%] md:max-w-[1200px] mx-auto mb-4 dark:text-white flex flex-col md:flex-row w-full">
         <div  className="basis-[25%] shrink-0 relative md:min-w-[200px] grow">
         <div className="absolute bottom-0 w-full h-fit z-10">
             <div className="bg-[#7a7979a1] relative mt-auto md:rounded-b-lg px-1 py-1">
