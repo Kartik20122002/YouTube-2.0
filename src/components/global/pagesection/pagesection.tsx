@@ -95,7 +95,7 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 
     return <>
 
-<motion.div whileHover={{ scale: 1.1, transition: { duration: 0.5 ,delay : 3 }}} layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className= {`px-0  md:h-[18rem] w-full md:w-[22rem] items-center mb-7 flex flex-col justify-between`}>
+<motion.div whileHover={{ scale: 1.1, transition: { duration: 0.5 ,delay : 3 }}} layout transition={{duration : 0.5 , delay : !isLarge ? (index%10)/10 : 0}} className= {`px-0 md:h-[18rem] w-full md:w-[22rem] items-center mb-7 flex flex-col justify-between`}>
 
   <Link className={`relative md:h-[12.5rem] w-full`} href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>
 

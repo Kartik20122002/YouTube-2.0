@@ -66,7 +66,7 @@ export default function RootLayout({
         <Header isLarge={isLarge} change={toggle}/>
         <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage}/>
         <motion.div layout transition={{duration : 0.5}}>
-        <motion.div layout transition={{duration : 0.5}} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-20 fixed h-full `}>
+        <motion.div layout transition={{duration : 0.5}} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-12 fixed h-full `}>
         {children}
         </motion.div>
         </motion.div>
