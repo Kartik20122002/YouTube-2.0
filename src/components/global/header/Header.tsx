@@ -70,7 +70,7 @@ const Header = ({change } : any)=>{
     return (
         <div ref={wrapperRef}>
     
-    <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-fit justify-between fixed top-0 z-10">
+    <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-[10vh] justify-between fixed top-0 z-10">
     
     <div className={`basis-[25%] h-full ${search ? 'hidden' : 'flex'} md:flex items-center justify-evenly`}>
 

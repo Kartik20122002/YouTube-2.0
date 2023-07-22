@@ -87,7 +87,7 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
 
     return <motion.div layout transition={{duration : 0.5}}>
 
-<motion.div layout transition={{duration : 0.5}} className ={`${ isLarge ? 'w-[15%]' : IsVideoPage ? 'w-0' :'w-[6%]'} fixed overflow-hidden hidden md:block top-0 h-screen pt-24 z-[9] opacity-100 bg-white dark:bg-black`}>
+<motion.div layout transition={{duration : 0.5}} className ={`${ isLarge ? 'w-[15%]' : IsVideoPage ? 'w-0' :'w-[6%]'} fixed overflow-hidden hidden md:block top-0 h-screen pt-[10vh] z-[9] opacity-100 bg-white dark:bg-black`}>
 
   <motion.div layout transition={{duration : 0.5}} className="w-full h-full pb-10 overflow-y-auto">
 
