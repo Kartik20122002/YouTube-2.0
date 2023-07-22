@@ -72,7 +72,7 @@ const Header = ({change } : any)=>{
     
     <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-fit justify-between fixed top-0 z-10">
     
-    <div className={`basis-[20%] h-full ${search ? 'hidden' : 'flex'} md:flex items-center justify-evenly`}>
+    <div className={`basis-[25%] h-full ${search ? 'hidden' : 'flex'} md:flex items-center justify-evenly`}>
 
        <AiOutlineMenu onClick={()=>{change()}} className="text-[25px] dark:bg-black dark:text-white opacity-60 hidden md:block cursor-pointer font-thin" />
 
@@ -83,7 +83,7 @@ const Header = ({change } : any)=>{
     </div>
 
 
-    <div className={`nav-middle hidden h-full basis-[50%] grow md:max-w-[600px] md:flex items-center`}>
+    <div className={`hidden h-full basis-[70%] grow md:max-w-[600px] md:flex items-center`}>
 
             <form onSubmit={(e)=>searchOps(e)} className="border-2 dark:border-[#353535] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
 
@@ -100,7 +100,7 @@ const Header = ({change } : any)=>{
             </form>
     </div>
 
-    <div className={`dark:text-white flex ${search ? 'hidden' : 'flex'} justify-end md:hidden grow basis-[70%]`}><AiOutlineSearch onClick={()=>toggle()} className="text-2xl cursor-pointer mr-6 font-black"/></div>
+    <div className={`dark:text-white flex ${search ? 'hidden' : 'flex'} justify-end md:hidden grow basis-[50%]`}><AiOutlineSearch onClick={()=>toggle()} className="text-2xl cursor-pointer mr-6 font-black"/></div>
 
     <div className={`nav-right ${search ? 'hidden' : 'flex'} md:flex basis-[10%] h-full justify-center items-center`}>
         
