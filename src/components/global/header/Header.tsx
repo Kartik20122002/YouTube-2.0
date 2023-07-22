@@ -100,7 +100,7 @@ const Header = ({change } : any)=>{
             </form>
     </div>
 
-    <button onClick={()=>toggle()} className={`dark:text-white flex ${search ? 'hidden' : 'flex'} justify-end md:hidden grow basis-[70%]`}><AiOutlineSearch className="text-2xl mr-6 font-black"/></button>
+    <div className={`dark:text-white flex ${search ? 'hidden' : 'flex'} justify-end md:hidden grow basis-[70%]`}><AiOutlineSearch onClick={()=>toggle()} className="text-2xl cursor-pointer mr-6 font-black"/></div>
 
     <div className={`nav-right ${search ? 'hidden' : 'flex'} md:flex basis-[10%] h-full justify-center items-center`}>
         
