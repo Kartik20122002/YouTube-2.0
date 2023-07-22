@@ -22,7 +22,7 @@ export default function Home() {
           {status == 'loading' ?
               <Loader/> :
               <motion.div layout transition={{duration : 0.5}}>
-              <PageSection page={'popular'}/>
+              {/* <PageSection page={'popular'}/> */}
               </motion.div>
           }
     </>
