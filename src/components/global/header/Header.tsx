@@ -2,9 +2,9 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import React, {  useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import {FaYoutube , FaMagnifyingGlass} from 'react-icons/fa6';
-import { AiFillLike } from "react-icons/ai";
-import { MdLibraryAdd } from 'react-icons/md';
+import { FaMagnifyingGlass} from 'react-icons/fa6';
+import { AiFillLike, AiOutlineSearch } from "react-icons/ai";
+import { MdKeyboardBackspace, MdLibraryAdd } from 'react-icons/md';
 import { AiOutlineMenu , AiOutlineLogout } from 'react-icons/ai'
 import { useRouter } from "next/navigation";
 
@@ -31,7 +31,7 @@ const Header = ({change } : any)=>{
 
     const {status , data : session } = useSession();
     const [usermenu , setUsermenu] = useState(false);
-    const [search , setSearch] = useState(false);
+    const [search , setSearch] = useState(true);
     const [profileUrl , setProfileUrl] = useState<any>('/images/user.png');
 
     const userBtn = ()=>{
@@ -61,12 +61,17 @@ const Header = ({change } : any)=>{
       }, [ref]);
     }
 
+    const toggle = ()=>{
+      setSearch(!search);
+    }
+
     const wrapperRef = useRef(null);
     useOutsideAlerter(wrapperRef);
     return (
         <div ref={wrapperRef}>
-        <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-fit justify-between fixed top-0 z-10">
-
+    
+    <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-fit justify-between fixed top-0 z-10">
+    { !search ? <>
     <div className="basis-[15%] h-full flex items-center justify-evenly">
 
        <AiOutlineMenu onClick={()=>{change()}} className="text-[25px] dark:bg-black dark:text-white opacity-60 hidden md:block cursor-pointer font-thin" />
@@ -78,7 +83,7 @@ const Header = ({change } : any)=>{
     </div>
 
 
-    <div className="nav-middle bg-[rd] h-full basis-[70%] grow md:max-w-[600px] flex items-center">
+    <div className="nav-middle bg-[rd] hidden h-full basis-[70%] grow md:max-w-[600px] md:flex items-center">
 
             <form onSubmit={(e)=>searchOps(e)} className="border-2 dark:border-[#353535] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
 
@@ -95,12 +100,13 @@ const Header = ({change } : any)=>{
             </form>
     </div>
 
+    <button onClick={()=>toggle()} className="dark:text-white flex justify-end md:hidden grow basis-[70%]"><AiOutlineSearch className="text-2xl mr-6 font-black"/></button>
 
-    <div className="nav-right basis-[10%] h-full flex justify-center items-center">
+    <div className="nav-right basis-[10%] h-full justify-center items-center ">
         
-        <motion.div transition={{layout:{duration : 1 }}} layout className="usermenu h-full relative">
+        <motion.div transition={{layout:{duration : 1 }}} layout className="w-full  h-full relative">
 
-          <button id="usermenu" aria-label='usermenu' className="flex h-full" onClick={()=>{userBtn()}}>
+          <button id="usermenu" aria-label='usermenu' className="flex h-full w-full justify-center items-center" onClick={()=>{userBtn()}}>
             {status == 'authenticated' ?
             <Image src={profileUrl} alt="user" width={35} height={35} className="mr-0 bg-white rounded-full" />
             :
@@ -145,8 +151,19 @@ const Header = ({change } : any)=>{
         </motion.div>
        
     </div>
-    {/*  visible : top 60px mt 0px */}
+    </> :
+    
+    <div className=" dark:text-white mt-2 flex justify-evenly basis-full">
+      <button onClick={()=>toggle()} className="basis-[10%]"><MdKeyboardBackspace className="text-2xl"/></button>
+      <form onSubmit={(e)=>searchOps(e)} className=" basis-[85%] ">
 
+            <div className="basis-full h-full rounded-full">
+              <input required type="text" className="px-[12px] py-2 w-full h-full rounded-full border-2 dark:border-[#353535] outline-0 dark:bg-black dark:text-white" placeholder="Search" value={searchquery} onChange={(e)=>setSearchQuery(e.target.value)} />
+            </div>
+
+            </form>
+    </div> 
+    }
    
 </nav>
 
