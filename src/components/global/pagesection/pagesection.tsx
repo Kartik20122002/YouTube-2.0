@@ -43,40 +43,11 @@ const PageSection = ({page} : any)=>{
       }
      
      }
-
-     const fun = async () =>{
-      let channelIds = [] as any;
-      items?.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
-      const channelsImgRes = await fetch(`/api/channels_for_page`,{
-        method : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body : JSON.stringify(channelIds),
-        cache :'force-cache'
-      });
-      const channelsImgData = await channelsImgRes.json();
-
-      for(let i = 0 ; i < items?.length ; i++){
-        for(let j = 0 ; j < channelsImgData?.length ; j++){
-          if(items[i]?.snippet?.channelTitle == channelsImgData[j]?.snippet?.title){
-            const newArray = imgs;
-            newArray[i] = channelsImgData[j]?.snippet?.thumbnails?.default?.url;
-            setImgs(newArray);
-          }
-        }
-      } 
-    }
+ 
 
      useEffect(()=>{
       fetchData();
      },[])
-
-     useEffect(()=>{
-        if(items?.length !== 0){
-          fun();
-        }
-     },[items])
 
     return loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
@@ -89,6 +60,36 @@ const PageSection = ({page} : any)=>{
 }
 
 const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
+
+  const [img,setImg] = useState<any>('');
+
+  const fun = async () =>{
+  
+    try{
+      const res = await fetch(`/api/channels_for_page`,{
+        method : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body : JSON.stringify(item?.snippet.channelId),
+        cache :'force-cache'
+      });
+  
+      if(res.status != 400 && res.status != 500){
+        const {data} =  await res.json();
+         const imgUrl = data?.snippet?.thumbnails?.default?.url;
+         setImg(imgUrl);
+      }
+
+    } catch(error){
+      console.log(error);
+    }
+
+  }
+
+  useEffect(()=>{
+    fun();
+  },[]);
 
   const views = CountConverter(item?.statistics?.viewCount);
   const time = DateConverter(item?.snippet?.publishedAt);
@@ -108,8 +109,8 @@ const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
 <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
     <Link href={`/channel/${item?.snippet?.channelId}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
-    { imgs[index] ?
-    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={imgs[index]} loading="lazy" alt="channelImg" /> 
+    { img !== '' ?
+    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={img} loading="lazy" alt="channelImg" /> 
     : 
     <ImgSkeleton className="w-[40px] h-[40px] rounded-full"/>
     }

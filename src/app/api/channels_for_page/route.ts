@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(req : NextRequest ) {
   const body = await req.text();
-  const ids = JSON.parse(body);
+  const id = JSON.parse(body);
 
   try{
 
@@ -34,13 +34,15 @@ else{
 
 let results = await youtube.channels.list({
     part : ['snippet'],
-    id : ids,
+    id : id,
 });
 
     if(results.status !== 200) 
-    return NextResponse.json([])
-    
-    return  NextResponse.json(results.data.items);
+    return NextResponse.json([]);
+
+    const data = results?.data?.items[0];
+
+    return  NextResponse.json({data});
 
 }
 catch(err){
