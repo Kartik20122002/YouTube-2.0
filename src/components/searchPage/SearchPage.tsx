@@ -7,9 +7,6 @@ import { useContext, useEffect, useState } from "react";
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { pageContext } from "@/app/layout";
 
-const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
-const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
-
 const SearchPage = ({query}:any)=>{
     const {setpage} = useContext(pageContext) as any;
     setpage(false);
@@ -45,9 +42,9 @@ const SearchPage = ({query}:any)=>{
         <SkeletonCard/>
         </> : 
         items?.map((item : any , index : any)=>{
-            if(item?.id?.kind === "youtube#video") return <VideoCard item={item} />
-            if(item?.id?.kind === "youtube#playlist") return <PlaylistCard item={item} />
-            if(item?.id?.kind === "youtube#channel") return <ChannelCard item={item} />
+            if(item?.id?.kind === "youtube#video") return <VideoCard key={index} item={item} />
+            if(item?.id?.kind === "youtube#playlist") return <PlaylistCard key={index} item={item} />
+            if(item?.id?.kind === "youtube#channel") return <ChannelCard key={index} item={item} />
         })
         }
      </div>
