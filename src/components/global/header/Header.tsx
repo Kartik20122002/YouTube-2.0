@@ -72,9 +72,9 @@ const Header = ({change } : any)=>{
     
     <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-[10vh] justify-between fixed top-0 z-10">
     
-    <div className={`basis-[25%] h-full ${search ? 'hidden' : 'flex'} md:flex items-center justify-evenly`}>
+    <div className={`basis-[25%] h-full ${search ? 'hidden' : 'flex'} md:flex items-center`}>
 
-       <AiOutlineMenu onClick={()=>{change()}} className="text-[25px] dark:bg-black dark:text-white opacity-60 hidden md:block cursor-pointer font-thin" />
+       <AiOutlineMenu onClick={()=>{change()}} className="text-[25px] dark:bg-black mx-4 dark:text-white opacity-60 hidden md:block cursor-pointer font-[10]" />
 
        <Link href="/"  className="w-full md:w-[105px] block"> 
        <Image src={logo} className="dark:brightness-[6]" loading="lazy" layout="responsive" alt="logo" />
