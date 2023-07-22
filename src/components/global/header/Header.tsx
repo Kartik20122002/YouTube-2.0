@@ -31,7 +31,7 @@ const Header = ({change } : any)=>{
 
     const {status , data : session } = useSession();
     const [usermenu , setUsermenu] = useState(false);
-    const [search , setSearch] = useState(true);
+    const [search , setSearch] = useState(false);
     const [profileUrl , setProfileUrl] = useState<any>('/images/user.png');
 
     const userBtn = ()=>{
@@ -71,8 +71,8 @@ const Header = ({change } : any)=>{
         <div ref={wrapperRef}>
     
     <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-fit justify-between fixed top-0 z-10">
-    { !search ? <>
-    <div className="basis-[15%] h-full flex items-center justify-evenly">
+    
+    <div className={`basis-[20%] h-full ${search ? 'hidden' : 'flex'} md:flex items-center justify-evenly`}>
 
        <AiOutlineMenu onClick={()=>{change()}} className="text-[25px] dark:bg-black dark:text-white opacity-60 hidden md:block cursor-pointer font-thin" />
 
@@ -83,7 +83,7 @@ const Header = ({change } : any)=>{
     </div>
 
 
-    <div className="nav-middle bg-[rd] hidden h-full basis-[70%] grow md:max-w-[600px] md:flex items-center">
+    <div className={`nav-middle hidden h-full basis-[50%] grow md:max-w-[600px] md:flex items-center`}>
 
             <form onSubmit={(e)=>searchOps(e)} className="border-2 dark:border-[#353535] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
 
@@ -100,11 +100,11 @@ const Header = ({change } : any)=>{
             </form>
     </div>
 
-    <button onClick={()=>toggle()} className="dark:text-white flex justify-end md:hidden grow basis-[70%]"><AiOutlineSearch className="text-2xl mr-6 font-black"/></button>
+    <button onClick={()=>toggle()} className={`dark:text-white flex ${search ? 'hidden' : 'flex'} justify-end md:hidden grow basis-[70%]`}><AiOutlineSearch className="text-2xl mr-6 font-black"/></button>
 
-    <div className="nav-right basis-[10%] h-full justify-center items-center ">
+    <div className={`nav-right ${search ? 'hidden' : 'flex'} md:flex basis-[10%] h-full justify-center items-center`}>
         
-        <motion.div transition={{layout:{duration : 1 }}} layout className="w-full  h-full relative">
+        <div className="w-full h-full relative">
 
           <button id="usermenu" aria-label='usermenu' className="flex h-full w-full justify-center items-center" onClick={()=>{userBtn()}}>
             {status == 'authenticated' ?
@@ -117,7 +117,7 @@ const Header = ({change } : any)=>{
            {
             usermenu &&
 
-          <motion.div initial={{opacity : 0}} animate={{opacity:1}} className={`user-actions text-black absolute shadow-lg translate-x-[-100%] w-max min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] dark:shadow-[rgb(255,255,255,0.1)]`}> 
+          <div className={`user-actions text-black absolute shadow-lg translate-x-[-80%] w-max min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] dark:shadow-[rgb(255,255,255,0.1)]`}> 
 
            <Link href="/likepage" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]"> 
            <div className="w-[1.3rem] m-0 mr-[5%]">
@@ -144,16 +144,16 @@ const Header = ({change } : any)=>{
              LogOut
            </button>
 
-          </motion.div>
+          </div>
            }
 
 
-        </motion.div>
+        </div>
        
     </div>
-    </> :
     
-    <div className=" dark:text-white mt-2 flex justify-evenly basis-full">
+    
+    <div className={`dark:text-white mt-2  ${!search ? 'hidden' : 'flex'} flex md:hidden justify-evenly basis-full`}>
       <button onClick={()=>toggle()} className="basis-[10%]"><MdKeyboardBackspace className="text-2xl"/></button>
       <form onSubmit={(e)=>searchOps(e)} className=" basis-[85%] ">
 
@@ -163,7 +163,7 @@ const Header = ({change } : any)=>{
 
             </form>
     </div> 
-    }
+    
    
 </nav>
 
