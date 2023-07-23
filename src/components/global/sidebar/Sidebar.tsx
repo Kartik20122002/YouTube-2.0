@@ -140,7 +140,7 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
           <>
         <motion.button onClick={()=>{setShow(!show)}} className={`w-full dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)] flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col-reverse mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}> 
         <motion.div layout transition={{duration : 0.5}} > <AiOutlineDown/> </motion.div> 
-        <motion.div layout transition={{duration : 0.5}} className={ isLarge ? 'ml-5' :'mt-1 text-center text-xs' }>Show More</motion.div> 
+        <motion.div layout transition={{duration : 0.5}} className={ isLarge ? 'ml-5' :'mt-1 text-center text-xs' }>Show {show ? 'Less' : 'More'}</motion.div> 
         </motion.button>
          
         { 
