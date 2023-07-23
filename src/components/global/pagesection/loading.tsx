@@ -9,10 +9,10 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export const VideoContainerSkeleton = ()=>{
 
   return <>
-  <motion.div layout transition={{duration : 0.5}} className= {`px-0 md:h-[18rem] w-full md:w-[22rem] items-center mb-4 flex flex-col justify-evenly cursor-pointer`}>
+  <motion.div layout transition={{duration : 0.5}} className= {`px-0 w-full md:w-[19rem] items-center mb-4 flex flex-col justify-evenly cursor-pointer`}>
 
-        <motion.div className={`flex pt-[56.25%] md:h-[12.5rem] h-full w-full relative md:rounded-md`} layout transition={{duration : 0.5}}>
-          <SkeletonImg className="md:rounded-lg absolute top-0 right-0 h-full w-full"/>
+        <motion.div className={`flex pt-[56.25%] h-full w-full relative md:rounded-md`} layout transition={{duration : 0.5}}>
+          <SkeletonImg className="md:rounded-xl absolute top-0 right-0 h-full w-full"/>
         </motion.div>
 
       <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start items-center mt-3`}>
