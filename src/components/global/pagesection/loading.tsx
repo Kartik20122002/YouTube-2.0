@@ -7,7 +7,7 @@ import SkeletonTxt from '@/components/global/skeletonComponents/TextSkeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 
 export const VideoContainerSkeleton = ()=>{
-
+  const {isLarge , setIsLarge} = useContext(isLargeContext) as any;
   return <>
   <motion.div layout transition={{duration : 0.5}} className= {`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-4 flex flex-col justify-evenly cursor-pointer`}>
 
