@@ -35,11 +35,7 @@ const SearchPage = ({query}:any)=>{
     return<>
      <div className="flex flex-col  overflow-y-scroll h-full pb-[3rem] w-full">
         {loading ? <>
-        <SkeletonCard/>
-        <SkeletonCard/>
-        <SkeletonCard/>
-        <SkeletonCard/>
-        <SkeletonCard/>
+        <SkeletonCard/> <SkeletonCard/> <SkeletonCard/> <SkeletonCard/> <SkeletonCard/>
         </> : 
         items?.map((item : any , index : any)=>{
             if(item?.id?.kind === "youtube#video") return <VideoCard key={index} item={item} />

@@ -50,7 +50,7 @@ const PageSection = ({page} : any)=>{
      },[])
 
     return loading ? <PageSkeleton/> : 
-         <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[100vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
+         <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[95vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
           <div className="flex flex-wrap justify-evenly w-full">
            {items?.map((item : any , index : any)=>{
              return <VideoContainer index={index} imgs={imgs} key={index} isLarge={isLarge} item={item} />

@@ -16,6 +16,7 @@ export const slideContext = createContext(-1);
 export const pageContext = createContext();
 
 import { Roboto } from 'next/font/google'
+import BottomBar from '@/components/global/bottombar/BottomBar'
  
 const roboto = Roboto({
   weight: '400',
@@ -66,11 +67,11 @@ export default function RootLayout({
         <Header isLarge={isLarge} change={toggle}/>
         <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage}/>
         <motion.div layout transition={{duration : 0.5}}>
-        <motion.div layout transition={{duration : 0.5}} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-[10vh] fixed h-full `}>
+        <motion.div layout transition={{duration : 0.5}} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} w-full pt-[10vh] pb-[10vh] fixed h-[90vh] `}>
         {children}
         </motion.div>
         </motion.div>
-
+        <BottomBar />
         </slideContext.Provider>
         </pageContext.Provider>
         </isLargeContext.Provider>
