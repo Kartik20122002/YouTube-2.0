@@ -25,7 +25,7 @@ export const VideoContainerSkeleton = ()=>{
                 <SkeletonTxt/>
                 <SkeletonTxt/>
                 <SkeletonTxt width={'w-1/2'}/>
-                <div className="text-[#5a5a5a] flex"> <SkeletonTxt width={'w-[25%]'} className={`mr-1 rounded-lg h-2`}/> &bull;  <SkeletonTxt width={'w-[25%]'} className={`ml-1 rounded-lg h-2`}/></div>
+                <motion.div layout transition={{duration : 0.5}} className="text-[#5a5a5a] flex"> <SkeletonTxt width={'w-[25%]'} className={`mr-1 rounded-lg h-2`}/> &bull;  <SkeletonTxt width={'w-[25%]'} className={`ml-1 rounded-lg h-2`}/></motion.div>
             </motion.div>
 
       </motion.div>
