@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
 import Image from 'next/legacy/image';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Sekelton from '../global/skeletonComponents/TextSkeleton';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import {motion} from 'framer-motion'
@@ -102,6 +102,7 @@ const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
 const VideoInfo = ({status ,id , channelId, video,channel,loading} : any)=>{
     const [rate,setRate] = useState<any>(0)
     const [sub,setSub] = useState<any>(false);
+    const [subId,setSubId] = useState<any>('');
 
 const getAuthDetails = async ()=>{
     try{
@@ -119,8 +120,41 @@ const getAuthDetails = async ()=>{
             if(rating[0].rating == 'none') setRate(0);
             if(rating[0].rating == 'like') setRate(1);
             if(rating[0].rating == 'dislike') setRate(-1);
-            if(subscription.length > 0) setSub(true);
+            if(subscription.length > 0){
+             setSub(true);
+             const id = subscription[0]?.id;
+             if(id) setSubId(id);
+            }
         }
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+const subscribe = async ()=>{
+    try{
+        const res = await fetch(`/api/subscribe`,{
+            method : 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({id : channelId , subId : subId , toSub : !sub}),
+            next : {revalidate : 300}
+          })
+
+          if(res.status === 200){ 
+            if(sub){
+                const {flag,data} = await res.json();
+                if(flag) setSub(false);
+            }
+            else{
+                const {flag , data } = await res.json();
+                setSubId(data);
+                if(flag) setSub(true)
+            }
+          }
+        
     }
     catch(err){
         console.log(err);
@@ -134,7 +168,10 @@ useEffect(()=>{
 },[status])
 
     const toggleSub = ()=>{
-        setSub(!sub);
+        if(status=='authenticated'){
+            subscribe();
+        }
+        else signIn();
     }
 
     const likes = CountConverter(video?.statistics?.likeCount || 0);

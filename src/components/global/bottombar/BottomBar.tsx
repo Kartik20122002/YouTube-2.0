@@ -34,7 +34,7 @@ const BottomBar = ()=>{
         <div className="w-full flex">
             {links?.map((link : any,index : any)=>{
                 return <>
-                <Link key={index} onClick={()=>setslide(index)} href={link.link} className="flex flex-col basis-auto justify-center items-center grow dark:text-white">
+                <Link key={link.name} onClick={()=>setslide(index)} href={link.link} className="flex flex-col basis-auto justify-center items-center grow dark:text-white">
                     { slide === index ? link.icon1 : link.icon2}
                     <div className="title text-[0.6rem]">{link.name}</div>
                 </Link>
