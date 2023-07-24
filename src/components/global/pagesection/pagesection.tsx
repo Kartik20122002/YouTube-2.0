@@ -42,12 +42,12 @@ const PageSection = ({page} : any)=>{
 
     const fetchData = async ()=>{
       try{
-        const res = await fetch(`/api/page/${page}/${token}`,{
+        const res = await fetch(`/api/page/${page}`,{
           method : 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body : JSON.stringify({filters[filter]}),
+          body : JSON.stringify({filter}),
           next : {revalidate : 300}
       });
 
@@ -69,16 +69,16 @@ const PageSection = ({page} : any)=>{
  
 
      useEffect(()=>{
+      setLoading(true);
       fetchData();
-      console.log('filter changed')
      },[filter])
 
     return <>
     {page == 'popular' && 
     <div className="w-full flex dark:text-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
       {
-        filters?.map((item : any , index : any)=>{
-          return <div key={index} onClick={()=>setFilter(index)} className={`${filter === index ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-max rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</div>
+        filters?.map((item : any)=>{
+          return <div key={item.id} onClick={()=>setFilter(item.id)} className={`${filter === item.id ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-max rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</div>
         })
       }
     </div>

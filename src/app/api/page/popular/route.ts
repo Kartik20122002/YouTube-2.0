@@ -47,7 +47,7 @@ else{
       maxResults : 48,
       chart : 'mostPopular',
       regionCode : 'In',
-      videoCategoryId : filter.id, 
+      videoCategoryId : filter, 
       }
   }
 
