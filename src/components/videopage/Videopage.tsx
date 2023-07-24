@@ -103,6 +103,12 @@ const VideoInfo = ({status ,id , channelId, video,channel,loading} : any)=>{
     const [sub,setSub] = useState<any>(false);
     const [subId,setSubId] = useState<any>('');
 
+    const copyLink = async ()=>{
+        const link = window.location.href;
+        await navigator.clipboard.writeText(link);
+        alert('Link Copied Successfully');
+    }
+
 const getAuthDetails = async ()=>{
     try{
         const res = await fetch(`/api/video/auth/${id}`,{
@@ -266,7 +272,7 @@ useEffect(()=>{
 
     </motion.div>
 
-    <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</motion.button>
+    <motion.button onClick={()=>copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</motion.button>
     <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button>
     <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link>
     
@@ -344,7 +350,6 @@ const Description = ({loading , video} : any)=>{
     </motion.div>
  </>)
 }
-
 
 const CommentForm = ({img , channelId , id} : any)=>{
     const [comment,setComment] = useState<any>('');
