@@ -70,6 +70,7 @@ const PageSection = ({page} : any)=>{
 
      useEffect(()=>{
       fetchData();
+      console.log('filter changed')
      },[filter])
 
     return <>
