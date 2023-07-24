@@ -90,7 +90,7 @@ const PageSection = ({page} : any)=>{
     <div className="w-full flex dark:text-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
       {
         filters?.map((item : any , index : any)=>{
-          return <div key={index} onClick={()=>setFilter(index)} className={`${filter == index ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[#ffffff29]'} snap-start cursor-pointer min-w-max rounded-md px-2 py-1 mx-2`}>{item}</div>
+          return <div key={index} onClick={()=>setFilter(index)} className={`${filter == index ? 'bg-[#ffffff29]' : ''} snap-start cursor-pointer min-w-max rounded-md px-2 py-1 mx-2`}>{item}</div>
         })
       }
     </div>
