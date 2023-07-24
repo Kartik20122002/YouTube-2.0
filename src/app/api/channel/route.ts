@@ -55,8 +55,9 @@ const [results , subs] = await Promise.all([channelPromise,subPromise]);
 
   const channelDetails = results?.data?.items[0];
   const isSub = (subs?.data?.pageInfo?.totalResults > 0) ? true : false;
-  
-  return  NextResponse.json({channelDetails,isSub});
+  const subIdres = subs?.data?.items[0]?.id ;
+
+  return  NextResponse.json({channelDetails,isSub,subIdres});
 }
 else{
   const result = await channelPromise;
@@ -66,7 +67,7 @@ else{
   const channelDetails = result?.data?.items[0];
   const isSub = false;
 
-  return NextResponse.json({channelDetails,isSub});
+  return NextResponse.json({channelDetails,isSub,subIdres:''});
 }
 
 

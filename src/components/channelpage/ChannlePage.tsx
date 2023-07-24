@@ -9,6 +9,7 @@ import { CountConverter } from '@/utils/Functions/Converters/CountConverter';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
+import { signIn, useSession } from 'next-auth/react';
 
 export const revalidate = 300;
 
@@ -34,9 +35,46 @@ const ChannelPage = ({channelId} : any)=>{
 
 const ChannelInfo = ({id}:any)=>{
     const [sub,setSub] = useState<any>(false);
+    const [subId,setSubId] = useState('');
     const [channel , setChannel] = useState<any>({});
     const [loading,setLoading] = useState(true);
-    const toggleSub = ()=>{ setSub(!sub); }
+    const {status} = useSession();
+
+    const toggleSub = ()=>{
+        if(status=='authenticated'){
+            subscribe();
+        }
+        else signIn();
+    }
+
+    const subscribe = async ()=>{
+        try{
+            const res = await fetch(`/api/subscribe`,{
+                method : 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({id : id , subId : subId , toSub : !sub}),
+                next : {revalidate : 300}
+              })
+    
+              if(res.status === 200){ 
+                if(sub){
+                    const {flag,data} = await res.json();
+                    if(flag) setSub(false);
+                }
+                else{
+                    const {flag , data } = await res.json();
+                    setSubId(data);
+                    if(flag) setSub(true)
+                }
+              }
+            
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
 
     const getDetails = async()=>{
       const results = await fetch('/api/channel',{
@@ -49,8 +87,9 @@ const ChannelInfo = ({id}:any)=>{
       })
 
       if(results.status !== 404 && results.status != 500){
-        const {channelDetails,isSub} = await results.json();
+        const {channelDetails,isSub,subIdres} = await results.json();
         setSub(isSub);
+        if(subIdres) setSubId(subIdres)
         setChannel(channelDetails);
         setLoading(false);
       }
