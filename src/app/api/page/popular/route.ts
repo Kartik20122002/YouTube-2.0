@@ -7,8 +7,11 @@ import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 
-export async function GET(req : any ) {
+export async function POST(req : any ) {
 const cookieStore = cookies();
+
+const body = await req.text();
+  const {filter} = JSON.parse(body);
 
 try{
   
@@ -38,6 +41,7 @@ else{
   maxResults : 48,
   chart : 'mostPopular',
   regionCode : 'In',
+  videoCategoryId : filter !== 0 && filter 
   });
 
   if(results.status == 401){

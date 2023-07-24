@@ -7,9 +7,7 @@ import { signOut } from "next-auth/react";
 export const dynamic = 'force-dynamic'
 
 
-export async function GET(req : any) {
-
-  console.log('likepage fetched');
+export async function POST(req : any) {
 
   try{
   

@@ -43,8 +43,13 @@ const PageSection = ({page} : any)=>{
     const fetchData = async ()=>{
       try{
         const res = await fetch(`/api/page/${page}/${token}`,{
-          next: {revalidate : 300}
-        });
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body : JSON.stringify({filter}),
+          next : {revalidate : 300}
+      });
 
         if(res.status != 500 && res.status != 404){
           const {videos , ptoken , ntoken} = await res.json();
@@ -65,7 +70,7 @@ const PageSection = ({page} : any)=>{
 
      useEffect(()=>{
       fetchData();
-     },[])
+     },[filter])
 
     return <>
     {page == 'popular' && 
