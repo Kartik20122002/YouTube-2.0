@@ -162,7 +162,6 @@ const subscribe = async ()=>{
 }
 
 const rateit = async (torate : any)=>{
-    console.log('rating it as' , torate)
     try{
         const res = await fetch(`/api/rate`,{
             method : 'POST',
@@ -244,22 +243,27 @@ useEffect(()=>{
     
     <motion.div layout transition={{duration : 0.5}} className="flex h-10 items-center mr-3 md:mr-1 my-1">
 
-   <motion.div layout transition={{duration : 0.5}} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pr-2 pl-4 h-full rounded-l-full items-center'>
     {
         rate == 1 ?
-        <AiFillLike onClick={()=>toggleRate('none')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/> : 
-        <AiOutlineLike onClick={()=>toggleRate('like')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/> 
-    }
-    <span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</span>
+   <motion.div onClick={()=>toggleRate('none')} layout transition={{duration : 0.5}} className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#7776768a] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
+        <AiFillLike  className='text-[1.2rem] md:text-[1.5rem]'/> 
+        <span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</span>
+    </motion.div> :
+    <motion.div onClick={()=>toggleRate('like')} layout transition={{duration : 0.5}} className='flex dark:bg-[#6c6c6c57] border-r border-[#ffffff5b] cursor-pointer bg-[#cfcfcf24] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
+        <AiOutlineLike  className='text-[1.2rem] md:text-[1.5rem]'/> 
+       <span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</span>
     </motion.div>
+    }
 
-    <motion.div layout transition={{duration : 0.5}}  className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pl-2 pr-4  h-10 rounded-r-full items-center'>
     {
         rate == -1 ?
-        <AiFillDislike onClick={()=>toggleRate('none')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/> :
-        <AiOutlineDislike onClick={()=>toggleRate('dislike')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/>
-    }
+    <motion.div onClick={()=>toggleRate('none')} layout transition={{duration : 0.5}}  className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
+        <AiFillDislike className='text-[1.2rem] md:text-[1.5rem]'/> 
+    </motion.div> :
+        <motion.div onClick={()=>toggleRate('dislike')} layout transition={{duration : 0.5}}  className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
+        <AiOutlineDislike className='text-[1.2rem] md:text-[1.5rem]'/>
     </motion.div>
+    }
 
     </motion.div>
 
