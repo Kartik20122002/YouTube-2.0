@@ -103,10 +103,10 @@ const VideoInfo = ({status ,id , channelId, video,channel,loading} : any)=>{
     const [rate,setRate] = useState<any>(0)
     const [sub,setSub] = useState<any>(false);
     const [subId,setSubId] = useState<any>('');
+    const link = usePathname();
 
     const copyLink = async ()=>{
-        const link = usePathname();
-        await navigator.clipboard.writeText(link);
+        await navigator.clipboard.writeText(`https://youtubepro.vercel.app/${link}`);
         alert('Link Copied Successfully');
     }
 
