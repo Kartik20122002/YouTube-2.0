@@ -34,15 +34,24 @@ else{
 }
  oauth2client.apiKey = ytApi;
 }
+  let config = { 
+    part:['snippet','statistics'], 
+    maxResults : 48,
+    chart : 'mostPopular',
+    regionCode : 'In', 
+    } as any;
 
+  if(filter.id !== 0) {
+    config = { 
+      part:['snippet','statistics'], 
+      maxResults : 48,
+      chart : 'mostPopular',
+      regionCode : 'In',
+      videoCategoryId : filter.id, 
+      }
+  }
 
-  const results = await youtube.videos.list({ 
-  part:['snippet','statistics'], 
-  maxResults : 48,
-  chart : 'mostPopular',
-  regionCode : 'In',
-  videoCategoryId : filter !== 0 && filter 
-  });
+  const results = await youtube.videos.list(config);
 
   if(results.status == 401){
    signOut();

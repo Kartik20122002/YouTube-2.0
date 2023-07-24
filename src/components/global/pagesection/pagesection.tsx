@@ -47,7 +47,7 @@ const PageSection = ({page} : any)=>{
           headers: {
             'Content-Type': 'application/json',
           },
-          body : JSON.stringify({filter}),
+          body : JSON.stringify({filters[filter]}),
           next : {revalidate : 300}
       });
 
