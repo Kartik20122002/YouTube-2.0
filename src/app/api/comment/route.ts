@@ -44,7 +44,6 @@ else{
       }
   }) as any;
 
-  console.log(res);
   
   if(res.status === 200) {
   return NextResponse.json({flag : true , data : res?.data?.id});
