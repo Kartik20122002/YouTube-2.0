@@ -161,6 +161,33 @@ const subscribe = async ()=>{
     }
 }
 
+const rateit = async (torate : any)=>{
+    console.log('rating it as' , torate)
+    try{
+        const res = await fetch(`/api/rate`,{
+            method : 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({id : id ,  rating : torate}),
+            next : {revalidate : 300}
+          })
+
+          if(res.status === 200){ 
+                const {flag} = await res.json();
+                if(flag){
+                    if(torate == 'none') setRate(0);
+                    if(torate == 'like') setRate(1);
+                    if(torate == 'dislike') setRate(-1);
+                }
+          }
+        
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
 useEffect(()=>{
     if(status=='authenticated'){
        getAuthDetails();
@@ -174,7 +201,13 @@ useEffect(()=>{
         else signIn();
     }
 
-    const likes = CountConverter(video?.statistics?.likeCount || 0);
+    const toggleRate = (rating : any)=>{
+        if(status=='authenticated'){
+            rateit(rating);
+        }
+        else signIn();
+    }
+
     const subscribers = CountConverter(channel?.statistics?.subscriberCount || 0);
 
     return (<>
@@ -211,22 +244,22 @@ useEffect(()=>{
     
     <motion.div layout transition={{duration : 0.5}} className="flex h-10 items-center mr-3 md:mr-1 my-1">
 
-   <Link href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pr-2 pl-4 h-full rounded-l-full items-center'>
+   <motion.div layout transition={{duration : 0.5}} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pr-2 pl-4 h-full rounded-l-full items-center'>
     {
         rate == 1 ?
-        <AiFillLike className='text-[1.2rem] md:text-[1.5rem]'/> : 
-        <AiOutlineLike className='text-[1.2rem] md:text-[1.5rem]'/> 
+        <AiFillLike onClick={()=>toggleRate('none')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/> : 
+        <AiOutlineLike onClick={()=>toggleRate('like')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/> 
     }
-    <span className='px-3'>{likes}</span>
-    </Link>
+    <span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</span>
+    </motion.div>
 
-    <Link  href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pl-2 pr-4  h-10 rounded-r-full items-center'>
+    <motion.div layout transition={{duration : 0.5}}  className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pl-2 pr-4  h-10 rounded-r-full items-center'>
     {
         rate == -1 ?
-        <AiFillDislike className='text-[1.2rem] md:text-[1.5rem]'/> :
-        <AiOutlineDislike className='text-[1.2rem] md:text-[1.5rem]'/>
+        <AiFillDislike onClick={()=>toggleRate('none')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/> :
+        <AiOutlineDislike onClick={()=>toggleRate('dislike')} className='text-[1.2rem] cursor-pointer md:text-[1.5rem]'/>
     }
-    </Link>
+    </motion.div>
 
     </motion.div>
 
