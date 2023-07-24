@@ -10,6 +10,7 @@ import {DateConverter} from "@/utils/Functions/Converters/DateConverter";
 import {CountConverter} from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext } from '@/app/layout';
 import parse from 'html-react-parser'
+import { usePathname } from 'next/navigation';
 
 export const revalidate = 300;
 
@@ -104,7 +105,7 @@ const VideoInfo = ({status ,id , channelId, video,channel,loading} : any)=>{
     const [subId,setSubId] = useState<any>('');
 
     const copyLink = async ()=>{
-        const link = window.location.href;
+        const link = usePathname();
         await navigator.clipboard.writeText(link);
         alert('Link Copied Successfully');
     }
@@ -273,8 +274,8 @@ useEffect(()=>{
     </motion.div>
 
     <motion.button onClick={()=>copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</motion.button>
-    <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button>
-    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link>
+    {/* <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button> */}
+    {/* <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link> */}
     
 </motion.div>
 </motion.div>
