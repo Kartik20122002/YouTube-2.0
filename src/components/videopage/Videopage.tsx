@@ -12,12 +12,11 @@ import { isLargeContext, pageContext } from '@/app/layout';
 import parse from 'html-react-parser'
 
 export const revalidate = 300;
-const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
+
 const Videopage = ({id,channelId} : any)=>{ 
 
     const [videoDetails , setVideoDetails] = useState<any>({});
     const [channelDetails , setChannelDetails] = useState<any>({});
-    const [commentDetails,setComments] = useState<any>([]);
     const [related,setRelated] = useState<any>([]);
     const [loading , setLoading] = useState(true);
     const {setpage} = useContext(pageContext) as any;
@@ -56,14 +55,14 @@ const Videopage = ({id,channelId} : any)=>{
     return (<>
     <motion.div layout transition={{duration : 0.5}} className="h-screen transition-all overflow-y-scroll pb-8">
        <motion.div layout transition={{duration : 0.5}} className="flex w-full flex-col md:flex-row justify-between">
-        <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} comments={commentDetails} loading={loading} id={id}/>
+        <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id}/>
         <SideRow loading={loading} related={related}/>
        </motion.div>
     </motion.div>
     </>)
 }
 
-const VideoSection = ({video,channel,comments,loading,id,channelId} : any)=>{
+const VideoSection = ({video,channel,loading,id,channelId} : any)=>{
 
 const {status , data : session } = useSession();
 
@@ -89,7 +88,7 @@ const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
    {loading ? <Sekelton width="min-w-[20%] max-w-[20%]" className="my-1"/> : <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>}
 
 { status == 'authenticated' && 
-    <CommentForm img={session?.user?.image}/>
+    <CommentForm img={session?.user?.image} id={id} channelId={channelId}/>
 }
 
 <Comments id={id} />
@@ -234,7 +233,7 @@ useEffect(()=>{
         {sub == true ? 
          <motion.button onClick={()=>toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
          :
-         <motion.button onClick={()=>toggleSub()} className='bg-white py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribe</motion.button>
+         <motion.button onClick={()=>toggleSub()} className='dark:bg-white bg-black py-1 px-4 rounded-full text-lg dark:text-black text-white font-semibold hover:opacity-70'>Subscribe</motion.button>
          }
     </motion.div>
 </motion.div>
@@ -245,11 +244,11 @@ useEffect(()=>{
 
     {
         rate == 1 ?
-   <motion.div onClick={()=>toggleRate('none')} layout transition={{duration : 0.5}} className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#7776768a] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
+   <motion.div onClick={()=>toggleRate('none')} layout transition={{duration : 0.5}} className='flex border-r dark:border-[#ffffff28] dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
         <AiFillLike  className='text-[1.2rem] md:text-[1.5rem]'/> 
         <span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</span>
     </motion.div> :
-    <motion.div onClick={()=>toggleRate('like')} layout transition={{duration : 0.5}} className='flex dark:bg-[#6c6c6c57] border-r border-[#ffffff5b] cursor-pointer bg-[#cfcfcf24] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
+    <motion.div onClick={()=>toggleRate('like')} layout transition={{duration : 0.5}} className='flex  border-r dark:border-[#ffffff23] dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
         <AiOutlineLike  className='text-[1.2rem] md:text-[1.5rem]'/> 
        <span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</span>
     </motion.div>
@@ -260,16 +259,16 @@ useEffect(()=>{
     <motion.div onClick={()=>toggleRate('none')} layout transition={{duration : 0.5}}  className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
         <AiFillDislike className='text-[1.2rem] md:text-[1.5rem]'/> 
     </motion.div> :
-        <motion.div onClick={()=>toggleRate('dislike')} layout transition={{duration : 0.5}}  className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
+        <motion.div onClick={()=>toggleRate('dislike')} layout transition={{duration : 0.5}}  className='flex cursor-pointer dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
         <AiOutlineDislike className='text-[1.2rem] md:text-[1.5rem]'/>
     </motion.div>
     }
 
     </motion.div>
 
-    <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</motion.button>
-    <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button>
-    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link>
+    <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Share</motion.button>
+    <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button>
+    <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link>
     
 </motion.div>
 </motion.div>
@@ -322,7 +321,7 @@ const VideoInfoSkeleton = ()=>{
 const Description = ({loading , video} : any)=>{
     const [largeDesc , setLargeDesc] = useState(false);
 
-    return (<> <motion.div layout transition={{duration : 0.5}} onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`bg-white py-3 px-3 dark:bg-[#212121] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
+    return (<> <motion.div layout transition={{duration : 0.5}} onClick={()=>{if(!largeDesc){setLargeDesc(true)}}} className={`py-3 px-3 dark:bg-[#6c6c6c57] bg-[#cfcfcf57] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
     <motion.div layout transition={{duration : 0.5}} className="flex w-full flex-wrap">
     <motion.span layout transition={{duration : 0.5}}className='mr-2 min-w-max text-[0.8rem] md:text-md'>{CountConverter(video?.statistics?.viewCount)} views</motion.span>
     <motion.span layout transition={{duration : 0.5}} className='mr-2 min-w-max text-[0.8rem] md:text-md'>{DateConverter(video?.snippet?.publishedAt)} ago</motion.span>
@@ -347,13 +346,39 @@ const Description = ({loading , video} : any)=>{
 }
 
 
-const CommentForm = ({img} : any)=>{
-
+const CommentForm = ({img , channelId , id} : any)=>{
     const [comment,setComment] = useState<any>('');
+
+    const commenting = async ()=>{
+        try{
+            const res = await fetch(`/api/comment`,{
+                method : 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({id , channelId , comment}),
+                next : {revalidate : 300}
+              })
+    
+              if(res.status === 200){ 
+                setComment('');
+              }
+            
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    const videoComment = (e:any)=>{
+        e.preventDefault();
+        commenting();
+    }
+
 
     return (<>
     
-    <motion.form method="post" className="mt-4 hidden md:flex items-start">
+    <motion.form onSubmit={(e)=>videoComment(e)} className="mt-4 hidden md:flex items-start">
 
     {
     img ? <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full' /> :
@@ -363,11 +388,11 @@ const CommentForm = ({img} : any)=>{
 
     <motion.div layout transition={{duration : 0.5}} className="basis-auto w-full ml-6 flex flex-col">
 
-    <motion.input value={comment} onChange={(e)=>setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:border-white transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
+    <motion.input value={comment} autoComplete='off' onChange={(e)=>setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:dark:border-white focus:border-black transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
 
     <motion.div layout transition={{duration : 0.5}} className="btns w-full flex justify-end transition-colors mt-3">
-        <motion.button className='mr-4 opacity-90 hover:opacity-100'>Cancel</motion.button>
-        <motion.button className={`ml-4 ${comment =='' ? 'bg-[#212121] cursor-not-allowed' : 'bg-[#3ea6ff] hover:bg-[#77bcf8]'} py-[.3rem] px-3 rounded-full dark:text-black`}>Comment</motion.button>
+        <motion.button  onClick={()=>setComment('')} type='reset' className='mr-4 opacity-90 hover:opacity-100'>Cancel</motion.button>
+        <motion.button type='submit' className={`ml-4 ${comment =='' ? 'dark:bg-[#212121] bg-grey cursor-not-allowed' : 'bg-[#3ea6ff] hover:bg-[#77bcf8]'} py-[.3rem] px-3 rounded-full dark:text-black`}>Comment</motion.button>
     </motion.div>
 
     </motion.div>
