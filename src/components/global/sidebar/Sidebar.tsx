@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AiFillHome , AiOutlineHome , AiFillLike , AiOutlineLike, AiOutlineDown } from "react-icons/ai";
 import { MdLibraryAdd , MdOutlineLibraryAdd } from 'react-icons/md';
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { slideContext } from "@/app/layout";
 import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
@@ -110,7 +110,7 @@ const Sidebar = ({isLarge , IsVideoPage } : any )=>{
       catch(err){
         console.log(err);
         setSubs([]);
-        setLoading(false);
+        signOut();
       }
     }
 
