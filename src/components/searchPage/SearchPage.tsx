@@ -30,7 +30,7 @@ const SearchPage = ({query}:any)=>{
 
     useEffect(()=>{
         getDetails();
-    },[]);
+    },[query]);
 
     return<>
      <div className="flex flex-col  overflow-y-scroll h-[90vh] pb-[1rem] w-full">
