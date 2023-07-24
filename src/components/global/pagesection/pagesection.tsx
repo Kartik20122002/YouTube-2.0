@@ -20,8 +20,44 @@ const PageSection = ({page} : any)=>{
     const [items,setItems] = useState<any>([]);
     const [token,setToken] = useState('');
     const [loading,setLoading] = useState(true);
-    const [imgs , setImgs] = useState<any>([]);
+    const [filter,setFilter] = useState(0);
    
+    const filters = [
+      'All',
+      'Movies',
+      'TV',
+      'Shows',
+      'Music',
+      'Science',
+      'Gaming',
+      'Sports',
+      'Nature',
+      'Comedy',
+      'Action',
+      'All',
+      'Movies',
+      'TV',
+      'Shows',
+      'Music',
+      'Science',
+      'Gaming',
+      'Sports',
+      'Nature',
+      'Comedy',
+      'Action',
+      'All',
+      'Movies',
+      'TV',
+      'Shows',
+      'Music',
+      'Science',
+      'Gaming',
+      'Sports',
+      'Nature',
+      'Comedy',
+      'Action',
+    ]
+
     const fetchData = async ()=>{
       try{
         const res = await fetch(`/api/page/${page}/${token}`,{
@@ -49,17 +85,29 @@ const PageSection = ({page} : any)=>{
       fetchData();
      },[])
 
-    return loading ? <PageSkeleton/> : 
+    return <>
+    <div className="w-full flex dark:text-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
+      {
+        filters?.map((item : any , index : any)=>{
+          return <div key={index} onClick={()=>setFilter(index)} className={`${filter == index ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[#ffffff29]'} snap-start cursor-pointer min-w-max rounded-md px-2 py-1 mx-2`}>{item}</div>
+        })
+      }
+    </div>
+    {
+     loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[95vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
+
           <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly w-full">
            {items?.map((item : any , index : any)=>{
-             return <VideoContainer index={index} imgs={imgs} key={index} isLarge={isLarge} item={item} />
+             return <VideoContainer index={index} key={index} isLarge={isLarge} item={item} />
             })}
           </motion.div>
           </motion.div>
 }
+          </>
+}
 
-const VideoContainer = ({item , index ,isLarge , imgs}:any)=>{
+const VideoContainer = ({item , index ,isLarge}:any)=>{
 
   const [img,setImg] = useState<any>('');
 
