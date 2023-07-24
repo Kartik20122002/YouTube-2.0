@@ -23,39 +23,21 @@ const PageSection = ({page} : any)=>{
     const [filter,setFilter] = useState(0);
    
     const filters = [
-      'All',
-      'Movies',
-      'TV',
-      'Shows',
-      'Music',
-      'Science',
-      'Gaming',
-      'Sports',
-      'Nature',
-      'Comedy',
-      'Action',
-      'All',
-      'Movies',
-      'TV',
-      'Shows',
-      'Music',
-      'Science',
-      'Gaming',
-      'Sports',
-      'Nature',
-      'Comedy',
-      'Action',
-      'All',
-      'Movies',
-      'TV',
-      'Shows',
-      'Music',
-      'Science',
-      'Gaming',
-      'Sports',
-      'Nature',
-      'Comedy',
-      'Action',
+      { name : 'All' , id  : 0},
+      { name : 'Film & Animation' , id : 1} ,
+      { name : 'Music' , id : 10} ,
+      { name : 'News & Politics' , id : 25} ,
+      { name : 'Gaming' , id : 20} ,
+      { name : 'Science & Technology' , id : 28} ,
+      { name : 'Sports' , id : 17} ,
+      { name : 'Pets & Animals' , id : 15} ,
+      { name : 'Education' , id : 27} ,
+      { name : 'Entertainment' , id : 24} ,
+      { name : 'Autos & Vehicals' , id : 2} ,
+      { name : 'Travel & Events' , id : 19} ,
+      { name : 'People & Blogs' , id : 22} ,
+      { name : 'Comedy' , id : 23} ,
+      { name : 'Howto & Style' , id : 26} ,
     ]
 
     const fetchData = async ()=>{
@@ -90,7 +72,7 @@ const PageSection = ({page} : any)=>{
     <div className="w-full flex dark:text-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
       {
         filters?.map((item : any , index : any)=>{
-          return <div key={index} onClick={()=>setFilter(index)} className={`${filter === index ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-max rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item}</div>
+          return <div key={index} onClick={()=>setFilter(index)} className={`${filter === index ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-max rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</div>
         })
       }
     </div>
