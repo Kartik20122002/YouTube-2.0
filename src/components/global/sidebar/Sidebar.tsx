@@ -35,7 +35,7 @@ const links = [
 
 const Sub = ({item , isLarge}:any)=>{
     return <motion.div layout transition={{duration : 0.5}} >
-    <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]`}>
+    <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]`}>
     <motion.div layout transition={{duration : 0.5}} className="flex  w-fit items-center">
     <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className="rounded-full  bg-[#5a5a5a]" loading="lazy" alt="img" />
     </motion.div>
@@ -66,7 +66,7 @@ const SideLinks = ({item , isLarge , index} : any) =>{
 
   return <Link 
   onClick={()=>setslide(index)} 
-  href={item.link} className={`w-full ${ 'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}> 
+  href={item.link} className={`w-full ${slide == index ? 'bg-[rgb(0,0,0,0.05)] dark:bg-[rgba(255,254,254,0.16)] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.21)]' : 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}> 
         <motion.div layout transition={{duration : 0.5}} > {slide == index ? item.icon1 : item.icon2} </motion.div> 
         <motion.div layout transition={{duration : 0.5}} className={ isLarge ? 'ml-5' :'mt-1 text-center text-xs' }>{item.name}</motion.div> 
         </Link>
