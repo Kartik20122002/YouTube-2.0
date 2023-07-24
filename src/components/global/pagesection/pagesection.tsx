@@ -86,6 +86,7 @@ const PageSection = ({page} : any)=>{
      },[])
 
     return <>
+    {page == 'popular' && 
     <div className="w-full flex dark:text-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
       {
         filters?.map((item : any , index : any)=>{
@@ -93,6 +94,7 @@ const PageSection = ({page} : any)=>{
         })
       }
     </div>
+    }
     {
      loading ? <PageSkeleton/> : 
          <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly h-[95vh] overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
