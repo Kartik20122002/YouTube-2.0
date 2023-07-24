@@ -33,7 +33,7 @@ const SearchPage = ({query}:any)=>{
     },[]);
 
     return<>
-     <div className="flex flex-col  overflow-y-scroll h-full pb-[3rem] w-full">
+     <div className="flex flex-col  overflow-y-scroll h-[90vh] pb-[1rem] w-full">
         {loading ? <>
         <SkeletonCard/> <SkeletonCard/> <SkeletonCard/> <SkeletonCard/> <SkeletonCard/>
         </> : 
