@@ -18,6 +18,7 @@ const PageSection = ({page} : any)=>{
     const {setpage} = useContext(pageContext) as any;
     setpage(false);
     const [items,setItems] = useState<any>([]);
+    const [imgs , setImgs] = useState([]);
     const [token,setToken] = useState('');
     const [loading,setLoading] = useState(true);
     const [filter,setFilter] = useState(0);
@@ -65,6 +66,33 @@ const PageSection = ({page} : any)=>{
      
      }
  
+     const fun = async () =>{
+      let channelIds = [] as any;
+      items?.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
+      const channelsImgRes = await fetch(`/api/channels_for_page`,{
+        method : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body : JSON.stringify(channelIds),
+        cache :'force-cache'
+      });
+      const channelsImgData = await channelsImgRes.json();
+
+      for(let i = 0 ; i < items?.length ; i++){
+        for(let j = 0 ; j < channelsImgData?.length ; j++){
+          if(items[i]?.snippet?.channelTitle == channelsImgData[j]?.snippet?.title){
+            const newArray = imgs as any;
+            newArray[i] = channelsImgData[j]?.snippet?.thumbnails?.default?.url;
+            setImgs(newArray);
+          }
+        }
+      } 
+    }
+
+    useEffect(()=>{
+      if(items?.length > 0) fun();
+    },[items]);
 
      useEffect(()=>{
       setLoading(true);
@@ -87,7 +115,7 @@ const PageSection = ({page} : any)=>{
 
           <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly w-full">
            {items?.map((item : any , index : any)=>{
-             return <VideoContainer index={index} key={index} isLarge={isLarge} item={item} />
+             return <VideoContainer index={index} imgs={imgs} key={index} isLarge={isLarge} item={item} />
             })}
           </motion.div>
           </motion.div>
@@ -95,37 +123,8 @@ const PageSection = ({page} : any)=>{
           </>
 }
 
-const VideoContainer = ({item , index ,isLarge}:any)=>{
+const VideoContainer = ({item , imgs , index ,isLarge}:any)=>{
 
-  const [img,setImg] = useState<any>('');
-
-  const fun = async () =>{
-  
-    try{
-      const res = await fetch(`/api/channels_for_page`,{
-        method : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body : JSON.stringify(item?.snippet.channelId),
-        cache :'force-cache'
-      });
-  
-      if(res.status != 400 && res.status != 500){
-        const {data} =  await res.json();
-         const imgUrl = data?.snippet?.thumbnails?.default?.url;
-         setImg(imgUrl);
-      }
-
-    } catch(error){
-      console.log(error);
-    }
-
-  }
-
-  useEffect(()=>{
-    fun();
-  },[]);
 
   const views = CountConverter(item?.statistics?.viewCount);
   const time = DateConverter(item?.snippet?.publishedAt);
@@ -141,8 +140,8 @@ const VideoContainer = ({item , index ,isLarge}:any)=>{
 <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
     <Link href={`/channel/${item?.snippet?.channelId}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
-    { img !== '' ?
-    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={img} loading="lazy" alt="channelImg" /> 
+    { imgs[index] ?
+    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={imgs[index]} loading="lazy" alt="channelImg" /> 
     : 
     <ImgSkeleton className="w-[40px] h-[40px] rounded-full"/>
     }
