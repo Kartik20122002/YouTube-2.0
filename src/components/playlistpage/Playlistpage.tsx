@@ -9,6 +9,7 @@ import { isLargeContext, pageContext } from '@/app/layout';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
+import { usePathname } from 'next/navigation';
 
 export const revalidate = 300;
 
@@ -34,6 +35,13 @@ const PlaylistPage = ({id} : any)=>{
 const PlayListInfo = ({id} : any)=>{
     const [info,setInfo] = useState<any>({});
     const [loading,setLoading] = useState(true);
+    const link = usePathname();
+
+    const copyLink = async ()=>{
+        await navigator.clipboard.writeText(`https://youtubepro.vercel.app${link}`);
+        alert('Link Copied Successfully');
+    }
+
     const getDetails = async ()=>{
         const res = await fetch(`/api/playlist/${id}/info`,{
             method : 'POST',
@@ -98,7 +106,7 @@ const PlayListInfo = ({id} : any)=>{
                              <SekeltonImg circle width="min-w-[2.5rem] max-w-[2.5rem] mx-1" height="min-h-[2.5rem] max-h-[2.5rem]" />
                             </> : 
                             <>
-                            <motion.button layout transition={{duration : 0.5}} className='text-[1.5rem] p-2 m-1 text-white rounded-full bg-[#6564645d]'><PiShareFatThin/></motion.button>
+                            <motion.button onClick={()=>copyLink()} layout transition={{duration : 0.5}} className='text-[1.5rem] p-2 m-1 text-white rounded-full bg-[#6564645d]'><PiShareFatThin/></motion.button>
                             <motion.button layout transition={{duration : 0.5}} className='text-[1.5rem] p-2 m-1 text-white rounded-full bg-[#6564645d]'><LiaDownloadSolid/></motion.button>
                             <motion.button layout transition={{duration : 0.5}} className='text-[1.5rem] p-2 m-1 text-white rounded-full bg-[#6564645d]'><AiOutlineMore/></motion.button>
                             </> } 
