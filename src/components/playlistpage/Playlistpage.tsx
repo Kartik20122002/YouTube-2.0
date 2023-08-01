@@ -118,7 +118,7 @@ const PlayListInfo = ({id,first} : any)=>{
                  {/* buttons */}
                  <motion.div layout transition={{duration : 0.5}} className="mt-6 z-10 flex justify-center flex-wrap w-full">
                     {loading ? <SekeltonImg width="min-w-[45%] max-w-[45%]" height="min-h-[2.5rem]" className="!rounded-full"/> :
-                    <Link href={`/channel/${'' || info?.snippet?.channelId}/playlist/${info?.id}`} className='w-[45%] py-2 mx-2 my-1 bg-[#181a1b] hover:bg-[#282b2d] text-white z-10 text-center rounded-full'>Play</Link> 
+                    <Link href={first || `/channel/${'' || info?.snippet?.channelId}/playlist/${info?.id}`} className='w-[45%] py-2 mx-2 my-1 bg-[#181a1b] hover:bg-[#282b2d] text-white z-10 text-center rounded-full'>Play</Link> 
                     }
                     {/* <button className='w-[45%] py-2 mx-2 my-1 bg-[#51515163] hover:bg-[#6f6e6e63] z-10 rounded-full'>Shuffle</button> */}
                  </motion.div>
