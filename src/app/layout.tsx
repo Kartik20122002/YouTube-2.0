@@ -51,10 +51,12 @@ export default function RootLayout({
     <html lang="en" className={roboto.className}>
       <head>
       <title>YouTube Pro</title>
-      <meta name="description" content="This is YouTube 2 Web App" />
+      <meta name="description" content="This is YouTube Pro Web App" />
+      <link rel="manifest" href="/manifest.json" />
       <meta charSet="UTF-8" />
       <meta name="keywords" content="youtube, youtube-2, youtube 2" />
       <meta name="author" content="Kartik Hatwar" />
+      <meta name="theme-color" content='#000' />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
 

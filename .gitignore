@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+#pwa files
+public/sw.js
+public/workbox-*
+
 # testing
 /coverage
 
@@ -33,3 +37,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
