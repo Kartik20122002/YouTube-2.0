@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import {AiOutlineMore} from 'react-icons/ai';
 import {PiShareFatThin} from 'react-icons/pi'
 import {LiaDownloadSolid} from 'react-icons/lia'
@@ -13,6 +13,7 @@ import { usePathname } from 'next/navigation';
 
 export const revalidate = 300;
 
+
 const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/img/no_thumbnail.jpg'
 
@@ -20,19 +21,19 @@ const PlaylistPage = ({id} : any)=>{
 
     const {setpage} = useContext(pageContext) as any;
     setpage(false);
-    
+    const [first,setFirst] = useState<any>(null);
 
     return (<>
     <motion.div layout transition={{duration : 0.5}} className='h-[89vh] overflow-y-scroll dark:text-white'>
         <motion.div layout transition={{duration : 0.5}} className='w-full flex flex-wrap h-full'>
-           <PlayListInfo id={id}/>
-           <PlayListItems id={id} />
+           <PlayListInfo id={id} first={first}/>
+           <PlayListItems id={id} setfirst={(e:any)=>setFirst(e)}/>
         </motion.div>
     </motion.div>
     </>)
 }
 
-const PlayListInfo = ({id} : any)=>{
+const PlayListInfo = ({id,first} : any)=>{
     const [info,setInfo] = useState<any>({});
     const [loading,setLoading] = useState(true);
     const link = usePathname();
@@ -72,7 +73,7 @@ const PlayListInfo = ({id} : any)=>{
 
                     {loading ? <SekeltonImg className="relative pt-[56.25%] rounded-lg"/> : 
                     <motion.div layout transition={{duration : 0.5}} className="relative pt-[56.25%] w-full h-full">
-                    <Link href={`/channel/${info?.snippet?.channelId}/playlist/${info?.id}`} className="absolute min-w-full flex items-center cursor-pointer justify-center text-transparent  hover:text-white top-0 min-h-full bg-transparent hover:bg-[#0000009c] z-10 rounded-[4%]">
+                    <Link href={first || `/channel/${info?.snippet?.channelId}/playlist/${info?.id}`} className="absolute min-w-full flex items-center cursor-pointer justify-center text-transparent  hover:text-white top-0 min-h-full bg-transparent hover:bg-[#0000009c] z-10 rounded-[4%]">
                         Play
                     </Link>
                     <motion.div layout transition={{duration : 0.5}} className="absolute top-0 right-0 bottom-0 left-0 w-full h-full"> <Image src={loading ? videoImg : info?.snippet?.thumbnails?.medium?.url}  layout='fill' className='rounded-[4%] dark:bg-[#202324] bg-[#b8b8b8]' loading='lazy' alt='playlistImg' /> </motion.div>
@@ -133,7 +134,7 @@ const PlayListInfo = ({id} : any)=>{
 }
 
 
-const PlayListItems = ({id} : any)=>{
+const PlayListItems = ({id,setfirst} : any)=>{
 
     const [items,setItems] = useState<any>([]);
     const [loading,setLoading] = useState(true);
@@ -148,6 +149,7 @@ const PlayListItems = ({id} : any)=>{
         });
         if(res.status != 404 && res.status != 500){
             const {data} = await res.json();
+            setfirst(`/channel/${data[0]?.snippet?.channelId}/video/${data[0]?.contentDetails?.videoId}`);
             setItems(data);
             setLoading(false);
         }
