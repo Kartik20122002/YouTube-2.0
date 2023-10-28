@@ -25,10 +25,6 @@ const Header = ({change } : any)=>{
     router.push(`/search?query=${searchquery}`);
   }
 
-  useEffect(()=>{
-    console.log('header rendered')
-  },[])
-
     const {status , data : session } = useSession();
     const [usermenu , setUsermenu] = useState(false);
     const [search , setSearch] = useState(false);

@@ -40,7 +40,7 @@ let results = await youtube.channels.list({
     if(results.status !== 200) 
     return NextResponse.json([]);
 
-    const data = results?.data?.items[0];
+    const data = results?.data?.items;
 
     return  NextResponse.json({data});
 

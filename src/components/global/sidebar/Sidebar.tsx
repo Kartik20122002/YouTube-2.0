@@ -74,9 +74,6 @@ const SideLinks = ({item , isLarge , index} : any) =>{
 
 const Sidebar = ({isLarge , IsVideoPage } : any )=>{
 
-  useEffect(()=>{
-    console.log('sidebar rendered')
-  },[]);
     
     const {status } = useSession();
     const [subs,setSubs] = useState([]);

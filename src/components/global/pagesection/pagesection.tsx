@@ -13,6 +13,8 @@ import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
 
 export const revalidate = 300;
 
+
+
 const PageSection = ({page} : any)=>{
     const {isLarge , setIsLarge} = useContext(isLargeContext) as any;
     const {setpage} = useContext(pageContext) as any;
@@ -22,7 +24,7 @@ const PageSection = ({page} : any)=>{
     const [token,setToken] = useState('');
     const [loading,setLoading] = useState(true);
     const [filter,setFilter] = useState(0);
-   
+
     const filters = [
       { name : 'All' , id  : 0},
       { name : 'Film & Animation' , id : 1} ,
@@ -65,10 +67,15 @@ const PageSection = ({page} : any)=>{
       }
      
      }
+
+
+     const [mapOfChannels,setMapOfChannels] = useState<any>({});
  
      const fun = async () =>{
       let channelIds = [] as any;
-      items?.map((item:any)=>{channelIds.push(item?.snippet.channelId)});
+
+      items?.map((item:any,index : any)=>{ channelIds.push(item?.snippet.channelId)});
+
       const channelsImgRes = await fetch(`/api/channels_for_page`,{
         method : 'POST',
         headers: {
@@ -77,22 +84,27 @@ const PageSection = ({page} : any)=>{
         body : JSON.stringify(channelIds),
         cache :'force-cache'
       });
-      const channelsImgData = await channelsImgRes.json();
 
-      for(let i = 0 ; i < items?.length ; i++){
-        for(let j = 0 ; j < channelsImgData?.length ; j++){
-          if(items[i]?.snippet?.channelTitle == channelsImgData[j]?.snippet?.title){
-            const newArray = imgs as any;
-            newArray[i] = channelsImgData[j]?.snippet?.thumbnails?.default?.url;
-            setImgs(newArray);
-          }
+      
+      const channelsImgData = await channelsImgRes.json();
+    
+      const mapOfChannelst = {} as any;
+      
+      const channelInfo = channelsImgData.data;
+
+      
+        for(let j = 0 ; j < channelInfo?.length ; j++){
+          mapOfChannelst[channelInfo[j]?.id] = channelInfo[j]?.snippet?.thumbnails.default?.url;
         }
-      } 
+
+        setMapOfChannels(mapOfChannelst);
+      
     }
 
     useEffect(()=>{
       if(items?.length > 0) fun();
     },[items]);
+
 
      useEffect(()=>{
       setLoading(true);
@@ -115,7 +127,7 @@ const PageSection = ({page} : any)=>{
 
           <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap justify-evenly w-full">
            {items?.map((item : any , index : any)=>{
-             return <VideoContainer index={index} imgs={imgs} key={index} isLarge={isLarge} item={item} />
+             return <VideoContainer index={index} imgs={imgs} key={index} mapOfChannels={mapOfChannels} isLarge={isLarge} item={item} />
             })}
           </motion.div>
           </motion.div>
@@ -123,7 +135,7 @@ const PageSection = ({page} : any)=>{
           </>
 }
 
-const VideoContainer = ({item , imgs , index ,isLarge}:any)=>{
+const VideoContainer = ({item , imgs , index ,isLarge , mapOfChannels}:any)=>{
 
 
   const views = CountConverter(item?.statistics?.viewCount);
@@ -140,8 +152,8 @@ const VideoContainer = ({item , imgs , index ,isLarge}:any)=>{
 <motion.div layout transition={{duration : 0.5}} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
     <Link href={`/channel/${item?.snippet?.channelId}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]"> 
-    { imgs[index] ?
-    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={imgs[index]} loading="lazy" alt="channelImg" /> 
+    { mapOfChannels[item?.snippet?.channelId] ?
+    <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={mapOfChannels[item?.snippet?.channelId]} loading="lazy" alt="channelImg" /> 
     : 
     <ImgSkeleton className="w-[40px] h-[40px] rounded-full"/>
     }
