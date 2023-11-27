@@ -5,3 +5,5 @@ export const scopesStr = 'https://www.googleapis.com/auth/userinfo.profile https
 export const redirectUrl = 'http://localhost:3000/api/auth/';
 export const secret = process.env.NEXTAUTH_SECRET;
 export const ytApi = process.env.YT_API;
+
+// "AIzaSyBOxzifseJ81n50eeiIWOizYybQ98tqOOc"
