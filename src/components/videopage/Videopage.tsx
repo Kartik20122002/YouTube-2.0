@@ -502,16 +502,16 @@ const SideVideo = ({item} : any)=>{
 
 <motion.div layout transition={{duration : 0.5}} className="basis-[35%] mr-2 h-full">
 
-<Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center"> 
-<Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.snippet?.thumbnails?.medium?.url || item?.snippet?.thumbnails?.default?.url}  /> 
+<Link href={`/channel/${item?.channelId}/video/${item?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center"> 
+<Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.thumbnail[0]?.url || item?.thumbnail[1]?.url}  /> 
 </Link>
 </motion.div>
 
 <motion.div layout transition={{duration : 0.5}} className="basis-[60%] pt-1 overflow-hidden ">
-    <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item.snippet.title}</Link>
-    <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap">
-    <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.snippet?.channelId}`}>{item?.snippet?.channelTitle} &bull;</Link></p>
-    <p className="text-[#606060] font-medium text-sm ">{DateConverter(item.snippet.publishedAt)} ago</p>
+    <Link href={`/channel/${item?.channelId}/video/${item?.videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item?.title}</Link>
+    <motion.div layout transition={{duration : 0.5}} className="flex flex-wrap flex-col">
+    <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.channelId}`}>{item?.channelTitle}</Link></p>
+    <p className="text-[#606060] font-medium text-sm ">{CountConverter(item?.viewCount)}  &bull; {item?.publishedTimeText}</p>
     </motion.div>
 </motion.div>
 

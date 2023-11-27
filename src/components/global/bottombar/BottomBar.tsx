@@ -33,12 +33,10 @@ const BottomBar = ()=>{
      <div className="fixed bottom-0 w-full flex md:hidden h-[6vh] dark:bg-black">
         <div className="w-full flex">
             {links?.map((link : any,index : any)=>{
-                return <>
-                <Link key={index} onClick={()=>setslide(index)} href={link.link} className="flex flex-col basis-auto justify-center items-center grow dark:text-white">
+                return <Link key={index} onClick={()=>setslide(index)} href={link.link} className="flex flex-col basis-auto justify-center items-center grow dark:text-white">
                     { slide === index ? link.icon1 : link.icon2}
                     <div className="title text-[0.6rem]">{link.name}</div>
                 </Link>
-                </>
             })}
         </div>
      </div>

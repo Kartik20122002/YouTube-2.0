@@ -43,11 +43,11 @@ const ChannelPromise = youtube.channels.list({
 });
 
 
-const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?relatedToVideoId=${id}&part=id%2Csnippet&type=video&maxResults=25`,{
+const RelatedVideosPromise = fetch(`https://youtube-v3-alternative.p.rapidapi.com/related?id=${id}&part=id%2Csnippet&type=video&maxResults=25`,{
   method: 'GET',
   headers: {
     'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
-    'X-RapidAPI-Host': 'youtube-v31.p.rapidapi.com'
+    'X-RapidAPI-Host': 'youtube-v3-alternative.p.rapidapi.com'
   }
   });
 
@@ -60,7 +60,7 @@ const RelatedVideosPromise = fetch(`https://youtube-v31.p.rapidapi.com/search?re
   // @ts-ignore
       const channel = ChannelData?.data?.items[0] || {};
   // @ts-ignore
-      const related = relatedData?.items || [];
+      const related = relatedData?.data || [];
   
   return NextResponse.json({video,channel,related});
 
