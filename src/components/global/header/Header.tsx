@@ -28,17 +28,14 @@ const Header = ({ change, toggleTheme, dark }: any) => {
   }
 
   const { status, data: session } = useSession();
-  const [usermenu, setUsermenu] = useState(true);
+  const [usermenu, setUsermenu] = useState(false);
   const [userName, setUserName] = useState<any>(null);
   const [userEmail, setUserEmail] = useState<any>(null);
   const [search, setSearch] = useState(false);
   const [profileUrl, setProfileUrl] = useState<any>('/images/user.png');
 
   const userBtn = () => {
-    // if (status == 'authenticated') {
     setUsermenu((val) => { return !val })
-    // }
-    // if (status == 'unauthenticated') signIn();
   }
 
 
