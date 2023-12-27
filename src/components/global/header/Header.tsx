@@ -38,7 +38,6 @@ const Header = ({ change, toggleTheme, dark }: any) => {
     setUsermenu((val) => { return !val })
   }
 
-
   useEffect(() => {
     if (status == 'authenticated')
       setProfileUrl(session?.user?.image);

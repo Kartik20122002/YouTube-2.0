@@ -11,65 +11,36 @@ export async function POST(req: any) {
 
   const body = await req.text();
   const { filter } = JSON.parse(body);
-  const cookieStore = cookies();
-
+  
   try {
+    const cookieStore = cookies();
 
     const tokens = await getToken({ req, secret });
 
     if (tokens && tokens?.access_token) {
-      console.log("User is Singed In")
+      const aData = cookieStore.get('aToken') || null;
+      const rData = cookieStore.get('rToken') || null;
 
-      const accessToken = cookieStore.get('aToken')?.value || tokens?.access_token as string;
-      const refreshToken = tokens?.refresh_token as string;
-      if (accessToken) console.log("we have accessToken")
+      const accessToken = aData?.value;
+      const refreshToken = rData?.value;
 
-      if (refreshToken) {
-
-        console.log("we have refresh token and now saving...")
-
-        cookieStore.set('rTokens', refreshToken, {
-          maxAge: 1000 * 60 * 60 * 24 * 30,
-          // expires : new Date(1000*60*60*24*30 + Date.now()).getTime(),
+      if (!aData || !accessToken) {
+        if (!rData) throw new Error("Invalid Tokens Refresh Token bhi nahi hai");
+        oauth2client.setCredentials({ refresh_token: refreshToken });
+        
+        const newToken = await oauth2client.refreshAccessToken()
+        
+        const newAccessToken = newToken.credentials.access_token;
+        const newExpiry = newToken.credentials.expiry_date as number;
+        cookieStore.set('aToken', newAccessToken as string , {
+            expires : newExpiry-1000,
         });
-        oauth2client.setCredentials({ refresh_token: refreshToken })
-      } else {
-        const refresh_token = cookieStore.get('rTokens')?.value;
-        if (refresh_token) {
-          oauth2client.setCredentials({ refresh_token: refresh_token });
-
-          console.log("Don't Worry we got refresh token from cookies");
-          
-        }
-        else console.log("we don't have refresh token at all");
-      }
-
-      const tokeninfo = await oauth2client.getTokenInfo(accessToken);
-      const accessTokenExpTime = tokeninfo?.expiry_date;
-
-      if (accessTokenExpTime && accessTokenExpTime < new Date().getTime()) {
-
-        console.log("Access token is expired now obtaining new one")
-
-        const newToken = await oauth2client.getAccessToken();
-        const newAccessToken = newToken.token as string;
-        oauth2client.setCredentials({ access_token: newAccessToken });
-        cookieStore.set('aToken', newAccessToken);
-
-        console.log("New Access Token Saved");
       }
       else {
-        oauth2client.setCredentials({ access_token: accessToken });
-        cookieStore.set('aToken', accessToken);
-
-        console.log("Access Token is not Expired and Stored successfully");
+        oauth2client.setCredentials({ access_token: accessToken, });
       }
-
     }
     else {
-
-      console.log("User not log in proceeding with API key");
-
       oauth2client.credentials = {
         access_token: '' as string,
         refresh_token: '' as string

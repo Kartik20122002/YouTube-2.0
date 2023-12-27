@@ -10,19 +10,35 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(req : any ) {
 
-  const cookieStore = cookies();
-
   try{
   
-  const tokens = await getToken({req , secret});
+  const cookieStore = cookies();
 
-  const accessToken = tokens?.access_token;
-  const refreshToken = tokens?.refresh_token;
+    const tokens = await getToken({ req, secret });
 
-  oauth2client.credentials = {
-    access_token : accessToken as string, 
-    refresh_token : refreshToken as string
-  }
+    if (tokens && tokens?.access_token) {
+      const aData = cookieStore.get('aToken') || null;
+      const rData = cookieStore.get('rToken') || null;
+
+      const accessToken = aData?.value;
+      const refreshToken = rData?.value;
+
+      if (!aData || !accessToken) {
+        if (!rData) throw new Error("Invalid Tokens Refresh Token bhi nahi hai");
+        oauth2client.setCredentials({ refresh_token: refreshToken });
+        
+        const newToken = await oauth2client.refreshAccessToken()
+        
+        const newAccessToken = newToken.credentials.access_token;
+        const newExpiry = newToken.credentials.expiry_date as number;
+        cookieStore.set('aToken', newAccessToken as string , {
+            expires : newExpiry-1000,
+        });
+      }
+      else {
+        oauth2client.setCredentials({ access_token: accessToken, });
+      }
+    }
 
     const results = await youtube.subscriptions.list({
     part : ['snippet','contentDetails'],

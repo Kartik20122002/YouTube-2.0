@@ -70,13 +70,13 @@ export default function RootLayout({
               <slideContext.Provider value={{ slide, setslide } as any}>
 
                 <Header dark={dark} isLarge={isLarge} change={toggle} toggleTheme={() => setDark(!dark)} />
-                <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage} />
+                {/* <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage} /> */}
                 <motion.div layout transition={{ duration: 0.5 }}>
                   <motion.div layout transition={{ duration: 0.5 }} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} dark:bg-black bg-white w-full pt-[10vh] pb-[10vh] fixed h-[90vh] `}>
                     {children}
                   </motion.div>
                 </motion.div>
-                <BottomBar />
+                {/* <BottomBar /> */}
               </slideContext.Provider>
             </pageContext.Provider>
           </isLargeContext.Provider>
