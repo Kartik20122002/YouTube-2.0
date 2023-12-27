@@ -19,16 +19,17 @@ export async function POST(req: any) {
 
     if (tokens && tokens?.access_token) {
       const aData = cookieStore.get('aToken') || null;
-      const rData = cookieStore.get('rToken') || null;
-
+      
       const accessToken = aData?.value;
-      const refreshToken = rData?.value;
+      
+      if (!accessToken) {
+        const rData = cookieStore.get('rToken') || null;
+        const refreshToken = rData?.value;
 
-      if (!aData || !accessToken) {
-        if (!rData) throw new Error("Invalid Tokens Refresh Token bhi nahi hai");
+        if (!refreshToken) throw new Error("Invalid Tokens Refresh Token bhi nahi hai");
         oauth2client.setCredentials({ refresh_token: refreshToken });
         
-        const newToken = await oauth2client.refreshAccessToken()
+        const newToken = await oauth2client.refreshAccessToken();
         
         const newAccessToken = newToken.credentials.access_token;
         const newExpiry = newToken.credentials.expiry_date as number;

@@ -26,27 +26,23 @@ const authOptions: NextAuthOptions = {
       try {
         if (account && account?.access_token) {
           token.access_token = account?.access_token;
-          console.log("\nAccess Token Generated");
           const cookieStore = cookies();
           cookieStore.set('aToken', token.access_token, {
-            expires : new Date(1000*60*30 + Date.now()).getTime(),
+            expires : new Date(1000*60*50 + Date.now()).getTime(),
           });
-          console.log("\nACCESS TOKEN TILL", new Date(1000*60*30 + Date.now()).toLocaleString());
         }
         if (account && account?.refresh_token && !token?.refresh_token) {
           token.refresh_token = account?.refresh_token;
-          console.log("\nRefresh Token Generated\n");
           const cookieStore = cookies();
           cookieStore.set('rToken', token.refresh_token, {
-            expires : new Date(1000*60*60*24*30 + Date.now()).getTime(),
+            expires : new Date(1000*60*60*24*30*6 + Date.now()).getTime(),
           });
-          console.log("\nREFRESH TOKEN TILL", new Date(1000 * 60 * 60 * 24 * 30 + Date.now()).toLocaleString());
         }
 
         return token;
 
       } catch (error) {
-        token.kartik = 'error kartik'
+        token.error = error;
         return error;
       }
 
