@@ -42,7 +42,7 @@ const authOptions: NextAuthOptions = {
 
       const cookieStore = cookies();
 
-      if (account && account?.refresh_token) {
+      if (account?.refresh_token) {
         await ConnectDB();
 
         cookieStore.set('rToken', account?.refresh_token, {
@@ -51,21 +51,13 @@ const authOptions: NextAuthOptions = {
 
         const dbuser = await User.findOne({ id: account?.providerAccountId });
 
-        console.log(dbuser);
-        console.log("\n")
-
         if (dbuser) {
-          console.log("User found");
-
           dbuser.rToken = account?.refresh_token as string;
           dbuser.tokenTime = new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime() as Number;
           await dbuser.save();
         }
         else {
-          console.log("User not found , creating new user");
-          console.log("\n")
-
-          const res = await User.create({
+          await User.create({
             id: account?.providerAccountId as string,
             email: user?.email as string,
             rToken: account?.refresh_token as string,
@@ -85,9 +77,7 @@ const authOptions: NextAuthOptions = {
 
           const rToken = dbuser?.refresh_token;
           const expiry = dbuser?.tokenTime;
-          cookieStore.set('rToken', rToken, {
-            expires: expiry,
-          });
+          cookieStore.set('rToken', rToken, { expires: new Date(expiry).getTime() });
         }
       }
 
@@ -102,6 +92,7 @@ const authOptions: NextAuthOptions = {
     signOut: () => {
       const cookieStore = cookies();
       cookieStore.delete('aToken');
+      cookieStore.delete('rToken');
     },
   }
 

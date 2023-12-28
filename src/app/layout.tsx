@@ -68,7 +68,6 @@ export default function RootLayout({
           <isLargeContext.Provider value={{ isLarge, setIsLarge }}>
             <pageContext.Provider value={{ setpage } as any}>
               <slideContext.Provider value={{ slide, setslide } as any}>
-
                 <Header dark={dark} isLarge={isLarge} change={toggle} toggleTheme={() => setDark(!dark)} />
                 <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage} />
                 <motion.div layout transition={{ duration: 0.5 }}>
