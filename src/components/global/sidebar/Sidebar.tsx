@@ -10,7 +10,6 @@ import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 import { RiPlayList2Line } from "react-icons/ri";
-export const dynamic = 'force-dynamic'
 
 const links = [
   {
@@ -83,7 +82,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
   const [show, setShow] = useState(false);
   const playlists = async () => {
     try {
-      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'default' });
+      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'force-cache' });
       const { data } = await res.json();
       setList(data);
       setLoading1(false);
@@ -98,7 +97,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
   const fun = async () => {
     try {
-      const res = await fetch('/api/subs', { next: { revalidate: 300 }, cache: 'default' });
+      const res = await fetch('/api/subs', { next: { revalidate: 60 }, cache: 'force-cache' });
       const { subs, ptoken, ntoken } = await res.json();
       setSubs(subs);
       setLoading(false);

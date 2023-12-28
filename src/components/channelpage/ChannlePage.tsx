@@ -11,9 +11,6 @@ import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
 import { signIn, useSession } from 'next-auth/react';
 
-export const revalidate = 300;
-
-const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
 
 const ChannelPage = ({ channelId }: any) => {
@@ -83,7 +80,7 @@ const ChannelInfo = ({ id }: any) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ id }),
-            next: { revalidate: 300 }
+            cache: 'force-cache'
         })
 
         if (results.status !== 404 && results.status != 500) {

@@ -11,9 +11,6 @@ import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
 
-export const revalidate = 300;
-
-
 
 const PageSection = ({ page }: any) => {
   const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
@@ -49,7 +46,8 @@ const PageSection = ({ page }: any) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ filter }),
-        next: { revalidate: 300 }
+        next: { revalidate: 300 },
+        cache: 'force-cache'
       });
 
       if (res.status != 500 && res.status != 404) {

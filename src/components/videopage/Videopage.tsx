@@ -12,8 +12,6 @@ import { isLargeContext, pageContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
 
-export const revalidate = 300;
-
 const Videopage = ({ id, channelId }: any) => {
 
     const [videoDetails, setVideoDetails] = useState<any>({});
@@ -32,7 +30,8 @@ const Videopage = ({ id, channelId }: any) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ id, channelId }),
-                next: { revalidate: 300 }
+                next: { revalidate: 300 },
+                cache: 'force-cache'
             })
 
             if (res.status != 404 && res.status != 500) {
