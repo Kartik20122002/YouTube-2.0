@@ -11,7 +11,6 @@ import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 
 const Videopage = ({ id, channelId }: any) => {
 
@@ -152,7 +151,6 @@ const VideoInfo = ({ status, id, channelId, video, channel, loading }: any) => {
             if (res.status === 200) {
                 if (sub) {
                     const { flag, data } = await res.json();
-                    revalidatePath('/')
                     if (flag) setSub(false);
                 }
                 else {
