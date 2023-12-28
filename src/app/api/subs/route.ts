@@ -6,7 +6,6 @@ import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 import { refreshedToken } from "@/utils/auth/refreshed";
 
-export const dynamic = 'force-dynamic'
 
 export async function GET(req: any) {
 
