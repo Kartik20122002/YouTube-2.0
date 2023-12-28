@@ -10,6 +10,7 @@ import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
 import { signIn, useSession } from 'next-auth/react';
+import { revalidatePath } from 'next/cache';
 
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
 
@@ -59,6 +60,7 @@ const ChannelInfo = ({ id }: any) => {
                 if (sub) {
                     const { flag, data } = await res.json();
                     if (flag) setSub(false);
+                    revalidatePath('/');
                 }
                 else {
                     const { flag, data } = await res.json();
