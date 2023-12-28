@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 
 export async function POST(req: any) {
@@ -62,7 +62,7 @@ export async function POST(req: any) {
       }) as any;
 
       if (res.status === 200) {
-        revalidatePath('/');
+        revalidateTag('subs');
         return NextResponse.json({ flag: true, data: res?.data?.id });
       }
       return NextResponse.json({ flag: false, data: '' });
@@ -73,7 +73,7 @@ export async function POST(req: any) {
       })
 
       if (res.status === 204) {
-        revalidatePath('/');
+        revalidateTag('subs');
         return NextResponse.json({ flag: true, data: '' });
       }
 
