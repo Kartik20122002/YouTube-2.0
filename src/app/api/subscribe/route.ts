@@ -62,7 +62,6 @@ export async function POST(req: any) {
       }) as any;
 
       if (res.status === 200) {
-        revalidateTag('subs');
         return NextResponse.json({ flag: true, data: res?.data?.id });
       }
       return NextResponse.json({ flag: false, data: '' });
@@ -73,7 +72,6 @@ export async function POST(req: any) {
       })
 
       if (res.status === 204) {
-        revalidateTag('subs');
         return NextResponse.json({ flag: true, data: '' });
       }
 
