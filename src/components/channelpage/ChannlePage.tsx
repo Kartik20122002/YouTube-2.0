@@ -44,7 +44,7 @@ const ChannelInfo = ({ id }: any) => {
         if (status == 'authenticated') {
             subscribe();
         }
-        else signIn();
+        else signIn("google");
     }
 
     const subscribe = async () => {

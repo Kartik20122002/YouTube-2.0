@@ -172,7 +172,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
                     </div>
                     LogOut
                   </button> :
-                  <button id="signInbtn" aria-label='signINbtn' onClick={() => { signIn() }} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#50c878] dark:bg-[#50c878] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" >
+                  <button id="signInbtn" aria-label='signINbtn' onClick={() => { signIn("google") }} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#50c878] dark:bg-[#50c878] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" >
                     <div className="w-[1.3rem] m-0 mr-[5%]">
                       <FcGoogle className="dark:text-white" />
                     </div>
