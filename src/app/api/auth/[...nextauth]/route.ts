@@ -41,6 +41,7 @@ const authOptions: NextAuthOptions = {
     signIn: async ({ user, account }: any) => {
 
       const cookieStore = cookies();
+
       if (account && account?.refresh_token) {
         await ConnectDB();
 
@@ -50,12 +51,20 @@ const authOptions: NextAuthOptions = {
 
         const dbuser = await User.findOne({ id: account?.providerAccountId });
 
+        console.log(dbuser);
+        console.log("\n")
+
         if (dbuser) {
+          console.log("User found");
+
           dbuser.rToken = account?.refresh_token as string;
           dbuser.tokenTime = new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime() as Number;
           await dbuser.save();
         }
         else {
+          console.log("User not found , creating new user");
+          console.log("\n")
+
           const res = await User.create({
             id: account?.providerAccountId as string,
             email: user?.email as string,
