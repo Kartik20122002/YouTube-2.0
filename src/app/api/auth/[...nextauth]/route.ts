@@ -1,5 +1,5 @@
-// import ConnectDB from '@/db/ConnectDB';
-// import User from '@/db/User';
+import ConnectDB from '@/db/ConnectDB';
+import User from '@/db/User';
 import { clientId, clientSecret, scopesStr, secret } from '@/utils/secrets/secrets';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import Google from 'next-auth/providers/google';
@@ -42,44 +42,44 @@ const authOptions: NextAuthOptions = {
 
       const cookieStore = cookies();
       if (account && account?.refresh_token) {
-        // await ConnectDB();
+        await ConnectDB();
 
         cookieStore.set('rToken', account?.refresh_token, {
           expires: new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime(),
         });
 
-        // const dbuser = await User.findOne({ id: account?.providerAccountId });
+        const dbuser = await User.findOne({ id: account?.providerAccountId });
 
-        // if (dbuser) {
-        //   dbuser.rToken = account?.refresh_token as string;
-        //   dbuser.tokenTime = new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime() as Number;
-        //   await dbuser.save();
-        // }
-        // else {
-        //   const res = await User.create({
-        //     id: account?.providerAccountId as string,
-        //     email: user?.email as string,
-        //     rToken: account?.refresh_token as string,
-        //     tokenTime: new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime() as Number,
-        //   });
-        // }
+        if (dbuser) {
+          dbuser.rToken = account?.refresh_token as string;
+          dbuser.tokenTime = new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime() as Number;
+          await dbuser.save();
+        }
+        else {
+          const res = await User.create({
+            id: account?.providerAccountId as string,
+            email: user?.email as string,
+            rToken: account?.refresh_token as string,
+            tokenTime: new Date(1000 * 60 * 60 * 24 * 30 * 6 + Date.now()).getTime() as Number,
+          });
+        }
       }
       else {
-        // const rData = cookieStore.get('rToken') || null;
-        // const refreshToken = rData?.value;
+        const rData = cookieStore.get('rToken') || null;
+        const refreshToken = rData?.value;
 
-        // if (!refreshToken) {
-        //   await ConnectDB();
-        //   const dbuser = await User.findOne({ id: account?.providerAccountId });
+        if (!refreshToken) {
+          await ConnectDB();
+          const dbuser = await User.findOne({ id: account?.providerAccountId });
 
-        //   if (!dbuser) throw new Error("User not found")
+          if (!dbuser) throw new Error("User not found")
 
-        //   const rToken = dbuser?.refresh_token;
-        //   const expiry = dbuser?.tokenTime;
-        //   cookieStore.set('rToken', rToken, {
-        //     expires: expiry,
-        //   });
-        // }
+          const rToken = dbuser?.refresh_token;
+          const expiry = dbuser?.tokenTime;
+          cookieStore.set('rToken', rToken, {
+            expires: expiry,
+          });
+        }
       }
 
       if (account && account?.access_token) {
