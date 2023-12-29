@@ -68,7 +68,6 @@ export async function POST(req: any) {
         'X-RapidAPI-Host': 'youtube-v3-alternative.p.rapidapi.com'
       },
       next: { revalidate: 300 },
-      cache: "force-cache",
     });
 
     const [VideoData, ChannelData, RelatedVideos] = await Promise.all([VideoPromise, ChannelPromise, RelatedVideosPromise]);

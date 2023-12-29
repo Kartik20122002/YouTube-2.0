@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
 import Image from 'next/legacy/image';
 import { signIn, useSession } from 'next-auth/react';
@@ -133,6 +133,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
     const link = usePathname();
     const { status, data: session } = useSession();
     const router = useRouter();
+    const linkRef = useRef<any>(null);
 
     const copyLink = async () => {
         await navigator.clipboard.writeText(`https://youtubepro.vercel.app${link}`);
@@ -151,8 +152,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                     'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
                     'X-RapidAPI-Host': 'ytstream-download-youtube-videos.p.rapidapi.com'
                 },
-                next: { revalidate: 300 },
-                cache: 'force-cache'
+                next: { revalidate: 300 }
             });
 
             if (response.status != 404 && response.status != 500) {
@@ -160,7 +160,9 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 const allFormats = result?.formats;
                 const downloadFormat = allFormats[allFormats.length - 1] || allFormats[allFormats.length - 2];
                 const downloadUrl = downloadFormat?.url;
-                if (downloadUrl) window.open(downloadUrl, '_blank');
+                linkRef.current.href = downloadUrl;
+                linkRef.current.download = id;
+                linkRef.current.click();
             }
 
         } catch (error) {
@@ -334,7 +336,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 <motion.button onClick={() => copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.button>
                 {/* <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button> */}
                 <button onClick={() => DownloadVideo()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download</button>
-
+                <a ref={linkRef} style={{ display: 'none' }} />
             </motion.div>
         </motion.div>
     </>)
