@@ -1,4 +1,3 @@
-'use client'
 import { signIn, signOut, useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";

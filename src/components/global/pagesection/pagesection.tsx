@@ -1,7 +1,5 @@
-'use client'
 import Image from "next/legacy/image"
 import Link from "next/link"
-import megan from "@/images/megan.png"
 import { motion } from "framer-motion"
 import { isLargeContext, pageContext } from "@/app/layout"
 import { useContext, useEffect, useState } from "react"

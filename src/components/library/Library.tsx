@@ -1,5 +1,4 @@
-'use client'
-import { isLargeContext, pageContext, slideContext } from "@/app/layout";
+import { pageContext, slideContext } from "@/app/layout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
