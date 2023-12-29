@@ -80,8 +80,8 @@ const Videopage = ({ id, channelId }: any) => {
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all overflow-y-scroll pb-8">
             <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
-                {/* <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} /> */}
-                {/* <SideRow loading={loading} related={related} /> */}
+                <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
+                <SideRow loading={loading} related={related} />
             </motion.div>
         </motion.div>
     </>)
