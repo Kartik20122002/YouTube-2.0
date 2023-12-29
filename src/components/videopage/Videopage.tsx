@@ -159,6 +159,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 const downloadUrl = downloadFormat?.url;
                 linkRef.current.href = downloadUrl;
                 linkRef.current.setAttribute('download', `${id}`);
+                linkRef.current.setAttribute('target', '_blank');
                 linkRef.current.click();
             }
 
