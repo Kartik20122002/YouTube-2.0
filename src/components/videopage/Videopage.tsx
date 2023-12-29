@@ -158,7 +158,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 const downloadFormat = allFormats[allFormats.length - 1] || allFormats[allFormats.length - 2];
                 const downloadUrl = downloadFormat?.url;
                 linkRef.current.href = downloadUrl;
-                linkRef.current.download = id;
+                linkRef.current.setAttribute('download', `${id}`);
                 linkRef.current.click();
             }
 
@@ -579,6 +579,7 @@ const SideVideo = ({ item }: any) => {
 const SideVideoSkeleton = () => {
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="flex w-full justify-between mb-6 px-3 md:px-0">
+
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%]">
                 <motion.div layout transition={{ duration: 0.5 }} className="w-full h-full relative pt-[56.25%] overflow-hidden">
                     <SekeltonImg className="rounded-md absolute top-0 right-0 bottom-0 left-0 w-full h-full" />
