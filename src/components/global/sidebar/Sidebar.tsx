@@ -1,6 +1,6 @@
 import Image from "next/legacy/image";
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineDown } from "react-icons/ai";
 import { MdLibraryAdd, MdOutlineLibraryAdd } from 'react-icons/md';
@@ -9,7 +9,7 @@ import { slideContext } from "@/app/layout";
 import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
-import { RiPlayList2Line } from "react-icons/ri";
+
 
 const links = [
   {
@@ -82,7 +82,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
   const [show, setShow] = useState(false);
   const playlists = async () => {
     try {
-      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'force-cache' });
+      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'no-cache' });
       const { data } = await res.json();
       setList(data);
       setLoading1(false);
@@ -97,7 +97,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
   const fun = async () => {
     try {
-      const res = await fetch('/api/subs', { next: { revalidate: 60 * 60 } });
+      const res = await fetch('/api/subs', { next: { revalidate: 300, tags: ['subs'] }, cache: "no-cache" });
       const { subs, ptoken, ntoken } = await res.json();
       setSubs(subs);
       setLoading(false);
