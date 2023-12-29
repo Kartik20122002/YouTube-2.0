@@ -10,6 +10,7 @@ import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 
+export const dynamic = 'force-dynamic'
 
 const links = [
   {
