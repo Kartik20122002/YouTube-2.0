@@ -75,8 +75,9 @@ const authOptions: NextAuthOptions = {
 
           if (!dbuser) throw new Error("User not found")
 
-          const rToken = dbuser?.refresh_token;
+          const rToken = dbuser?.rToken;
           const expiry = dbuser?.tokenTime;
+
           cookieStore.set('rToken', rToken, { expires: new Date(expiry).getTime() });
         }
       }

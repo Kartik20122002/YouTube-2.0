@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
-import { refreshedToken } from "@/utils/auth/refreshed";
 
 
 export async function GET(req: any) {
@@ -23,17 +22,19 @@ export async function GET(req: any) {
       const refreshToken = rData?.value;
 
       if (!accessToken) {
-        if (!rData) throw new Error("Invalid Tokens Refresh Token is required");
+        if (!refreshToken) throw new Error("Invalid Tokens Refresh Token is required");
 
         oauth2client.setCredentials({ refresh_token: refreshToken });
 
         const newToken = await oauth2client.refreshAccessToken()
 
         const newAccessToken = newToken.credentials.access_token;
-        const newExpiry = newToken.credentials.expiry_date as number;
+
+        const newExpiry = newToken?.credentials?.expiry_date as number;
         cookieStore.set('aToken', newAccessToken as string, {
           expires: newExpiry - 5000,
         });
+
       }
       else {
         oauth2client.setCredentials({ access_token: accessToken });
