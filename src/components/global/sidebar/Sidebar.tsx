@@ -83,7 +83,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
   const [show, setShow] = useState(false);
   const playlists = async () => {
     try {
-      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'no-cache' });
+      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'default' });
       const { data } = await res.json();
       setList(data);
       setLoading1(false);
@@ -98,7 +98,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
   const fun = async () => {
     try {
-      const res = await fetch('/api/subs', { next: { revalidate: 300, tags: ['subs'] }, cache: "no-cache" });
+      const res = await fetch('/api/subs', { next: { revalidate: 300, tags: ['subs'] }, cache: "no-store" });
       const { subs, ptoken, ntoken } = await res.json();
       setSubs(subs);
       setLoading(false);
