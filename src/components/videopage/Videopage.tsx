@@ -8,7 +8,7 @@ import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import { motion } from 'framer-motion'
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
-import { isLargeContext, pageContext } from '@/app/layout';
+import { isLargeContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
 
@@ -18,9 +18,8 @@ const Videopage = ({ id, channelId }: any) => {
     const [channelDetails, setChannelDetails] = useState<any>({});
     const [related, setRelated] = useState<any>([]);
     const [loading, setLoading] = useState(true);
-    const { setpage } = useContext(pageContext) as any;
+
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
-    setpage(true);
 
     const getDetails = async () => {
         try {

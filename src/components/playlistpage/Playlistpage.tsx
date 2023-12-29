@@ -1,24 +1,20 @@
 import Link from 'next/link';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineMore } from 'react-icons/ai';
 import { PiShareFatThin } from 'react-icons/pi'
 import { LiaDownloadSolid } from 'react-icons/lia'
 import { motion } from 'framer-motion';
 import Image from 'next/legacy/image';
-import { isLargeContext, pageContext } from '@/app/layout';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
 import { usePathname } from 'next/navigation';
 
-
-const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/img/no_thumbnail.jpg'
 
 const PlaylistPage = ({ id }: any) => {
 
-    const { setpage } = useContext(pageContext) as any;
-    setpage(false);
+
     const [first, setFirst] = useState<any>(null);
 
     return (<>

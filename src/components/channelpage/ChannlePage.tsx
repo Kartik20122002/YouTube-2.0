@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-import { AiOutlineArrowRight, AiOutlineHistory } from 'react-icons/ai';
+import { AiOutlineHistory } from 'react-icons/ai';
 import { RiPlayListLine } from 'react-icons/ri'
 import { motion } from 'framer-motion';
 import Image from 'next/legacy/image';
-import { isLargeContext, pageContext } from '@/app/layout';
+import { isLargeContext } from '@/app/layout';
 import { CountConverter } from '@/utils/Functions/Converters/CountConverter';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
@@ -14,12 +14,6 @@ import { signIn, useSession } from 'next-auth/react';
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
 
 const ChannelPage = ({ channelId }: any) => {
-
-    const { setpage } = useContext(pageContext) as any;
-
-    useEffect(() => {
-        setpage(false);
-    }, [])
 
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className='overflow-y-scroll h-screen pb-[10rem] dark:bg-black bg-white dark:text-white'>

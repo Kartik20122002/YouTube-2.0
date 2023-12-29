@@ -1,20 +1,20 @@
 'use client'
-import { slideContext } from "@/app/layout";
+import { pageContext, slideContext } from "@/app/layout";
 import SearchPage from "@/components/searchPage/SearchPage";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 
 
-const Searchpage = ()=>{
+const Searchpage = () => {
   const searchParams = useSearchParams()
-  const {slide , setslide} = useContext(slideContext) as any;
- 
-  const query = searchParams.get('query')
-  useEffect(()=>{
-    setslide(-1);
-  })
+  const { slide, setslide } = useContext(slideContext) as any;
+  const { setpage } = useContext(pageContext) as any;
+  setpage(false);
+  setslide(-1);
 
-  return <SearchPage query={query}/>
+  const query = searchParams.get('query')
+
+  return <SearchPage query={query} />
 }
 
 export default Searchpage;

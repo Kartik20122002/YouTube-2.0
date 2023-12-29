@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import Header from '@/components/global/header/Header'
 import './globals.css'
 import { SessionProvider } from "next-auth/react"

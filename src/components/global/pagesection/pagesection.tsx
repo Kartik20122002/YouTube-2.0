@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/legacy/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -13,12 +14,12 @@ import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
 const PageSection = ({ page }: any) => {
   const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
   const { setpage } = useContext(pageContext) as any;
-  setpage(false);
   const [items, setItems] = useState<any>([]);
   const [imgs, setImgs] = useState([]);
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState(0);
+  setpage(false);
 
   const filters = [
     { name: 'All', id: 0 },
@@ -132,6 +133,7 @@ const PageSection = ({ page }: any) => {
 }
 
 const VideoContainer = ({ item, imgs, index, isLarge, mapOfChannels }: any) => {
+  'use server'
 
 
   const views = CountConverter(item?.statistics?.viewCount);

@@ -1,7 +1,6 @@
-import { pageContext, slideContext } from "@/app/layout";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/legacy/image";
 import { AiOutlineHistory, AiOutlineLike } from "react-icons/ai";
 import SekeltonImg from "../global/skeletonComponents/ImgSkeleton";
@@ -12,12 +11,7 @@ import { RiPlayListLine } from "react-icons/ri";
 const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
 
-const Library = () => {
-  const { slide, setslide } = useContext(slideContext) as any;
-  const { setpage } = useContext(pageContext) as any;
-  setslide(1);
-  setpage(false);
-
+const LibraryPage = () => {
 
   return <>
     <motion.div layout transition={{ duration: 0.5 }} className='md:pl-3 h-[90vh] pb-10 overflow-y-scroll flex flex-col-reverse md:flex-row dark:text-white'>
@@ -268,4 +262,4 @@ const PlaylistCard = ({ item }: any) => {
   </>
 }
 
-export default Library;
+export default LibraryPage;
