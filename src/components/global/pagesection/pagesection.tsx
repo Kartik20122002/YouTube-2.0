@@ -133,8 +133,6 @@ const PageSection = ({ page }: any) => {
 }
 
 const VideoContainer = ({ item, imgs, index, isLarge, mapOfChannels }: any) => {
-  'use server'
-
 
   const views = CountConverter(item?.statistics?.viewCount);
   const time = DateConverter(item?.snippet?.publishedAt);

@@ -8,8 +8,7 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { pageContext } from "@/app/layout";
 
 const SearchPage = ({ query }: any) => {
-    const { setpage } = useContext(pageContext) as any;
-    setpage(false);
+
     const [items, setItems] = useState<any>([]);
     const [loading, setLoading] = useState(true);
     const getDetails = async () => {
