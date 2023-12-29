@@ -9,6 +9,7 @@ import { slideContext } from "@/app/layout";
 import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
+import { RiPlayList2Line } from "react-icons/ri";
 
 export const dynamic = 'force-dynamic'
 
@@ -74,7 +75,6 @@ const SideLinks = ({ item, isLarge, index }: any) => {
 
 const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
-
   const { status } = useSession();
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +98,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
   const fun = async () => {
     try {
-      const res = await fetch('/api/subs', { next: { revalidate: 300, tags: ['subs'] }, cache: "no-store" });
+      const res = await fetch('/api/subs', { next: { revalidate: 300 } });
       const { subs, ptoken, ntoken } = await res.json();
       setSubs(subs);
       setLoading(false);
@@ -115,7 +115,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
   useEffect(() => {
     if (status == 'authenticated') {
       fun();
-      // playlists();
+      playlists();
     }
   }, [status])
 
@@ -133,7 +133,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
             })
           }
 
-          {/* {status == 'authenticated' &&
+          {status == 'authenticated' &&
             <>
               <motion.button onClick={() => { setShow(!show) }} className={`w-full dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)] flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col-reverse mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
                 <motion.div layout transition={{ duration: 0.5 }} > <AiOutlineDown /> </motion.div>
@@ -161,7 +161,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
                 </motion.div>
               }
             </>
-          } */}
+          }
 
 
 
