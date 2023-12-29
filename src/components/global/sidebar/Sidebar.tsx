@@ -2,7 +2,8 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineDown } from "react-icons/ai";
+import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineHistory, AiOutlineDown } from "react-icons/ai";
+
 import { MdLibraryAdd, MdOutlineLibraryAdd } from 'react-icons/md';
 import { signOut, useSession } from "next-auth/react";
 import { slideContext } from "@/app/layout";
@@ -25,6 +26,12 @@ const links = [
     link: '/library',
     icon1: <MdLibraryAdd className="text-xl" />,
     icon2: <MdOutlineLibraryAdd className="text-xl" />
+  },
+  {
+    name: 'History',
+    link: '/history',
+    icon1: <AiOutlineHistory className="text-xl" />,
+    icon2: <AiOutlineHistory className="text-xl" />
   },
   {
     name: 'Liked Videos',

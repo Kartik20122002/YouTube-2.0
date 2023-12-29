@@ -16,9 +16,13 @@ const UserScheme = new Schema({
     tokenTime: {
         type: Number,
         returns: true,
-    }
+    },
+    history: {
+        type: String,
+        defaultValue: JSON.stringify([]),
+    },
 });
 
-const User = models.user || model('user', UserScheme);
+const User = models?.user || model('user', UserScheme);
 
 export default User;

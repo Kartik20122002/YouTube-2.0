@@ -18,8 +18,29 @@ const Videopage = ({ id, channelId }: any) => {
     const [channelDetails, setChannelDetails] = useState<any>({});
     const [related, setRelated] = useState<any>([]);
     const [loading, setLoading] = useState(true);
+    const { status, data: session } = useSession();
 
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
+
+    const saveToHistory = async (video: any, channel: any) => {
+        const res = await fetch(`/api/history/save`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({
+                id: id,
+                channelId: channelId,
+                title: video?.snippet?.title || "Untitled",
+                channelTitle: video?.snippet?.channelTitle || "Untitled",
+                videoImg: video?.snippet?.thumbnails?.default?.url || "",
+                channelImg: channel?.snippet?.thumbnails?.default?.url || "",
+                email: session?.user?.email,
+            }),
+        })
+
+    }
 
     const getDetails = async () => {
         try {
@@ -39,6 +60,11 @@ const Videopage = ({ id, channelId }: any) => {
                 setChannelDetails(channel);
                 setRelated(related);
                 setLoading(false);
+
+                if (status === "authenticated") {
+                    saveToHistory(video, channel);
+                }
+
             }
         }
         catch (err) {
@@ -54,8 +80,8 @@ const Videopage = ({ id, channelId }: any) => {
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all overflow-y-scroll pb-8">
             <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
-                <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
-                <SideRow loading={loading} related={related} />
+                {/* <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} /> */}
+                {/* <SideRow loading={loading} related={related} /> */}
             </motion.div>
         </motion.div>
     </>)
@@ -78,7 +104,7 @@ const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
 
             <motion.h3 className="px-1 md:px-0 pt-4  truncate-1 dark:text-white text-[1.2rem] font-semibold w-full">{loading ? <Sekelton height={'h-6'} width={'w-[95%] md:w-full'} className="mx-auto  md:mx-0" /> : video?.snippet?.title}</motion.h3>
 
-            {loading ? <VideoInfoSkeleton /> : <VideoInfo status={status} id={id} channelId={channelId} video={video} channel={channel} loading={loading} />}
+            {loading ? <VideoInfoSkeleton /> : <VideoInfo id={id} channelId={channelId} video={video} channel={channel} loading={loading} />}
 
             <motion.div layout transition={{ duration: 0.5 }} className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
@@ -97,11 +123,12 @@ const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
     </>)
 }
 
-const VideoInfo = ({ status, id, channelId, video, channel, loading }: any) => {
+const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
     const [rate, setRate] = useState<any>(0)
     const [sub, setSub] = useState<any>(false);
     const [subId, setSubId] = useState<any>('');
     const link = usePathname();
+    const { status, data: session } = useSession();
 
     const copyLink = async () => {
         await navigator.clipboard.writeText(`https://youtubepro.vercel.app${link}`);
