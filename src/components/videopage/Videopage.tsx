@@ -10,8 +10,7 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext } from '@/app/layout';
 import parse from 'html-react-parser'
-import { usePathname, useRouter } from 'next/navigation';
-import { revalidateTag } from 'next/cache';
+import { usePathname } from 'next/navigation';
 
 
 const Videopage = ({ id, channelId }: any) => {
@@ -25,7 +24,6 @@ const Videopage = ({ id, channelId }: any) => {
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
 
     const saveToHistory = async (video: any, channel: any) => {
-        revalidateTag('history');
         const res = await fetch(`/api/history/save`, {
             method: 'POST',
             headers: {
@@ -132,7 +130,6 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
     const [subId, setSubId] = useState<any>('');
     const link = usePathname();
     const { status, data: session } = useSession();
-    const router = useRouter();
     const linkRef = useRef<any>(null);
 
     const copyLink = async () => {

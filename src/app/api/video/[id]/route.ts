@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
 import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
 
 export const dynamic = 'force-dynamic'
 
@@ -12,6 +13,8 @@ export async function POST(req: any) {
   const { id, channelId } = JSON.parse(body);
 
   try {
+
+    revalidateTag('history');
 
     const cookieStore = cookies();
 
