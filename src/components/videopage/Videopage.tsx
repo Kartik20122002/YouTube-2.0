@@ -34,7 +34,7 @@ const Videopage = ({ id, channelId }: any) => {
                 channelId: channelId,
                 title: video?.snippet?.title || "Untitled",
                 channelTitle: video?.snippet?.channelTitle || "Untitled",
-                videoImg: video?.snippet?.thumbnails?.default?.url || "",
+                videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
                 channelImg: channel?.snippet?.thumbnails?.default?.url || "",
                 email: session?.user?.email,
             }),
