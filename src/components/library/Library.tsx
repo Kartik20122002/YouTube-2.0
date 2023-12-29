@@ -116,7 +116,7 @@ const VideoSection = ({ id }: any) => {
               {title}
             </motion.div>
             <motion.div layout transition={{ duration: 0.5 }} className="actions">
-              <motion.button layout transition={{ duration: 0.5 }} onClick={() => toggleSee()} className='flex items-center text-sm md:text-md hover:bg-[#1e2d40] text-[#45aeff] rounded-full px-3 py-[0.1rem] md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
+              <motion.button layout transition={{ duration: 0.5 }} onClick={() => toggleSee()} className='flex items-center text-sm md:text-md hover:dark:bg-[#1e2d40] hover:bg-[#2c65b0] text-[#45aeff] rounded-full px-3 py-[0.1rem] md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
             </motion.div>
           </motion.div>
         }
