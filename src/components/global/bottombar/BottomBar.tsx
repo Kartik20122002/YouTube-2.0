@@ -1,7 +1,7 @@
 import { slideContext } from "@/app/layout";
 import Link from "next/link";
 import { useContext } from "react";
-import { AiFillHome, AiFillLike, AiOutlineHome, AiOutlineLike } from "react-icons/ai";
+import { AiFillHome, AiFillLike, AiOutlineHistory, AiOutlineHome, AiOutlineLike } from "react-icons/ai";
 import { MdLibraryAdd, MdOutlineLibraryAdd } from "react-icons/md";
 
 const links = [
@@ -16,6 +16,12 @@ const links = [
     link: '/library',
     icon1: <MdLibraryAdd className="text-xl" />,
     icon2: <MdOutlineLibraryAdd className="text-xl" />
+  },
+  {
+    name: 'History',
+    link: '/history',
+    icon1: <AiOutlineHistory className="text-xl" />,
+    icon2: <AiOutlineHistory className="text-xl" />
   },
   {
     name: 'Liked Video',
