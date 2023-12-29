@@ -10,7 +10,9 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext } from '@/app/layout';
 import parse from 'html-react-parser'
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { revalidateTag } from 'next/cache';
+
 
 const Videopage = ({ id, channelId }: any) => {
 
@@ -23,6 +25,7 @@ const Videopage = ({ id, channelId }: any) => {
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
 
     const saveToHistory = async (video: any, channel: any) => {
+        revalidateTag('history');
         const res = await fetch(`/api/history/save`, {
             method: 'POST',
             headers: {
@@ -129,10 +132,40 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
     const [subId, setSubId] = useState<any>('');
     const link = usePathname();
     const { status, data: session } = useSession();
+    const router = useRouter();
 
     const copyLink = async () => {
         await navigator.clipboard.writeText(`https://youtubepro.vercel.app${link}`);
         alert('Link Copied Successfully');
+    }
+
+    const DownloadVideo = async () => {
+        try {
+
+            const url = `https://ytstream-download-youtube-videos.p.rapidapi.com/dl?id=${id}`;
+
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
+                    'X-RapidAPI-Host': 'ytstream-download-youtube-videos.p.rapidapi.com'
+                },
+                next: { revalidate: 300 },
+                cache: 'force-cache'
+            });
+
+            if (response.status != 404 && response.status != 500) {
+                const result = await response.json();
+                const allFormats = result?.formats;
+                const downloadFormat = allFormats[allFormats.length - 1] || allFormats[allFormats.length - 2];
+                const downloadUrl = downloadFormat?.url;
+                if (downloadUrl) window.open(downloadUrl, '_blank');
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const getAuthDetails = async () => {
@@ -300,7 +333,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
 
                 <motion.button onClick={() => copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.button>
                 {/* <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button> */}
-                {/* <Link href={'#'} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Download</Link> */}
+                <button onClick={() => DownloadVideo()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download</button>
 
             </motion.div>
         </motion.div>

@@ -25,7 +25,8 @@ const History = () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ email: session?.user?.email }),
-                    next: { revalidate: 300 }
+                    next: { revalidate: 300, tags: ['history'] },
+                    cache: 'force-cache'
                 });
 
                 if (res.status != 500 && res.status != 404) {

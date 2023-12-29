@@ -12,7 +12,7 @@ import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 import { RiPlayList2Line } from "react-icons/ri";
 
-export const dynamic = 'force-dynamic'
+// export const dynamic = 'force-dynamic'
 
 const links = [
   {
@@ -105,7 +105,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
   const fun = async () => {
     try {
-      const res = await fetch('/api/subs', { next: { revalidate: 300 } });
+      const res = await fetch('/api/subs', { next: { revalidate: 300 }, cache: 'force-cache' });
       const { subs, ptoken, ntoken } = await res.json();
       setSubs(subs);
       setLoading(false);
