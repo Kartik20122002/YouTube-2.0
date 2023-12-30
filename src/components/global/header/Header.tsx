@@ -64,8 +64,9 @@ const Header = ({ change, toggleTheme, dark }: any) => {
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
+
   return (
-    <div ref={wrapperRef}>
+    <div>
 
       <nav className="flex flex-wrap md:flex-nowrap bg-white dark:bg-black items-center pt-1 md:pt-0 w-screen h-[10vh] justify-between fixed top-0 z-10">
 
@@ -74,7 +75,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
           <AiOutlineMenu onClick={() => { change() }} className="text-[25px] dark:bg-black mx-4 dark:text-white opacity-60 hidden md:block cursor-pointer font-[10]" />
 
           <Link href="/" className="w-full md:w-[105px] block">
-            <Image src={logo} className="dark:brightness-[6]" loading="lazy" layout="responsive" alt="logo" />
+            <Image src={logo} className="dark:brightness-[6]" loading="eager" layout="responsive" alt="logo" />
           </Link>
 
         </div>
@@ -114,7 +115,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
             {
               usermenu &&
 
-              <div className={`user-actions text-[0.65rem] sm:text-[1rem] dark:text-black absolute shadow-lg translate-x-[-90%] sm:translate-x-[-80%] lg:translate-y-[-5%] w-max min-w-[150px] sm:min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] bg-white dark:shadow-[rgb(255,255,255,0.1)]`}>
+              <div ref={wrapperRef} className={`user-actions text-[0.65rem] sm:text-[1rem] dark:text-black absolute shadow-lg translate-x-[-90%] sm:translate-x-[-80%] lg:translate-y-[-5%] w-max min-w-[150px] sm:min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] bg-white dark:shadow-[rgb(255,255,255,0.1)]`}>
 
                 <div className={`p-0 pb-[5%] mt-1 sm:flex ${status === "unauthenticated" && 'flex'} cursor-pointer relative w-full rounded-[8px] dark:text-white items-center`}>
 
