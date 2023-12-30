@@ -24,15 +24,6 @@ const Videopage = ({ id, channelId }: any) => {
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
 
     const saveToHistory = async (video: any, channel: any) => {
-        const saveObj = {
-            id: id,
-            channelId: channelId,
-            title: video?.snippet?.title || "Untitled",
-            channelTitle: video?.snippet?.channelTitle || "Untitled",
-            videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
-            channelImg: channel?.snippet?.thumbnails?.default?.url || "",
-            timestamp: Date.now()
-        }
 
         fetch(`/api/history/save`, {
             method: 'POST',
@@ -40,14 +31,31 @@ const Videopage = ({ id, channelId }: any) => {
                 'Content-Type': 'application/json',
             },
 
-            body: JSON.stringify(saveObj),
+            body: JSON.stringify({
+                id: id,
+                channelId: channelId,
+                title: video?.snippet?.title || "Untitled",
+                channelTitle: video?.snippet?.channelTitle || "Untitled",
+                videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
+                channelImg: channel?.snippet?.thumbnails?.default?.url || "",
+                email: session?.user?.email
+            }),
         })
 
         if (typeof window !== "undefined") {
+            const saveObj = {
+                id: id,
+                channelId: channelId,
+                title: video?.snippet?.title || "Untitled",
+                channelTitle: video?.snippet?.channelTitle || "Untitled",
+                videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
+                channelImg: channel?.snippet?.thumbnails?.default?.url || "",
+                timestamp: Date.now()
+            }
+
             let historyStr = localStorage.getItem('history');
 
             if (!historyStr) {
-                console.log("Cached Miss")
                 const res = await fetch(`/api/history`, {
                     method: 'POST',
                     headers: {
@@ -65,8 +73,6 @@ const Videopage = ({ id, channelId }: any) => {
                     localStorage.setItem('history', JSON.stringify(historyItems));
                 }
             } else {
-
-                console.log("Cache Hit");
                 let historyItems = JSON.parse(historyStr);
                 if (historyItems.length === 50) historyItems.pop();
                 historyItems.unshift(saveObj);
