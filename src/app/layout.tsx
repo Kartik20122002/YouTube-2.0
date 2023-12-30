@@ -1,9 +1,9 @@
 "use client"
 import Header from '@/components/global/header/Header'
 import './globals.css'
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider, useSession } from "next-auth/react"
 import Sidebar from '@/components/global/sidebar/Sidebar'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 // @ts-ignore
@@ -35,7 +35,6 @@ export default function RootLayout({
   const [slide, setSlide] = useState(-1);
   const [IsVideoPage, setPage] = useState(false);
   const [dark, setDark] = useState(true);
-
 
   function toggle() {
     setIsLarge(!isLarge);

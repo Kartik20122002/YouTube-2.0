@@ -24,22 +24,54 @@ const Videopage = ({ id, channelId }: any) => {
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
 
     const saveToHistory = async (video: any, channel: any) => {
-        const res = await fetch(`/api/history/save`, {
+        const saveObj = {
+            id: id,
+            channelId: channelId,
+            title: video?.snippet?.title || "Untitled",
+            channelTitle: video?.snippet?.channelTitle || "Untitled",
+            videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
+            channelImg: channel?.snippet?.thumbnails?.default?.url || "",
+        }
+
+        fetch(`/api/history/save`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
 
-            body: JSON.stringify({
-                id: id,
-                channelId: channelId,
-                title: video?.snippet?.title || "Untitled",
-                channelTitle: video?.snippet?.channelTitle || "Untitled",
-                videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
-                channelImg: channel?.snippet?.thumbnails?.default?.url || "",
-                email: session?.user?.email,
-            }),
+            body: JSON.stringify(saveObj),
         })
+
+        if (typeof window !== "undefined") {
+            let historyStr = localStorage.getItem('history');
+
+            if (!historyStr) {
+                console.log("Cached Miss")
+                const res = await fetch(`/api/history`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: session?.user?.email }),
+                    next: { tags: ['history'] }
+                });
+
+                if (res.status != 500 && res.status != 404) {
+                    const { videoItems } = await res.json();
+                    let historyItems = videoItems;
+                    if (historyItems.length === 50) historyItems.pop();
+                    historyItems.unshift(saveObj);
+                    localStorage.setItem('history', JSON.stringify(historyItems));
+                }
+            } else {
+
+                console.log("Cache Hit");
+                let historyItems = JSON.parse(historyStr);
+                if (historyItems.length === 50) historyItems.pop();
+                historyItems.unshift(saveObj);
+                localStorage.setItem('history', JSON.stringify(historyItems));
+            }
+        }
 
     }
 

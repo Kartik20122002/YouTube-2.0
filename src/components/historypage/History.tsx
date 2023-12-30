@@ -19,21 +19,48 @@ const History = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch(`/api/history`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email: session?.user?.email }),
-                    next: { tags: ['history'] }
-                });
+                if (typeof window !== "undefined") {
+                    let historyStr = localStorage.getItem('history');
 
-                if (res.status != 500 && res.status != 404) {
-                    const { videoItems } = await res.json();
-                    setItems(videoItems);
-                    setLoading(false);
+                    if (!historyStr) {
+                        console.log("Cached Miss")
+                        const res = await fetch(`/api/history`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ email: session?.user?.email }),
+                            next: { tags: ['history'] }
+                        });
+
+                        if (res.status != 500 && res.status != 404) {
+                            const { videoItems } = await res.json();
+                            setItems(videoItems);
+                            setLoading(false);
+                            localStorage.setItem('history', JSON.stringify(videoItems));
+                        }
+                    } else {
+                        console.log("Cache Hit");
+                        let historyItems = JSON.parse(historyStr);
+                        setItems(historyItems);
+                        setLoading(false)
+                    }
+                } else {
+                    const res = await fetch(`/api/history`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email: session?.user?.email }),
+                        next: { tags: ['history'] }
+                    });
+
+                    if (res.status != 500 && res.status != 404) {
+                        const { videoItems } = await res.json();
+                        setItems(videoItems);
+                        setLoading(false);
+                    }
                 }
-                else throw new Error("History not found")
 
             }
             catch (error) {
