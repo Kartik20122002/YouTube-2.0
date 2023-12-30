@@ -11,36 +11,33 @@ export async function POST(req: any) {
 
     try {
 
+        const saveObj = {
+            id: id,
+            channelId: channelId,
+            title: title,
+            channelTitle: channelTitle,
+            videoImg: videoImg,
+            channelImg: channelImg,
+            timestamp: Date.now(),
+        }
+
         await ConnectDB();
         const dbUser = await User.findOne({ email: email });
         if (dbUser) {
             const historyStr = dbUser?.history as string;
 
             if (historyStr) {
-                let history = JSON.parse(historyStr);
-                if (history.length === 50) history.pop();
-                history.unshift({
-                    id: id,
-                    channelId: channelId,
-                    title: title,
-                    channelTitle: channelTitle,
-                    videoImg: videoImg,
-                    channelImg: channelImg,
-                    timestamp: Date.now(),
-                });
-                dbUser.history = JSON.stringify(history);
+                let historyItemsOld = JSON.parse(historyStr) as Array<any>;
+                let historyItems = [] as any;
+                historyItems.push(saveObj);
+                historyItemsOld?.forEach(item => { if (item.id !== id) historyItems.push(item); })
+                while (historyItems.length > 24) historyItems.pop();
+
+                dbUser.history = JSON.stringify(historyItems);
                 await dbUser.save();
                 return NextResponse.json({ status: 200 });
             } else {
-                let history = [{
-                    id: id,
-                    channelId: channelId,
-                    title: title,
-                    channelTitle: channelTitle,
-                    videoImg: videoImg,
-                    channelImg: channelImg,
-                    timestamp: Date.now(),
-                }]
+                let history = [saveObj]
                 dbUser.history = JSON.stringify(history);
                 await dbUser.save();
                 return NextResponse.json({ status: 200 });

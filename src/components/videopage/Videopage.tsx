@@ -67,15 +67,19 @@ const Videopage = ({ id, channelId }: any) => {
 
                 if (res.status != 500 && res.status != 404) {
                     const { videoItems } = await res.json();
-                    let historyItems = videoItems;
+                    let historyItemsOld = videoItems as Array<any>;
+                    let historyItems = [] as any;
+                    historyItems.push(saveObj);
+                    historyItemsOld?.forEach(item => { if (item.id !== id) historyItems.push(item); })
                     while (historyItems.length > 24) historyItems.pop();
-                    historyItems.unshift(saveObj);
                     localStorage.setItem('history', JSON.stringify(historyItems));
                 }
             } else {
-                let historyItems = JSON.parse(historyStr);
+                const historyItemsOld = JSON.parse(historyStr) as Array<any>;
+                let historyItems = [] as any;
+                historyItems.push(saveObj);
+                historyItemsOld?.forEach(item => { if (item.id !== id) historyItems.push(item); })
                 while (historyItems.length > 24) historyItems.pop();
-                historyItems.unshift(saveObj);
                 localStorage.setItem('history', JSON.stringify(historyItems));
             }
         }

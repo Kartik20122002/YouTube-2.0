@@ -118,7 +118,7 @@ const VideoContainer = ({ item }: any) => {
                     <Link className="text-black dark:text-white font-semibold text-[15px] mb-[5px] truncate-2" href={`/channel/${channelId}/video/${id}`}>{title}</Link>
                     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap md:flex-col w-full">
                         <Link className="text-grey mr-2 basis-auto shrink truncate-1 hover:text-[#c0bebe]" href={`/channel/${channelId}`}> <p>{channelTitle}</p></Link>
-                        <motion.div layout transition={{ duration: 0.5 }} className="text-grey flex flex-wrap grow truncate-1 whitespace-normal">Viewed <span className="ml-1">{time} ago</span></motion.div>
+                        <motion.div layout transition={{ duration: 0.5 }} className="text-grey flex flex-wrap grow truncate-1 whitespace-normal">Watched <span className="ml-1">{time} ago</span></motion.div>
                     </motion.div>
                 </motion.div>
 
