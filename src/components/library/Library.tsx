@@ -8,6 +8,7 @@ import SekeltonText from "../global/skeletonComponents/TextSkeleton";
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { RiPlayListLine } from "react-icons/ri";
+import { useSession } from "next-auth/react";
 const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
 
@@ -18,7 +19,7 @@ const LibraryPage = () => {
       <motion.div layout transition={{ duration: 0.5 }} className="basis-[80%] grow">
 
         <VideoSection key={1} id="playlists" />
-        <VideoSection key={2} id="history" />
+        <VideoSection key={1} id="history" />
         <VideoSection key={3} id="liked" />
 
       </motion.div>
@@ -75,7 +76,8 @@ const UserDetails = () => {
 }
 
 const VideoSection = ({ id }: any) => {
-  const title = id == 'history' ? 'Activities' : id == 'liked' ? 'Liked Videos' : 'Playlists';
+  const { data: session } = useSession();
+  const title = id == 'history' ? 'History' : id == 'liked' ? 'Liked Videos' : 'Playlists';
   const icon = id == 'history' ? <AiOutlineHistory /> : id == 'liked' ? <AiOutlineLike /> : <RiPlayListLine />
   const [see, setSee] = useState(false);
   const toggleSee = () => {
@@ -96,10 +98,66 @@ const VideoSection = ({ id }: any) => {
       setLoading(false);
     }
   }
+  const fetchHistory = async () => {
+    try {
+      if (typeof window !== "undefined") {
+        let historyStr = localStorage.getItem('history');
 
+        if (!historyStr) {
+          const res = await fetch(`/api/history`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: session?.user?.email }),
+            next: { tags: ['history'] }
+          });
+
+          if (res.status != 500 && res.status != 404) {
+            const { videoItems } = await res.json();
+            setItems(videoItems);
+            setLoading(false);
+            localStorage.setItem('history', JSON.stringify(videoItems));
+          }
+        } else {
+          let historyItems = JSON.parse(historyStr);
+          setItems(historyItems);
+          setLoading(false)
+        }
+      } else {
+        const res = await fetch(`/api/history`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: session?.user?.email }),
+          next: { tags: ['history'] }
+        });
+
+        if (res.status != 500 && res.status != 404) {
+          const { videoItems } = await res.json();
+          setItems(videoItems);
+          setLoading(false);
+        }
+      }
+
+    }
+    catch (error) {
+      console.log('page error', error);
+      setItems([]);
+      setLoading(false);
+    }
+
+  }
   useEffect(() => {
-    getDetails()
+    if (id === 'history') {
+      fetchHistory();
+    }
+    else {
+      getDetails()
+    }
   }, [])
+
 
   return <>
     {(loading || items?.length > 0) &&
@@ -133,7 +191,7 @@ const VideoSection = ({ id }: any) => {
             id === 'history' ?
               items?.map((item: any, index: any) => {
                 return <>
-                  {see ? <ActivitiesCard key={index} item={item} /> : index < 5 ? <ActivitiesCard key={index} item={item} /> : <></>}
+                  {see ? <HistoryCard key={index} item={item} /> : index < 5 ? <HistoryCard key={index} item={item} /> : <></>}
                 </>
               }
               )
@@ -202,41 +260,24 @@ const VideoCard = ({ item }: any) => {
   </>
 }
 
-const ActivitiesCard = ({ item }: any) => {
+const HistoryCard = ({ item }: any) => {
+  const { id, channelId, title, channelTitle, videoImg, channelImg, timestamp } = item;
 
-  let isChannel;
-  let url;
-  let channelUrl;
-
-
-  if (item?.snippet?.type === "subscription") {
-    url = `/channel/${item?.contentDetails?.subscription?.resourceId?.channelId}`
-    channelUrl = `/channel/${item?.contentDetails?.subscription?.resourceId?.channelId}`
-    isChannel = true;
-  }
-  else {
-    isChannel = false;
-    url = `/channel/${item?.snippet?.channelId}/video/${item?.contentDetails?.playlistItem?.resourceId?.videoId}`
-    channelUrl = `/channel/${item?.snippet?.channelId}`
-  }
+  const url = `/channel/${channelId}/video/${id}`
+  const channelUrl = `/channel/${channelId}`
 
   return <>
 
     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
       <motion.div layout transition={{ duration: 0.5 }} className="relative w-full pt-[56.25%] overflow-hidden">
         <Link href={url} className="h-full absolute top-0 right-0 left-0 bottom-0">
-          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={videoImg} layout='fill' alt='videocardImg' />
         </Link>
       </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">
-        <Link href={url} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title || item?.snippet?.channelTitle}</Link>
-        {!isChannel &&
-          <Link href={channelUrl} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link>
-        }
-        {item?.statistics?.viewCount ?
-          <motion.div layout transition={{ duration: 0.5 }} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {CountConverter(item?.statistics?.viewCount)} views &bull; {DateConverter(item?.snippet?.publishedAt)} ago</motion.div> :
-          <motion.div layout transition={{ duration: 0.5 }} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {DateConverter(item?.snippet?.publishedAt)} ago</motion.div>
-        }
+        <Link href={url} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{title}</Link>
+        <Link href={channelUrl} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{channelTitle}</Link>
+        <motion.div layout transition={{ duration: 0.5 }} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]">Watched {DateConverter(timestamp)} ago</motion.div>
       </motion.div>
     </motion.div>
 
