@@ -23,7 +23,6 @@ const History = () => {
                     let historyStr = localStorage.getItem('history');
 
                     if (!historyStr) {
-                        console.log("Cached Miss")
                         const res = await fetch(`/api/history`, {
                             method: 'POST',
                             headers: {
@@ -40,7 +39,6 @@ const History = () => {
                             localStorage.setItem('history', JSON.stringify(videoItems));
                         }
                     } else {
-                        console.log("Cache Hit");
                         let historyItems = JSON.parse(historyStr);
                         setItems(historyItems);
                         setLoading(false)
