@@ -31,6 +31,7 @@ const Videopage = ({ id, channelId }: any) => {
             channelTitle: video?.snippet?.channelTitle || "Untitled",
             videoImg: video?.snippet?.thumbnails?.medium?.url || video?.snippet?.thumbnails?.default?.url,
             channelImg: channel?.snippet?.thumbnails?.default?.url || "",
+            timestamp: Date.now()
         }
 
         fetch(`/api/history/save`, {
