@@ -135,7 +135,7 @@ const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
 
     const { status, data: session } = useSession();
 
-    const commentsCount = CountConverter(video?.statistics?.commentCount || 0)
+    const commentsCount = video?.statistics?.commentCount || 0;
 
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className=" md:basis-[64%] shrink md:pb-[5rem] md:h-[89vh] overflow-y-scroll">
@@ -488,7 +488,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
         <motion.form onSubmit={(e) => videoComment(e)} className="mt-4 hidden md:flex items-start">
 
             {
-                img ? <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full' /> :
+                img ? <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full bg-grey' /> :
                     <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle />
             }
 
@@ -556,7 +556,7 @@ const Comment = ({ item }: any) => {
     return <motion.div layout transition={{ duration: 0.5 }} className="flex mt-6 justify-between">
         <motion.div layout transition={{ duration: 0.5 }} className="basis-[5%] flex justify-center items-start">
             <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`} className="w-[45px] h-[45px] rounded-full">
-                <Image width={45} height={45} src={item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className='rounded-full' loading='lazy' alt='commentImg' />
+                <Image width={45} height={45} src={item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className='rounded-full dark:bg-[#202324] bg-[#b8b8b8]' loading='lazy' alt='commentImg' />
             </Link>
         </motion.div>
 
