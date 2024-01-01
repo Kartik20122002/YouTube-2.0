@@ -82,47 +82,71 @@ const SideLinks = ({ item, isLarge, index }: any) => {
 
 const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loading1, setLoading1] = useState(true);
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
-  const playlists = async () => {
-    try {
-      const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'default' });
-      const { data } = await res.json();
-      setList(data);
-      setLoading1(false);
-    }
-
-    catch (err) {
-      console.log(err);
-      setList([]);
-      setLoading1(false);
-    }
-  }
-
-  const fun = async () => {
-    try {
-      const res = await fetch('/api/subs', { next: { revalidate: 300 }, cache: 'force-cache' });
-      const { subs, ptoken, ntoken } = await res.json();
-      setSubs(subs);
-      setLoading(false);
-    }
-
-    catch (err) {
-      console.log(err);
-      setSubs([]);
-      signOut();
-    }
-  }
-
 
   useEffect(() => {
+    const getHistory = async () => {
+      if (typeof window !== "undefined") {
+
+        const res = await fetch(`/api/history`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: session?.user?.email }),
+          next: { tags: ['history'] }
+        });
+
+        if (res.status != 500 && res.status != 404) {
+          const { videoItems } = await res.json();
+          localStorage.setItem('history', JSON.stringify(videoItems));
+        }
+
+      }
+    }
+
+    const playlists = async () => {
+      try {
+        const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'default' });
+        const { data } = await res.json();
+        setList(data);
+        setLoading1(false);
+      }
+
+      catch (err) {
+        console.log(err);
+        setList([]);
+        setLoading1(false);
+      }
+    }
+
+    const fun = async () => {
+
+      try {
+
+        const res = await fetch('/api/subs', { next: { revalidate: 300 }, cache: 'force-cache' });
+        const { subs, ptoken, ntoken } = await res.json();
+        setSubs(subs);
+        setLoading(false);
+      }
+
+      catch (err) {
+        console.log(err);
+        setSubs([]);
+        signOut();
+      }
+    }
+
+
     if (status == 'authenticated') {
       fun();
       playlists();
+      getHistory();
     }
   }, [status])
 

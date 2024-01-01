@@ -39,6 +39,7 @@ const PageSection = ({ page }: any) => {
 
   const fetchData = async () => {
     try {
+
       const res = await fetch(`/api/page/${page}`, {
         method: 'POST',
         headers: {
@@ -55,7 +56,7 @@ const PageSection = ({ page }: any) => {
         setToken(ntoken);
         setLoading(false);
       }
-      else throw new Error('some error hai yaar')
+      else throw new Error('Error loading videos')
 
     }
     catch (error) {
