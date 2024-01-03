@@ -22,9 +22,9 @@ const Videopage = ({ id, channelId }: any) => {
     const [videoDetails, setVideoDetails] = useState<any>({});
     const [channelDetails, setChannelDetails] = useState<any>({});
     const [related, setRelated] = useState<any>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const { status, data: session } = useSession();
-    const [downloading, setDownloading] = useState<boolean>(false);
+    const [downloading, setDownloading] = useState<boolean>(true);
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
 
     const wrapperRef = useRef(null);
@@ -638,8 +638,9 @@ const SideVideoSkeleton = () => {
 
 const DownloadModal = ({ id }: any) => {
     const { downloading, setDownloading } = useContext(downloadContext) as any;
-    const [started, setStarted] = useState('');
-    const [progressbar, setProgress] = useState(0);
+    const [started, setStarted] = useState(false);
+    const [progressbar, setProgress] = useState(10);
+    const [disable, setDisable] = useState(false);
 
     const qualities = [
         { id: 1, name: 'Full HD (1080p)', link: '1080' },
@@ -649,10 +650,9 @@ const DownloadModal = ({ id }: any) => {
     ]
     const [downloadId, setDownloadId] = useState(0);
 
-
-
     const beginDownload = async (downloadid: string) => {
-        setProgress(45);
+        setProgress(35);
+
         try {
             const options = {
                 method: 'GET',
@@ -666,34 +666,43 @@ const DownloadModal = ({ id }: any) => {
                 }
             };
 
-
             const interval = setInterval(async () => {
                 const response = await axios.request(options);
 
                 if (response.status === 200) {
-                    const { data } = response;
-                    const { success, progress, download_url } = data;
-                    if (success === 1) {
-                        setProgress(0);
-                        setStarted('finished');
-                        const url = download_url;
-                        window.open(url, '_blank');
-                        clearInterval(interval);
-                        setDownloading(false);
-                    }
-                    else setProgress(75);
+                    setProgress(response.data.progress);
                 }
+                if (response.status === 200) {
+                    const { data } = response;
+                    const { success, text, download_url } = data;
 
-            }, 3000);
+                    if (success === 1) {
+                        setProgress(100);
+                        setStarted(false);
+                        setDownloading(false);
+                        setDisable(false);
+                        clearInterval(interval);
+                        window.open(download_url, '_blank');
+                    }
+                    if (text === 'Initialising') setProgress(70);
+                    if (text === 'Converting') setProgress(80);
+                    if (text === 'Finished') setProgress(90);
+                }
+            }, 3000)
+
+            return;
 
         } catch (error) {
-            console.error(error);
+            setProgress(10);
+            setDisable(false);
+            setDownloading(false);
+            return;
         }
     }
 
     const downloader = async () => {
-        setStarted('started');
-        setProgress(25);
+        setDisable(true);
+        setStarted(true);
         const options = {
             method: 'GET',
             url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/download.php',
@@ -709,13 +718,19 @@ const DownloadModal = ({ id }: any) => {
 
         try {
             const response = await axios.request(options);
+
             if (response.status === 200) {
                 const { data } = response;
                 const { id } = data;
-                beginDownload(id);
+
+                setProgress(10);
+                await beginDownload(id);
             }
         } catch (error) {
-            console.error(error);
+            console.log(error);
+            setProgress(10);
+            setDisable(false);
+            setDownloading(false);
         }
     }
 
@@ -734,12 +749,12 @@ const DownloadModal = ({ id }: any) => {
                     })
                 }
             </motion.div>
-            {started === 'started' && <motion.div className="min-w-[100%] bg-white min-h-2 w-20 h-2 rounded-full">
+            {started && <motion.div className="min-w-[100%] bg-white min-h-2 w-20 h-2 rounded-full">
                 <motion.div className={`min-w-[${progressbar}%] w-0 duration-1000 bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
             </motion.div>}
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>
-                <motion.button disabled={downloadId == 0} onClick={() => downloader()} className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${downloadId !== 0 ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</motion.button>
+                <motion.button disabled={disable || downloadId == 0} onClick={() => downloader()} className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadId !== 0 && !disable) ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</motion.button>
             </motion.div>
         </motion.div>
     </>
