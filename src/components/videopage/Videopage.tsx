@@ -22,9 +22,9 @@ const Videopage = ({ id, channelId }: any) => {
     const [videoDetails, setVideoDetails] = useState<any>({});
     const [channelDetails, setChannelDetails] = useState<any>({});
     const [related, setRelated] = useState<any>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const { status, data: session } = useSession();
-    const [downloading, setDownloading] = useState<boolean>(true);
+    const [downloading, setDownloading] = useState<boolean>(false);
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
 
     const wrapperRef = useRef(null);
