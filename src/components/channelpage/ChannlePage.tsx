@@ -122,7 +122,7 @@ const ChannelInfo = ({ id }: any) => {
                 {loading ? <SekeltonText width={'max-w-[7rem]'} height={'min-h-[2.3rem]'} className='w-[7rem] h-[2.3rem] !rounded-full cursor-pointer' /> : <>{sub ?
                     <motion.button layout transition={{ duration: 0.5 }} onClick={() => toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
                     :
-                    <motion.button onClick={() => toggleSub()} className='bg-white py-1 px-4 rounded-full md:text-lg text-black font-semibold hover:opacity-70'>Subscribe</motion.button>
+                    <motion.button onClick={() => toggleSub()} className='dark:bg-white dark:text-black bg-black text-white py-1 px-4 rounded-full md:text-lg font-semibold hover:opacity-70'>Subscribe</motion.button>
                 }</>}
             </motion.div>
         </motion.div>

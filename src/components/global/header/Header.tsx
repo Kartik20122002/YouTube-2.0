@@ -38,10 +38,11 @@ const Header = ({ change, toggleTheme, dark }: any) => {
   }
 
   useEffect(() => {
-    if (status == 'authenticated')
+    if (status == 'authenticated') {
       setProfileUrl(session?.user?.image);
-    setUserName(session?.user?.name);
-    setUserEmail(session?.user?.email);
+      setUserName(session?.user?.name);
+      setUserEmail(session?.user?.email);
+    }
   }, [status]);
 
   function useOutsideAlerter(ref: any) {

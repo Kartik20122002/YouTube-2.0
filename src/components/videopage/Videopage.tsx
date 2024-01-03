@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { CgSpinner } from "react-icons/cg";
+import { MdRadioButtonChecked, MdRadioButtonUnchecked } from "react-icons/md";
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
 import Image from 'next/legacy/image';
 import { signIn, useSession } from 'next-auth/react';
@@ -10,8 +12,10 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext } from '@/app/layout';
 import parse from 'html-react-parser'
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
+import axios from 'axios';
 
+const downloadContext = createContext<any>(null);
 
 const Videopage = ({ id, channelId }: any) => {
 
@@ -20,8 +24,24 @@ const Videopage = ({ id, channelId }: any) => {
     const [related, setRelated] = useState<any>([]);
     const [loading, setLoading] = useState(true);
     const { status, data: session } = useSession();
-
+    const [downloading, setDownloading] = useState<boolean>(false);
     const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
+
+    const wrapperRef = useRef(null);
+    useOutsideAlerter(wrapperRef);
+
+    function useOutsideAlerter(ref: any) {
+        useEffect(() => {
+            function handleClickOutside(event: any) {
+                if (ref.current && !ref.current.contains(event.target)) {
+                    setDownloading(false);
+                }
+            }
+            document.addEventListener("mouseup", handleClickOutside);
+
+        }, [ref]);
+    }
+
 
     const saveToHistory = async (video: any, channel: any) => {
 
@@ -122,12 +142,17 @@ const Videopage = ({ id, channelId }: any) => {
     }, [])
 
     return (<>
-        <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all overflow-y-scroll pb-8">
-            <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
-                <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
-                <SideRow loading={loading} related={related} />
+        <downloadContext.Provider value={{ downloading, setDownloading }}>
+            <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all relative overflow-y-scroll pb-8">
+                <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
+                    <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
+                    <SideRow loading={loading} related={related} />
+                    {
+                        downloading && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal id={id} /></motion.div>
+                    }
+                </motion.div>
             </motion.div>
-        </motion.div>
+        </downloadContext.Provider>
     </>)
 }
 
@@ -142,7 +167,7 @@ const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="w-full relative pt-[56.25%] overflow-hidden">
 
-                <iframe allowFullScreen src={`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' onPlay={() => console.log('played')} />
+                <motion.iframe allowFullScreen src={`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' onPlay={() => console.log('played')} />
 
             </motion.div>
 
@@ -173,43 +198,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
     const [subId, setSubId] = useState<any>('');
     const link = usePathname();
     const { status, data: session } = useSession();
-    const linkRef = useRef<any>(null);
-
-    const copyLink = async () => {
-        await navigator.clipboard.writeText(`https://youtubepro.vercel.app${link}`);
-        alert('Link Copied Successfully');
-    }
-
-    const DownloadVideo = async () => {
-        try {
-
-            const url = `https://ytstream-download-youtube-videos.p.rapidapi.com/dl?id=${id}`;
-
-
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
-                    'X-RapidAPI-Host': 'ytstream-download-youtube-videos.p.rapidapi.com'
-                },
-                next: { revalidate: 300 }
-            });
-
-            if (response.status != 404 && response.status != 500) {
-                const result = await response.json();
-                const allFormats = result?.formats;
-                const downloadFormat = allFormats[allFormats.length - 1] || allFormats[allFormats.length - 2];
-                const downloadUrl = downloadFormat?.url;
-                linkRef.current.href = downloadUrl;
-                linkRef.current.setAttribute('download', `${id}`);
-                linkRef.current.setAttribute('target', '_blank');
-                linkRef.current.click();
-            }
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    const { downloading, setDownloading } = useContext(downloadContext);
 
     const getAuthDetails = async () => {
         try {
@@ -248,7 +237,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 },
                 body: JSON.stringify({ id: channelId, subId: subId, toSub: !sub }),
                 next: { revalidate: 300 }
-            })
+            });
 
             if (res.status === 200) {
                 if (sub) {
@@ -346,9 +335,9 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 </motion.div>
             </motion.div>
 
-            <motion.div layout transition={{ duration: 0.5 }} className="dark:text-white max-w-full md:basis-[60%] grow flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap md:px-0 justify-between items-center mt-4 md:mt-0 md:justify-end" id="buttons">
+            <motion.div layout transition={{ duration: 0.5 }} className=" dark:text-white max-w-full md:basis-[60%] grow flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap md:px-0 justify-between items-center mt-4 md:mt-0 md:justify-end" id="buttons">
 
-                <motion.div layout transition={{ duration: 0.5 }} className="flex h-10 items-center mr-3 md:mr-1 my-1">
+                <motion.div layout transition={{ duration: 0.5 }} className="flex h-10 items-center mr-3 md:mr-6 my-1">
 
                     {
                         rate == 1 ?
@@ -374,16 +363,21 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
 
                 </motion.div>
 
-                <motion.button onClick={() => copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.button>
+                {/* <motion.button onClick={() => copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.button> */}
                 {/* <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button> */}
-                <button onClick={() => DownloadVideo()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download</button>
-                <a ref={linkRef} style={{ display: 'none' }} />
+
+                <motion.button onClick={() => { if (!downloading) { setDownloading(true) } }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'>
+                    <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
+                </motion.button>
+
             </motion.div>
+
         </motion.div>
     </>)
 }
 
 const VideoInfoSkeleton = () => {
+
     const loading = true;
     return <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col flex-wrap md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
 
@@ -403,24 +397,25 @@ const VideoInfoSkeleton = () => {
             </motion.div>
         </motion.div>
 
-        <motion.div layout transition={{ duration: 0.5 }} className="dark:text-white w-screen md:w-auto flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap basis-[100%] shrink grow md:basis-[60%] px-1 md:px-0 justify-between mt-4 md:mt-0 md:justify-end" id="buttons">
+        <motion.div layout transition={{ duration: 0.5 }} className="dark:text-white  w-screen md:w-auto flex text-xs md:text-md overflow-x-scroll md:overflow-x-auto flex-nowrap md:flex-wrap basis-[100%] shrink grow md:basis-[60%] px-1 md:px-0 justify-between mt-4 md:mt-0 md:justify-end" id="buttons">
 
-            <motion.div layout transition={{ duration: 0.5 }} className="flex h-10 items-center mr-3 md:mr-1 mb-4">
+            <motion.div layout transition={{ duration: 0.5 }} className="flex h-10 dark:bg-[#202324] bg-[#b8b8b8] animate-pulse rounded-full items-center mr-3 md:mr-1 mb-4">
 
-                <Link href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pr-2 pl-4 h-full rounded-l-full items-center'>
-                    <AiOutlineLike className='text-[1.2rem] md:text-[1.5rem]' />
-                    <motion.span className='px-3'><Sekelton width={'w-6'} /></motion.span>
-                </Link>
+                <motion.div className='flex pr-2 pl-4 h-10 rounded-l-full items-center'>
+                    <AiOutlineLike className='text-[1.2rem] md:text-[1.5rem] text-transparent' />
+                    <motion.span className='px-3'><div className={'w-6'} /></motion.span>
+                </motion.div>
 
-                <Link href={'#'} className='flex dark:bg-[#6c6c6c57] bg-[#cfcfcf57] pl-2 pr-4  h-10 rounded-r-full items-center'>
-                    <AiOutlineDislike className='text-[1.2rem] md:text-[1.5rem]' />
-                </Link>
+                <motion.div className='flex pl-2 pr-4 h-10 rounded-r-full items-center'>
+                    <AiOutlineDislike className='text-[1.2rem] text-transparent md:text-[1.5rem]' />
+                </motion.div>
 
             </motion.div>
 
-            <motion.div layout transition={{ duration: 0.5 }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-3 md:mr-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.div>
-            <motion.div layout transition={{ duration: 0.5 }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mb-4 mr-3 md:mr-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Save</motion.div>
-            <motion.div layout transition={{ duration: 0.5 }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] rounded-full px-4 h-10 mr-3 md:mb-4'><AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download</motion.div>
+            <motion.div className='cursor-default dark:bg-[#202324] bg-[#b8b8b8] animate-pulse flex items-center  text-transparent  text-xs md:text-md  rounded-full px-4 h-10 mr-3 mb-4'>
+                <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
+            </motion.div>
+
 
         </motion.div>
     </motion.div>
@@ -641,5 +636,113 @@ const SideVideoSkeleton = () => {
     </>)
 }
 
-export default Videopage;
+const DownloadModal = ({ id }: any) => {
+    const { downloading, setDownloading } = useContext(downloadContext) as any;
+    const [started, setStarted] = useState('');
+    const [progressbar, setProgress] = useState(0);
 
+    const qualities = [
+        { id: 1, name: 'Full HD (1080p)', link: '1080' },
+        { id: 2, name: 'HD (720p)', link: '720' },
+        { id: 3, name: 'Standard (480p)', link: '480' },
+        { id: 4, name: 'Low (360p)', link: '360' },
+    ]
+    const [downloadId, setDownloadId] = useState(0);
+
+
+
+    const beginDownload = async (downloadid: string) => {
+        try {
+            setStarted('started');
+            const options = {
+                method: 'GET',
+                url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/progress.php',
+                params: {
+                    id: downloadid
+                },
+                headers: {
+                    'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
+                    'X-RapidAPI-Host': 'youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com'
+                }
+            };
+
+
+            const interval = setInterval(async () => {
+                const response = await axios.request(options);
+                if (response.status === 200) {
+                    const { data } = response;
+                    const { success, progress, download_url } = data;
+                    if (success === 1) {
+                        setProgress(0);
+                        setStarted('finished');
+                        const url = download_url;
+                        window.open(url, '_blank');
+                        clearInterval(interval);
+                        setDownloading(false);
+                    }
+                    setProgress(progress / 10);
+                }
+
+            }, 3000);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const downloader = async () => {
+        setStarted('downloading');
+        const options = {
+            method: 'GET',
+            url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/download.php',
+            params: {
+                format: qualities[downloadId - 1]?.link,
+                url: `https://www.youtube.com/watch?v=${id}`
+            },
+            headers: {
+                'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
+                'X-RapidAPI-Host': 'youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com'
+            }
+        };
+
+        try {
+            const response = await axios.request(options);
+            if (response.status === 200) {
+                const { data } = response;
+                const { id } = data;
+                beginDownload(id);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    return <>
+        <motion.div layout className="rounded-lg w-fit h-fit shadow-lg px-6 py-2 bg-white dark:bg-[#212121]">
+            <motion.div layout className="my-2 dark:text-white text-black w-full text-lg">Download Quality</motion.div>
+            <motion.div layout className="w-fit sm:w-[20rem] py-2">
+                {
+                    qualities.map((item: any, index: any) => {
+                        return <motion.div layout onClick={() => setDownloadId(item.id)}
+                            key={item.id} className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
+                            {item.id === downloadId ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
+                            <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{item.name}</motion.span>
+                        </motion.div>
+
+                    })
+                }
+            </motion.div>
+            {started === 'started' && <motion.div className="min-w-[100%] bg-white min-h-2 w-20 h-2 rounded-full">
+                <motion.div className={`min-w-[${progressbar}%] w-0 duration-100 bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
+            </motion.div>}
+            <motion.div layout className="flex mt-2 justify-end dark:text-white">
+                <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>
+                <motion.button disabled={downloadId == 0} onClick={() => downloader()} className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${downloadId !== 0 ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</motion.button>
+            </motion.div>
+        </motion.div>
+    </>
+}
+
+
+
+export default Videopage;
