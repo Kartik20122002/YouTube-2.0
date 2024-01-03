@@ -735,7 +735,7 @@ const DownloadModal = ({ id }: any) => {
                 }
             </motion.div>
             {started === 'started' && <motion.div className="min-w-[100%] bg-white min-h-2 w-20 h-2 rounded-full">
-                <motion.div className={`min-w-[${progressbar}%] w-0 duration-100 bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
+                <motion.div className={`min-w-[${progressbar}%] w-0 duration-1000 bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
             </motion.div>}
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>
