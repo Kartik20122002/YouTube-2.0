@@ -1,8 +1,14 @@
 import Link from 'next/link';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { CgSpinner } from "react-icons/cg";
-import { MdRadioButtonChecked, MdRadioButtonUnchecked } from "react-icons/md";
-import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineDownload, AiOutlineLike, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
+
+import { MdRadioButtonChecked } from "@react-icons/all-files/md/MdRadioButtonChecked";
+import { MdRadioButtonUnchecked } from "@react-icons/all-files/md/MdRadioButtonUnchecked";
+import { AiOutlineDislike } from '@react-icons/all-files/ai/AiOutlineDislike';
+import { AiFillLike } from '@react-icons/all-files/ai/AiFillLike';
+import { AiFillDislike } from '@react-icons/all-files/ai/AiFillDislike';
+import { AiOutlineLike } from '@react-icons/all-files/ai/AiOutlineLike';
+import { AiOutlineDownload } from '@react-icons/all-files/ai/AiOutlineDownload';
+
 import Image from 'next/legacy/image';
 import { signIn, useSession } from 'next-auth/react';
 import Sekelton from '../global/skeletonComponents/TextSkeleton';
@@ -14,6 +20,8 @@ import { isLargeContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { redirect, usePathname } from 'next/navigation';
 import axios from 'axios';
+import { RedirectType } from 'next/dist/client/components/redirect';
+
 
 const downloadContext = createContext<any>(null);
 
@@ -639,7 +647,7 @@ const SideVideoSkeleton = () => {
 const DownloadModal = ({ id }: any) => {
     const { downloading, setDownloading } = useContext(downloadContext) as any;
     const [started, setStarted] = useState(false);
-    const [progressbar, setProgress] = useState(10);
+    const [progressbar, setProgress] = useState(0);
     const [disable, setDisable] = useState(false);
 
     const qualities = [
@@ -667,11 +675,16 @@ const DownloadModal = ({ id }: any) => {
             };
 
             const interval = setInterval(async () => {
+
                 const response = await axios.request(options);
 
                 if (response.status === 200) {
                     const { data } = response;
                     const { success, text, download_url } = data;
+
+                    if (text === 'Initialising') setProgress(80);
+                    else if (text === 'Converting') setProgress(90);
+                    else if (text === 'Finished') setProgress(100);
 
                     if (success === 1) {
                         window.open(download_url, '_blank');
@@ -681,26 +694,24 @@ const DownloadModal = ({ id }: any) => {
                         setDisable(false);
                         clearInterval(interval);
                     }
-                    if (text === 'Initialising') setProgress(70);
-                    if (text === 'Converting') setProgress(80);
-                    if (text === 'Finished') setProgress(90);
+
                 }
             }, 3000)
 
             return;
 
         } catch (error) {
-            setProgress(10);
             setDisable(false);
             setDownloading(false);
+            setProgress(0);
             return;
         }
     }
 
     const downloader = async () => {
+        setProgress(10);
         setDisable(true);
         setStarted(true);
-        setProgress(10)
         const options = {
             method: 'GET',
             url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/download.php',
@@ -720,13 +731,13 @@ const DownloadModal = ({ id }: any) => {
             if (response.status === 200) {
                 const { data } = response;
                 const { id } = data;
-
                 setProgress(30);
+
                 await beginDownload(id);
             }
         } catch (error) {
             console.log(error);
-            setProgress(10);
+            setProgress(0)
             setDisable(false);
             setDownloading(false);
         }
@@ -748,7 +759,7 @@ const DownloadModal = ({ id }: any) => {
                 }
             </motion.div>
             {started && <motion.div className="min-w-[100%] bg-white min-h-2 w-20 h-2 rounded-full">
-                <motion.div className={`min-w-[${progressbar}%] w-0 duration-1000 bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
+                <motion.div className={`min-w-[${progressbar}%] w-0 duration-[1.5s] bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
             </motion.div>}
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>

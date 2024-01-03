@@ -2,15 +2,16 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineHistory, AiOutlineDown } from "react-icons/ai";
 
+import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineHistory, AiOutlineDown } from "react-icons/ai";
 import { MdLibraryAdd, MdOutlineLibraryAdd } from 'react-icons/md';
+import { RiPlayList2Line } from "react-icons/ri";
+
 import { signOut, useSession } from "next-auth/react";
 import { slideContext } from "@/app/layout";
 import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
-import { RiPlayList2Line } from "react-icons/ri";
 
 // export const dynamic = 'force-dynamic'
 
