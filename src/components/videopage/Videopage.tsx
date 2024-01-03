@@ -651,7 +651,7 @@ const DownloadModal = ({ id }: any) => {
     const [downloadId, setDownloadId] = useState(0);
 
     const beginDownload = async (downloadid: string) => {
-        setProgress(35);
+        setProgress(50);
 
         try {
             const options = {
@@ -670,19 +670,16 @@ const DownloadModal = ({ id }: any) => {
                 const response = await axios.request(options);
 
                 if (response.status === 200) {
-                    setProgress(response.data.progress);
-                }
-                if (response.status === 200) {
                     const { data } = response;
                     const { success, text, download_url } = data;
 
                     if (success === 1) {
+                        window.open(download_url, '_blank');
                         setProgress(100);
                         setStarted(false);
                         setDownloading(false);
                         setDisable(false);
                         clearInterval(interval);
-                        window.open(download_url, '_blank');
                     }
                     if (text === 'Initialising') setProgress(70);
                     if (text === 'Converting') setProgress(80);
@@ -703,6 +700,7 @@ const DownloadModal = ({ id }: any) => {
     const downloader = async () => {
         setDisable(true);
         setStarted(true);
+        setProgress(10)
         const options = {
             method: 'GET',
             url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/download.php',
@@ -723,7 +721,7 @@ const DownloadModal = ({ id }: any) => {
                 const { data } = response;
                 const { id } = data;
 
-                setProgress(10);
+                setProgress(30);
                 await beginDownload(id);
             }
         } catch (error) {
