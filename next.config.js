@@ -2,8 +2,8 @@
 
 const withPWA = require('next-pwa')({
     dest: 'public',
-    register: true,
-    skipWaiting: true,
+  register: true,
+  scope: '/',
   });
   
 const nextConfig = {
