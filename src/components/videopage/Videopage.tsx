@@ -582,14 +582,10 @@ const SideRow = ({ loading, related }: any) => {
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
                 loading ? <>
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
-                    <SideVideoSkeleton />
+                    <SideVideoSkeleton /> <SideVideoSkeleton />
+                    <SideVideoSkeleton /> <SideVideoSkeleton />
+                    <SideVideoSkeleton /> <SideVideoSkeleton />
+                    <SideVideoSkeleton /> <SideVideoSkeleton />
                 </> :
                     related?.map((item: any, index: any) => {
                         return <SideVideo key={index} item={item} />
@@ -605,7 +601,6 @@ const SideVideo = ({ item }: any) => {
         <motion.div layout transition={{ duration: 0.5 }} className=" flex flex-wrap w-fulljustify-between mb-3 px-3 md:px-0">
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%] mr-2 h-full">
-
                 <Link href={`/channel/${item?.channelId}/video/${item?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
                     <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.thumbnail[0]?.url || item?.thumbnail[1]?.url} />
                 </Link>
@@ -649,6 +644,7 @@ const DownloadModal = ({ id }: any) => {
     const [started, setStarted] = useState(false);
     const [progressbar, setProgress] = useState(0);
     const [disable, setDisable] = useState(false);
+    const [downloadId, setDownloadId] = useState(0);
 
     const qualities = [
         { id: 1, name: 'Full HD (1080p)', link: '1080' },
@@ -656,7 +652,6 @@ const DownloadModal = ({ id }: any) => {
         { id: 3, name: 'Standard (480p)', link: '480' },
         { id: 4, name: 'Low (360p)', link: '360' },
     ]
-    const [downloadId, setDownloadId] = useState(0);
 
     const beginDownload = async (downloadid: string) => {
         setProgress(50);

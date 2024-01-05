@@ -2,56 +2,90 @@
 
 ## Overview
 
-This project is a robust recreation of YouTube's core features, boasting an intuitive UI and seamless user experience. Built with a modern tech stack, it prioritizes efficiency and security.
+This project is a robust recreation of YouTube's core features, boasting an intuitive UI and seamless user experience. Built with a modern tech stack, it prioritizes efficiency and security providing nearly all the features of YouTube.
 
 ## Key Features
 
-User authentication with Google OAuth 2.0 for enhanced security
-Video streaming and playback
-Video search and discovery
-User profiles and channels
-Video uploading and management
-Video commenting and rating
-Playlist creation and management
+User authentication with Google OAuth 2.0 for enhanced security.
+
+Fast Loading and 100% SEO index using Next.js 13 Features and caching.
+
+Progressive Web App , both works as Website and installable in other platforms.
+
+### Unauthenticated Users
+
+Can stream, download and search videos, playlists and can view and search channels and their associated videos and playlists.
+
+### Authenticated Users
+
+Can watch personal playlists, liked videos, history and subscriptions.
+
+Can Like/Dislike videos, subscribe/unsubscribe Channels, comment on videos.
 
 ## Technologies Used
 
-Frontend: Next.js 13, React.js, Tailwind CSS, TypeScript
-Backend: Next.js API routes, MongoDB
-Authentication: NextAuth.js with Google OAuth 2.0
-Additional APIs: Google APIs
+Frontend/Backend: Next.js 13
+
+Scripting Language: TypeScript
+
+Styling : Tailwind CSS
+
+Database: MongoDB
+
+Authentication: Google OAuth 2.0 using NextAuth.js
+
+Motions : Framer Motion
+
+Additional APIs: YouTube API
 
 ## Development Highlights
 
-Next.js 13 for Unified Development: Leveraged Next.js 13 to streamline frontend and backend development, resulting in a 60% boost in development efficiency.
-Robust Authentication: Implemented Google OAuth 2.0 using NextAuth.js to ensure high security standards.
-Comprehensive Core Features: Replicated approximately 80% of YouTube's core functionality, providing a rich user experience.
+Used Next.js 13 for Unified Development to streamline frontend and backend development, resulting in a 60% boost in development efficiency.
 
-## Getting Started
+Robust Authentication: Implemented Google OAuth 2.0 using NextAuth.js to ensure high security standards.
+
+Comprehensive Core Features: Replicated approximately 80% of YouTube's core functionality and User Interface (UI), providing a rich user experience.
+
+## Installation Instructions
 
 Clone the repository:
-Bash
-git clone https://github.com/your-username/youtube-clone.git
+
+```Bash
+git clone https://github.com/Kartik20122002/YouTube-2.0.git
+```
+
 Use code with caution. Learn more
 Install dependencies:
-Bash
+
+```npm
 npm install
-Use code with caution. Learn more
+```
+
+Use code with caution.
+
 Create a .env.local file and add your environment variables (e.g., Google API keys, MongoDB connection string).
+
 Start the development server:
-Bash
+
+```npm
 npm run dev
-Use code with caution. Learn more
+```
+
+Use code with caution.
+
 Access the application at http://localhost:3000/.
 
 ## Contributions
 
-We welcome contributions! Please follow these steps:
+I welcome contributions! Please follow these steps:
 
 Fork the repository.
+
 Create a branch for your changes.
+
 Make your changes and commit them.
 Push your changes to your fork.
+
 Create a pull request.
 
 ## License
