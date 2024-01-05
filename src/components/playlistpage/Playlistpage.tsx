@@ -155,14 +155,12 @@ const PlayListItems = ({ id, setfirst }: any) => {
     }, []);
 
     return <>
-        <div className="mt-4 mb-2 ml-2 md:hidden font-bold text-2xl">Playlist Items</div>
+        <motion.div layout transition={{ duration: 0.5 }} className="mt-4 mb-2 ml-2 md:hidden font-bold text-2xl">Playlist Items</motion.div>
         <motion.div layout transition={{ duration: 0.5 }} className="items max-h-full overflow-y-scroll basis-full md:basis-[70%] grow ">
             {loading ? <>
-                <PlayListItemSkeleton />
-                <PlayListItemSkeleton />
-                <PlayListItemSkeleton />
-                <PlayListItemSkeleton />
-                <PlayListItemSkeleton />
+                {Array.from({ length: 5 }, (_, index) => {
+                    return <PlayListItemSkeleton key={index} />;
+                })}
             </> :
                 items?.map((item: any, index: any) => {
                     return <PlayListItem key={index} index={index + 1} item={item} />

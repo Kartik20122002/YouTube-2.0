@@ -46,29 +46,9 @@ const PageSectionSkeleton = () => {
 
   return <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap justify-evenly h-[92vh] w-full overflow-y-scroll pt-5 pb-[10%]" id="mainpage">
 
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-    <VideoContainerSkeleton />
-
-
+    {Array.from({ length: 20 }, (_, index) => {
+      return <VideoContainerSkeleton key={index} />;
+    })}
   </motion.div>
 }
 

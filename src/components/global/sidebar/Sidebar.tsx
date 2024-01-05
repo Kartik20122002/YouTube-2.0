@@ -60,13 +60,11 @@ const SubSkeleton = ({ isLarge }: any) => {
       <motion.h3 layout transition={{ duration: 0.5 }} initial={{ opacity: isLarge ? 0 : 1 }} animate={{ opacity: isLarge ? 1 : 0 }} className="text-[18px] dark:text-white ml-2 my-5 text-[#5a5a5a]">Subscriptions</motion.h3>
     }
 
-    <SubsSkeleton isLarge={isLarge} />
-    <SubsSkeleton isLarge={isLarge} />
-    <SubsSkeleton isLarge={isLarge} />
-    <SubsSkeleton isLarge={isLarge} />
-    <SubsSkeleton isLarge={isLarge} />
-    <SubsSkeleton isLarge={isLarge} />
-    <SubsSkeleton isLarge={isLarge} />
+    {
+      Array.from({ length: 7 }, (_, index) => {
+        return <SubsSkeleton key={index} isLarge={isLarge} />
+      })
+    }
 
   </motion.div>
 }

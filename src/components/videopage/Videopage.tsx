@@ -582,10 +582,10 @@ const SideRow = ({ loading, related }: any) => {
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
                 loading ? <>
-                    <SideVideoSkeleton /> <SideVideoSkeleton />
-                    <SideVideoSkeleton /> <SideVideoSkeleton />
-                    <SideVideoSkeleton /> <SideVideoSkeleton />
-                    <SideVideoSkeleton /> <SideVideoSkeleton />
+                    {Array.from({ length: 8 }, (_, index) => {
+                        return <SideVideoSkeleton key={index} />;
+                    })}
+
                 </> :
                     related?.map((item: any, index: any) => {
                         return <SideVideo key={index} item={item} />
