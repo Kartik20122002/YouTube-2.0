@@ -138,7 +138,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
       try {
 
-        const res = await fetch('/api/subs', { next: { revalidate: 300 }, cache: 'force-cache' });
+        const res = await fetch('/api/subs', { next: { revalidate: 300 } });
         const { subs, ptoken, ntoken } = await res.json();
         setSubs(subs);
         setLoading(false);
