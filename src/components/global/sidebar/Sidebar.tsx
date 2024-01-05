@@ -54,7 +54,8 @@ const Sub = ({ item, isLarge }: any) => {
 }
 
 const SubSkeleton = ({ isLarge }: any) => {
-  return <motion.div layout transition={{ duration: 0.5 }} className="subscribed-list w-full pl-[3%] pb-[15%]">
+  return <motion.div layout initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="subscribed-list w-full pl-[3%] pb-[15%]">
     {isLarge &&
       <motion.h3 layout transition={{ duration: 0.5 }} initial={{ opacity: isLarge ? 0 : 1 }} animate={{ opacity: isLarge ? 1 : 0 }} className="text-[18px] dark:text-white ml-2 my-5 text-[#5a5a5a]">Subscriptions</motion.h3>
     }
@@ -76,16 +77,13 @@ const SideLinks = ({ item, isLarge, index }: any) => {
   return <motion.div layout
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }} transition={{ duration: 0.5 }} className="relative cursor-pointer">
-    <Link
-      onClick={() => setslide(index)}
-      href={item.link} className={`w-full ${slide !== index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+    transition={{ duration: 0.5 }} className="relative cursor-pointer">
+    <Link onClick={() => setslide(index)} href={item.link} className={`w-full ${slide !== index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
       <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
     </Link>
-    {slide === index ? (
-      <motion.div className="activeLink" layoutId="underline" />
-    ) : null}
+
+    {slide === index && <motion.div className="activeLink" layoutId="underline" />}
   </motion.div>
 }
 
