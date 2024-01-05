@@ -140,7 +140,8 @@ const VideoContainer = ({ item, isLarge, mapOfChannels }: any) => {
 
   return <>
 
-    <motion.div whileHover={{ scale: 1.1, transition: { duration: 0.5, delay: 3 } }} layout transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
+    <motion.div whileHover={{ scale: 1.1, transition: { duration: 0.5, delay: 3 } }} layout
+      transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
 
       <Link className={`w-full overflow-hidden relative pt-[56.25%] md:rounded-xl`} href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>
         <Image src={item.snippet.thumbnails.medium.url} className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />

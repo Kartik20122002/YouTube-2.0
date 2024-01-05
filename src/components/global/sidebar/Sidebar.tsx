@@ -73,12 +73,20 @@ const SubSkeleton = ({ isLarge }: any) => {
 const SideLinks = ({ item, isLarge, index }: any) => {
   const { slide, setslide } = useContext(slideContext) as any;
 
-  return <Link
-    onClick={() => setslide(index)}
-    href={item.link} className={`w-full ${slide == index ? 'bg-[rgb(0,0,0,0.05)] dark:bg-[rgba(255,254,254,0.16)] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.21)]' : 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
-    <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
-    <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
-  </Link>
+  return <motion.div layout
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }} transition={{ duration: 0.5 }} className="relative cursor-pointer">
+    <Link
+      onClick={() => setslide(index)}
+      href={item.link} className={`w-full ${slide !== index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+      <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
+      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
+    </Link>
+    {slide === index ? (
+      <motion.div className="activeLink" layoutId="underline" />
+    ) : null}
+  </motion.div>
 }
 
 const Sidebar = ({ isLarge, IsVideoPage }: any) => {
@@ -197,7 +205,11 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
 
 
-          <motion.hr layout transition={{ duration: 0.5 }} className={`m-auto border-0 h-[1px] mt-[7%] bg-white ${isLarge ? 'w-[85%]' : 'w-3/4 mb-10'}`} />
+          <motion.hr layout
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }} className={`m-auto border-0 h-[1px] mt-[7%] bg-white ${isLarge ? 'w-[85%]' : 'w-3/4 mb-10'}`} />
         </motion.div>
 
         {status == 'authenticated' && <>

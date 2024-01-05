@@ -116,7 +116,10 @@ const Header = ({ change, toggleTheme, dark }: any) => {
             {
               usermenu &&
 
-              <div ref={wrapperRef} className={`user-actions text-[0.65rem] sm:text-[1rem] dark:text-black absolute shadow-lg translate-x-[-90%] sm:translate-x-[-80%] lg:translate-y-[-5%] w-max min-w-[150px] sm:min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] bg-white dark:shadow-[rgb(255,255,255,0.1)]`}>
+              <motion.div layout initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }} ref={wrapperRef} className={`user-actions text-[0.65rem] sm:text-[1rem] dark:text-black absolute shadow-lg translate-x-[-90%] sm:translate-x-[-80%] lg:translate-y-[-5%] w-max min-w-[150px] sm:min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] bg-white dark:shadow-[rgb(255,255,255,0.1)]`}>
 
                 <div className={`p-0 pb-[5%] mt-1 sm:flex ${status === "unauthenticated" && 'flex'} cursor-pointer relative w-full rounded-[8px] dark:text-white items-center`}>
 
@@ -181,7 +184,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
                   </button>
                 }
 
-              </div>
+              </motion.div>
             }
 
 
