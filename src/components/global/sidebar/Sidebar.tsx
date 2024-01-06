@@ -176,7 +176,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
           {status == 'authenticated' &&
             <>
-              <motion.button initial={{opacity : 0 , x : -100}} whileTap={{scale : 0.9}} animate ={{opacity : 1 , x : 0 }} transition={{ duration: 0.5 , delay : 0.5 }} layout onClick={() => { setShow(!show) }} className={`w-full dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)] flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col-reverse mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+              <motion.button initial={{opacity : 0 , x : -100}} whileTap={{scale : 0.9}} animate ={{opacity : 1 , x : 0 }} transition={{ duration: 0.5 }} onClick={() => { setShow(!show) }} className={`w-full dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)] flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col-reverse mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
                 <motion.div layout transition={{ duration: 0.5 }} > <AiOutlineDown /> </motion.div>
                 <motion.div layout transition={{ duration : 0.5}} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>Show {show ? 'Less' : 'More'}</motion.div>
               </motion.button>
