@@ -43,7 +43,11 @@ const links = [
 ];
 
 const Sub = ({ item, isLarge }: any) => {
-  return <motion.div layout transition={{ duration: 0.5 }} >
+  return <motion.div
+    initial={{opacity: 0 , x : -100}}
+    whileInView={{opacity: 0 , x : 0 , transition: {duration: 1}}}
+    viewport={{once: true}}
+   layout transition={{ duration: 0.5 }} >
     <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]`}>
       <motion.div layout transition={{ duration: 0.5 }} className="flex min-w-[2rem] w-[2rem] items-center">
         <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className={`rounded-full bg-[#5a5a5a]`} loading="lazy" alt="img" />
@@ -73,8 +77,8 @@ const SideLinks = ({ item, isLarge, index }: any) => {
   const { slide } = useContext(slideContext) as any;
 
   return <motion.div layout
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
+    initial={{ opacity: 0 ,x : '-100%' }}
+    animate={{ opacity: 1 , x : 0 }}
     transition={{ duration: 0.5 }} className="relative cursor-pointer">
     <Link href={item.link} className={`w-full ${slide != index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
       <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
