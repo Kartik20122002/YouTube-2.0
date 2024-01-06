@@ -70,18 +70,18 @@ const SubSkeleton = ({ isLarge }: any) => {
 }
 
 const SideLinks = ({ item, isLarge, index }: any) => {
-  const { slide, setslide } = useContext(slideContext) as any;
+  const { slide } = useContext(slideContext) as any;
 
   return <motion.div layout
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.5 }} className="relative cursor-pointer">
-    <Link onClick={() => setslide(index+1)} href={item.link} className={`w-full ${slide != index+1 && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+    <Link href={item.link} className={`w-full ${slide != index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
       <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
     </Link>
 
-    {slide == index+1 && <motion.div className="activeLink" layoutId="underline" />}
+    {slide == index && <motion.div className="activeLink" layoutId="underline" />}
   </motion.div>
 }
 
