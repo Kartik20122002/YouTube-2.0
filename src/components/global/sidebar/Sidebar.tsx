@@ -76,7 +76,13 @@ const SubSkeleton = ({ isLarge }: any) => {
 const SideLinks = ({ item, isLarge }: any) => {
   const { slide, setslide } = useContext(slideContext) as any;
 
+  useEffect(()=>{
+    console.log(slide);
+  },[slide])
+
   const {id , name ,link , icon1 , icon2} = item;
+
+  console.log(item);
 
   return <motion.div layout
     initial={{ opacity: 0 }}
@@ -170,8 +176,8 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
         <motion.div layout transition={{ duration: 0.5 }} className="shortcut-links pl-[3%] w-full">
 
           {
-            links.map((item: any, index: any) => {
-              return <SideLinks key={index} item={item} isLarge={isLarge} />
+            links.map((item: any) => {
+              return <SideLinks key={item.id} item={item} isLarge={isLarge} />
             })
           }
 
@@ -238,9 +244,6 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 }
 
 export default Sidebar;
-
-
-
 
 const SubsSkeleton = ({ isLarge }: any) => {
   return <motion.div layout transition={{ duration: 0.5 }} >
