@@ -17,28 +17,24 @@ import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 
 const links = [
   {
-    id : 1,
     name: 'Home',
     link: '/',
     icon1: <AiFillHome className="text-xl" />,
     icon2: <AiOutlineHome className="text-xl" />,
   },
   {
-    id:2,
     name: 'Library',
     link: '/library',
     icon1: <MdLibraryAdd className="text-xl" />,
     icon2: <MdOutlineLibraryAdd className="text-xl" />
   },
   {
-    id : 3,
     name: 'History',
     link: '/history',
     icon1: <AiOutlineHistory className="text-xl" />,
     icon2: <AiOutlineHistory className="text-xl" />
   },
   { 
-    id : 4,
     name: 'Liked Videos',
     link: '/likepage',
     icon1: <AiFillLike className="text-xl" />,
@@ -73,29 +69,23 @@ const SubSkeleton = ({ isLarge }: any) => {
   </motion.div>
 }
 
-const SideLinks = ({ item, isLarge , slide , setslide }: any) => {
-
-  useEffect(()=>{
-    console.log(slide);
-  },[])
-
-  const {id , name ,link , icon1 , icon2} = item;
+const SideLinks = ({ item, isLarge, index }: any) => {
+  const { slide, setslide } = useContext(slideContext) as any;
 
   return <motion.div layout
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.5 }} className="relative cursor-pointer">
-    <Link onClick={() => setslide(id)} href={link} className={`w-full ${slide !== id ? 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]' : null} dark:text-white  flex flex-nowrap items-center  ${!isLarge ? 'justify-center flex-col mb-5' : null} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
-      <motion.div layout transition={{ duration: 0.5 }} > {slide == id ? icon1 : icon2} </motion.div>
-      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{name}</motion.div>
+    <Link onClick={() => setslide(index+1)} href={item.link} className={`w-full ${slide != index+1 && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+      <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
+      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
     </Link>
 
-    {slide === id ? <motion.div className="absolute top-0 left-0 right-0 bottom-0 h-full rounded-xl" layoutId="underline" /> : null}
+    {slide == index+1 && <motion.div className="activeLink" layoutId="underline" />}
   </motion.div>
 }
 
 const Sidebar = ({ isLarge, IsVideoPage }: any) => {
-  const { slide, setslide } = useContext(slideContext) as any;
   const { status, data: session } = useSession();
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -173,8 +163,8 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
         <motion.div layout transition={{ duration: 0.5 }} className="shortcut-links pl-[3%] w-full">
 
           {
-            links.map((item: any) => {
-              return <SideLinks key={item.id} item={item} isLarge={isLarge} slide={slide} setslide={setslide} />
+            links.map((item: any,index : any) => {
+              return <SideLinks key={index} item={item} isLarge={isLarge} index={index} />
             })
           }
 
