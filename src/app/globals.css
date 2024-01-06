@@ -5,6 +5,11 @@
 
 :root {
   background-color: white;
+  --loader-background-color: #EEEEEE;
+  --loader-highlight-color: #DEDEDE;
+  --loader-highlight-color-dark: #323434;
+  --loader-background-color-dark : #202324;
+  
   /* --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255; */
@@ -145,6 +150,31 @@ body {
     rgba(255, 255, 255, 0.5) transparent
   );
   animation: skeleton-loading 1s infinite;
+}
+
+.skeletonUi{
+    background: linear-gradient(90deg, var(--loader-background-color) 25%, 
+                                       var(--loader-highlight-color) 50%, 
+                                       var(--loader-background-color) 75%);
+    background-size: 200% 100%;
+    animation: loading 2s infinite ease-in-out;
+}
+
+.dark .skeletonUi{
+  background: linear-gradient(90deg, var(--loader-background-color-dark) 25%, 
+  var(--loader-highlight-color-dark) 50%, 
+  var(--loader-background-color-dark) 75%);
+  background-size: 200% 100%;
+  animation: loading 2s  infinite ease-in-out;
+}
+
+@keyframes loading {
+  0% {
+      background-position: 200% 0;
+  }
+  100% {
+      background-position: -200% 0;
+  }
 }
 
 @keyframes skeleton-loading {
