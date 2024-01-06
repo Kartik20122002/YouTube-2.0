@@ -18,9 +18,8 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext } from '@/app/layout';
 import parse from 'html-react-parser'
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import axios from 'axios';
-import { RedirectType } from 'next/dist/client/components/redirect';
 
 
 const downloadContext = createContext<any>(null);
@@ -374,7 +373,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 {/* <motion.button onClick={() => copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.button> */}
                 {/* <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button> */}
 
-                <motion.button onClick={() => { if (!downloading) { setDownloading(true) } }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'>
+                <motion.button layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'>
                     <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
                 </motion.button>
 
@@ -409,12 +408,12 @@ const VideoInfoSkeleton = () => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="flex h-10 dark:bg-[#202324] bg-[#b8b8b8] animate-pulse rounded-full items-center mr-3 md:mr-1 mb-4">
 
-                <motion.div className='flex pr-2 pl-4 h-10 rounded-l-full items-center'>
+                <motion.div layout transition={{ duration: 0.5 }} className='flex pr-2 pl-4 h-10 rounded-l-full items-center'>
                     <AiOutlineLike className='text-[1.2rem] md:text-[1.5rem] text-transparent' />
-                    <motion.span className='px-3'><div className={'w-6'} /></motion.span>
+                    <motion.span layout transition={{ duration: 0.5 }} className='px-3'><motion.div layout transition={{ duration: 0.5 }} className={'w-6'} /></motion.span>
                 </motion.div>
 
-                <motion.div className='flex pl-2 pr-4 h-10 rounded-r-full items-center'>
+                <motion.div layout transition={{ duration: 0.5 }} className='flex pl-2 pr-4 h-10 rounded-r-full items-center'>
                     <AiOutlineDislike className='text-[1.2rem] text-transparent md:text-[1.5rem]' />
                 </motion.div>
 
@@ -439,7 +438,7 @@ const Description = ({ loading, video }: any) => {
             <motion.div layout transition={{ duration: 0.5 }} className="dark:text-white opacity-30 truncate-2">
                 {
                     !loading && video?.snippet?.tags?.map((tag: any, index: any) => {
-                        return <motion.span key={index} className='mr-1 '>#{tag}</motion.span>
+                        return <motion.span layout transition={{ duration: 0.5 }} key={index} className='mr-1 '>#{tag}</motion.span>
                     })
                 }
             </motion.div>
@@ -501,8 +500,8 @@ const CommentForm = ({ img, channelId, id }: any) => {
                 <motion.input value={comment} autoComplete='off' onChange={(e) => setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:dark:border-white focus:border-black transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
 
                 <motion.div layout transition={{ duration: 0.5 }} className="btns w-full flex justify-end transition-colors mt-3">
-                    <motion.button onClick={() => setComment('')} type='reset' className='mr-4 opacity-90 hover:opacity-100'>Cancel</motion.button>
-                    <motion.button type='submit' className={`ml-4 ${comment == '' ? 'dark:bg-[#212121] bg-grey cursor-not-allowed' : 'bg-[#3ea6ff] hover:bg-[#77bcf8]'} py-[.3rem] px-3 rounded-full dark:text-black`}>Comment</motion.button>
+                    <motion.button layout transition={{ duration: 0.5 }} onClick={() => setComment('')} type='reset' className='mr-4 opacity-90 hover:opacity-100'>Cancel</motion.button>
+                    <motion.button layout transition={{ duration: 0.5 }} type='submit' className={`ml-4 ${comment == '' ? 'dark:bg-[#212121] bg-grey cursor-not-allowed' : 'bg-[#3ea6ff] hover:bg-[#77bcf8]'} py-[.3rem] px-3 rounded-full dark:text-black`}>Comment</motion.button>
                 </motion.div>
 
             </motion.div>
@@ -570,7 +569,7 @@ const Comment = ({ item }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="flex items-center mt-3">
                 <AiOutlineLike className='text-[1.5rem] mr-2' />
-                <span className='text-[0.9rem]'>{CountConverter(item?.snippet?.topLevelComment?.snippet?.likeCount)}</span>
+                <motion.span layout transition={{ duration: 0.5 }} className='text-[0.9rem]'>{CountConverter(item?.snippet?.topLevelComment?.snippet?.likeCount)}</motion.span>
                 <AiOutlineDislike className='text-[1.5rem] ml-2' />
             </motion.div>
         </motion.div>
@@ -609,8 +608,8 @@ const SideVideo = ({ item }: any) => {
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[60%] pt-1 overflow-hidden ">
                 <Link href={`/channel/${item?.channelId}/video/${item?.videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item?.title}</Link>
                 <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap flex-col">
-                    <p className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.channelId}`}>{item?.channelTitle}</Link></p>
-                    <p className="text-[#606060] font-medium text-sm ">{CountConverter(item?.viewCount)}  &bull; {item?.publishedTimeText}</p>
+                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.channelId}`}>{item?.channelTitle}</Link></motion.p>
+                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm ">{CountConverter(item?.viewCount)}  &bull; {item?.publishedTimeText}</motion.p>
                 </motion.div>
             </motion.div>
 

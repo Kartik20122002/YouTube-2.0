@@ -73,16 +73,13 @@ const SubSkeleton = ({ isLarge }: any) => {
   </motion.div>
 }
 
-const SideLinks = ({ item, isLarge }: any) => {
-  const { slide, setslide } = useContext(slideContext) as any;
+const SideLinks = ({ item, isLarge , slide , setslide }: any) => {
 
   useEffect(()=>{
     console.log(slide);
-  },[slide])
+  },[])
 
   const {id , name ,link , icon1 , icon2} = item;
-
-  console.log(item);
 
   return <motion.div layout
     initial={{ opacity: 0 }}
@@ -98,7 +95,7 @@ const SideLinks = ({ item, isLarge }: any) => {
 }
 
 const Sidebar = ({ isLarge, IsVideoPage }: any) => {
-
+  const { slide, setslide } = useContext(slideContext) as any;
   const { status, data: session } = useSession();
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -177,7 +174,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
           {
             links.map((item: any) => {
-              return <SideLinks key={item.id} item={item} isLarge={isLarge} />
+              return <SideLinks key={item.id} item={item} isLarge={isLarge} slide={slide} setslide={setslide} />
             })
           }
 
