@@ -17,24 +17,28 @@ import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 
 const links = [
   {
+    id : 1,
     name: 'Home',
     link: '/',
     icon1: <AiFillHome className="text-xl" />,
     icon2: <AiOutlineHome className="text-xl" />,
   },
   {
+    id:2,
     name: 'Library',
     link: '/library',
     icon1: <MdLibraryAdd className="text-xl" />,
     icon2: <MdOutlineLibraryAdd className="text-xl" />
   },
   {
+    id : 3,
     name: 'History',
     link: '/history',
     icon1: <AiOutlineHistory className="text-xl" />,
     icon2: <AiOutlineHistory className="text-xl" />
   },
-  {
+  { 
+    id : 4,
     name: 'Liked Videos',
     link: '/likepage',
     icon1: <AiFillLike className="text-xl" />,
@@ -45,10 +49,10 @@ const links = [
 const Sub = ({ item, isLarge }: any) => {
   return <motion.div layout transition={{ duration: 0.5 }} >
     <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]`}>
-      <motion.div layout transition={{ duration: 0.5 }} className="flex  w-fit items-center">
-        <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className="rounded-full  bg-[#5a5a5a]" loading="lazy" alt="img" />
+      <motion.div layout transition={{ duration: 0.5 }} className="flex min-w-[2rem] w-[2rem] items-center">
+        <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className={`rounded-full bg-[#5a5a5a]`} loading="lazy" alt="img" />
       </motion.div>
-      {isLarge && <motion.p layout transition={{ duration: 0.5 }} className="ml-[20px]">{item?.snippet?.title || 'unknown channel'}</motion.p>}
+      {isLarge && <motion.p layout transition={{ duration: 0.5 }} className="ml-[20px] truncate-1">{item?.snippet?.title || 'unknown channel'}</motion.p>}
     </Link>
   </motion.div>
 }
@@ -69,19 +73,21 @@ const SubSkeleton = ({ isLarge }: any) => {
   </motion.div>
 }
 
-const SideLinks = ({ item, isLarge, index }: any) => {
+const SideLinks = ({ item, isLarge }: any) => {
   const { slide, setslide } = useContext(slideContext) as any;
+
+  const {id , name ,link , icon1 , icon2} = item;
 
   return <motion.div layout
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.5 }} className="relative cursor-pointer">
-    <Link onClick={() => setslide(index)} href={item.link} className={`w-full ${slide !== index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
-      <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
-      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
+    <Link onClick={() => setslide(id)} href={link} className={`w-full ${slide !== id ? 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]' : null} dark:text-white  flex flex-nowrap items-center  ${!isLarge ? 'justify-center flex-col mb-5' : null} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+      <motion.div layout transition={{ duration: 0.5 }} > {slide == id ? icon1 : icon2} </motion.div>
+      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{name}</motion.div>
     </Link>
 
-    {slide === index && <motion.div className="activeLink" layoutId="underline" />}
+    {slide === id ? <motion.div className="absolute top-0 left-0 right-0 bottom-0 h-full rounded-xl" layoutId="underline" /> : null}
   </motion.div>
 }
 
@@ -165,7 +171,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
           {
             links.map((item: any, index: any) => {
-              return <SideLinks key={index} index={index} item={item} isLarge={isLarge} />
+              return <SideLinks key={index} item={item} isLarge={isLarge} />
             })
           }
 
@@ -189,7 +195,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
                         list?.map((item: any, index: any) => {
                           return <Link key={index} href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className={`w-full ${'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
                             <motion.div layout transition={{ duration: 0.5 }} > <RiPlayList2Line /> </motion.div>
-                            <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item?.snippet?.title}</motion.div>
+                            <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 truncate-1 text-center text-xs'}>{item?.snippet?.title}</motion.div>
                           </Link>
                         })
                       }
