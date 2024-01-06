@@ -142,46 +142,46 @@ const Header = ({ change, toggleTheme, dark }: any) => {
                 <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]" />
 
                 <Link href="/likepage" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
-                  <div className="w-[1.3rem] m-0 mr-[5%]">
+                  <motion.div layout whileTap={{scale : 0.9}} transition={{duration : 0.5}} className="w-[1.3rem] m-0 mr-[5%]">
                     <AiFillLike className="dark:text-white text-lg" />
-                  </div>
+                  </motion.div>
                   Your Liked Videos
                 </Link>
 
                 <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]" />
 
-                <button onClick={() => toggleTheme()} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
-                  <div className="w-[1.3rem] m-0 mr-[5%]">
+                <motion.button layout whileTap={{scale : 0.9}} transition={{duration : 0.5}} onClick={() => toggleTheme()} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
+                  <motion.div className="w-[1.3rem] m-0 mr-[5%]">
                     {dark ? <IoMdMoon className="dark:text-white text-lg" /> : <IoMdSunny className="dark:text-white text-lg" />}
 
-                  </div>
+                  </motion.div>
                   {dark ? 'Dark Theme' : 'Light Theme'}
-                </button>
+                </motion.button>
 
                 <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]" />
 
                 <Link href="/library" className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] dark:hover:bg-[rgb(255,255,255,0.1)]">
-                  <div className="w-[1.3rem] m-0 mr-[5%]">
+                  <motion.div layout whileTap={{scale : 0.9}} transition={{duration : 0.5}} className="w-[1.3rem] m-0 mr-[5%]">
                     <MdLibraryAdd className="dark:text-white text-lg" />
-                  </div>
+                  </motion.div>
                   Library
                 </Link>
 
                 <hr className="my-[5%] bg-[rgba(0,0,0,0.3)] border-0 h-[0.5px] dark:bg-[rgb(255,255,255,0.3)]" />
 
                 {status === "authenticated" ?
-                  <button id="logoutbtn" aria-label='logoutbtn' onClick={() => { signOut({ callbackUrl: "/" }) }} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" >
+                  <motion.button layout whileTap={{scale : 0.9}} transition={{duration : 0.5}} id="logoutbtn" aria-label='logoutbtn' onClick={() => { signOut({ callbackUrl: "/" }) }} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white items-center hover:bg-[rgb(0,0,0,0.1)] bg-[#ff00009f] dark:bg-[#ff00008a] dark:hover:bg-[rgb(255,255,255,0.1)] logoutbtn" >
                     <div className="w-[1.3rem] m-0 mr-[5%]">
                       <AiOutlineLogout className="dark:text-white" />
                     </div>
                     LogOut
-                  </button> :
-                  <button id="signInbtn" aria-label='signINbtn' onClick={() => { signIn("google") }} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white justify-center items-center hover:bg-[rgb(0,0,0,0.1)] border border-[green] dark:hover:bg-[rgb(255,255,255,0.1)]" >
+                  </motion.button> :
+                  <motion.button layout whileTap={{scale : 0.9}} transition={{duration : 0.5}} id="signInbtn" aria-label='signINbtn' onClick={() => { signIn("google") }} className="p-[5%] relative w-full flex rounded-[8px] dark:text-white justify-center items-center hover:bg-[rgb(0,0,0,0.1)] border border-[green] dark:hover:bg-[rgb(255,255,255,0.1)]" >
                     <div className="w-[1.3rem] m-0 mr-[5%]">
                       <FcGoogle className="dark:text-white text-xl" />
                     </div>
                     Sign In
-                  </button>
+                  </motion.button>
                 }
 
               </motion.div>
