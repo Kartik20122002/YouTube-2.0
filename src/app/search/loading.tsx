@@ -1,3 +1,4 @@
+'use client'
 import SekeltonImg from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeltonText from "@/components/global/skeletonComponents/TextSkeleton";
 

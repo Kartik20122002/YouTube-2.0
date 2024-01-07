@@ -1,3 +1,4 @@
+'use client'
 import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { isLargeContext } from '@/app/layout';

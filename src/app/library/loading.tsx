@@ -1,3 +1,4 @@
+'use client'
 import { motion } from "framer-motion";
 import SekeltonImg from "../../components/global/skeletonComponents/ImgSkeleton";
 import SekeltonText from "../../components/global/skeletonComponents/TextSkeleton";
