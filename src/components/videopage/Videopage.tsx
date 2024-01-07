@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
@@ -16,7 +17,7 @@ import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import { motion } from 'framer-motion'
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
-import { isLargeContext } from '@/app/layout';
+import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
 import axios from 'axios';
@@ -51,6 +52,12 @@ import axios from 'axios';
 const downloadContext = createContext<any>(null);
 
 const Videopage = ({ id, channelId }: any) => {
+    const { slide, setslide } = useContext(slideContext) as any;
+    const { setpage } = useContext(pageContext) as any;
+  
+    setpage(true);
+    setslide(-1);
+  
 
     const [videoDetails, setVideoDetails] = useState<any>({});
     const [channelDetails, setChannelDetails] = useState<any>({});

@@ -4,7 +4,6 @@ import { isLargeContext } from "@/app/layout"
 import { useContext } from "react"
 import SkeletonImg from '@/components/global/skeletonComponents/ImgSkeleton';
 import SkeletonTxt from '@/components/global/skeletonComponents/TextSkeleton';
-import 'react-loading-skeleton/dist/skeleton.css'
 
 export const VideoContainerSkeleton = () => {
   const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
