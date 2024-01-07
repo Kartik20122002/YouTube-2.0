@@ -114,12 +114,12 @@ const VideoInfoSkeleton = () => {
 }
 
 const DescriptionSkeleton = () => {
-    const [largeDesc, setLargeDesc] = useState(false);
+    const [largeDesc] = useState(false);
 
     return  <motion.div layout transition={{ duration: 0.5 }}  className={`py-3 px-3 dark:bg-[#6c6c6c57] bg-[#cfcfcf57] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}/>
 }
 
-const CommentFormSkeleton = ({ img, channelId, id }: any) => {
+const CommentFormSkeleton = () => {
     const [comment, setComment] = useState<any>('');
 
     return (<>
