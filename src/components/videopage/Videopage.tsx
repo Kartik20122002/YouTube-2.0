@@ -59,7 +59,6 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
   
     const [videoDetails, setVideoDetails] = useState<any>({});
     const [channelDetails, setChannelDetails] = useState<any>({});
-    const [related, setRelated] = useState<any>([]);
     const [loading, setLoading] = useState(true);
     const { status, data: session } = useSession();
     const [downloading, setDownloading] = useState<boolean>(false);
@@ -152,15 +151,13 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ id, channelId }),
-                next: { revalidate: 300 },
-                cache: 'force-cache'
+                next: { revalidate: 300 }
             })
 
             if (res.status != 404 && res.status != 500) {
-                const { video, channel, related } = await res.json();
+                const { video, channel } = await res.json();
                 setVideoDetails(video);
                 setChannelDetails(channel);
-                setRelated(related);
                 setLoading(false);
 
                 if (status === "authenticated") {
@@ -184,7 +181,7 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
             <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all relative overflow-y-scroll pb-8">
                 <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
                     <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
-                    <SideRow loading={loading} relatedStr={relatedStr} />
+                    <SideRow relatedStr={relatedStr} />
                     {
                         downloading && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal id={id} downloadOptionsStr={downloadOptionsStr} /></motion.div>
                     }
@@ -607,20 +604,14 @@ const Comment = ({ item }: any) => {
     </motion.div>
 }
 
-const SideRow = ({ loading, relatedStr }: any) => {
+const SideRow = ({ relatedStr }: any) => {
     const related = JSON.parse(relatedStr);
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
-                loading ? <>
-                    {Array.from({ length: 8 }, (_, index) => {
-                        return <SideVideoSkeleton key={index} />;
-                    })}
-
-                </> :
-                    related?.map((item: any, index: any) => {
-                        return <SideVideo key={index} item={item} />
-                    })
+                related?.map((item: any, index: any) => {
+                    return <SideVideo key={index} item={item} />
+                })
             }
         </motion.div>
     </>)

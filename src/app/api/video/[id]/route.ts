@@ -63,28 +63,14 @@ export async function POST(req: any) {
       maxResults: 1
     });
 
-
-    const RelatedVideosPromise = fetch(`https://youtube-v3-alternative.p.rapidapi.com/related?id=${id}&part=id%2Csnippet&type=video&maxResults=25`, {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
-        'X-RapidAPI-Host': 'youtube-v3-alternative.p.rapidapi.com'
-      },
-      next: { revalidate: 300 },
-    });
-
-    const [VideoData, ChannelData, RelatedVideos] = await Promise.all([VideoPromise, ChannelPromise, RelatedVideosPromise]);
-
-    const relatedData = await RelatedVideos.json();
+    const [VideoData, ChannelData] = await Promise.all([VideoPromise, ChannelPromise]);
 
     // @ts-ignore
     const video = VideoData?.data?.items[0] || {};
     // @ts-ignore
     const channel = ChannelData?.data?.items[0] || {};
-    // @ts-ignore
-    const related = relatedData?.data || [];
 
-    return NextResponse.json({ video, channel, related });
+    return NextResponse.json({ video, channel });
 
   }
   catch (err) {
