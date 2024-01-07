@@ -21,6 +21,32 @@ import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
 import axios from 'axios';
 
+/*
+    id ,
+    channelId,
+    videoDetails : {
+        id , 
+        title,
+        thumbnails,
+        description,
+        likeCount,
+        Rating,
+        commentCount,
+        comments,
+        downloadUrls,
+    },
+    channelDetails : {
+        id ,
+        title,
+        thumbnails,
+        isSubscribed,
+        subscribeCount,
+    },
+    relatedVideos : {
+        bring all
+    }
+*/
+
 
 const downloadContext = createContext<any>(null);
 
@@ -174,7 +200,7 @@ const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="w-full relative pt-[56.25%] overflow-hidden">
 
-                <motion.iframe allowFullScreen src={`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' onPlay={() => console.log('played')} />
+                <motion.iframe allow='autoplay' allowFullScreen src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0`} className='absolute top-0 left-0 bottom-0 right-0 w-full h-full' loading='eager' />
 
             </motion.div>
 
