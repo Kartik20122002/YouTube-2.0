@@ -17,7 +17,7 @@ export default function Home() {
 
     useEffect(() => {
         if (status === "unauthenticated") signIn();
-    })
+    },[])
 
     return (
         <>
