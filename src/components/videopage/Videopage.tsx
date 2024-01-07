@@ -20,7 +20,6 @@ import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
-import axios from 'axios';
 
 /*
     id ,
@@ -51,14 +50,13 @@ import axios from 'axios';
 
 const downloadContext = createContext<any>(null);
 
-const Videopage = ({ id, channelId }: any) => {
+const Videopage = ({downloadOptionsStr, id, channelId }: any) => {
     const { slide, setslide } = useContext(slideContext) as any;
     const { setpage } = useContext(pageContext) as any;
   
     setpage(true);
     setslide(-1);
   
-
     const [videoDetails, setVideoDetails] = useState<any>({});
     const [channelDetails, setChannelDetails] = useState<any>({});
     const [related, setRelated] = useState<any>([]);
@@ -188,7 +186,7 @@ const Videopage = ({ id, channelId }: any) => {
                     <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
                     <SideRow loading={loading} related={related} />
                     {
-                        downloading && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal id={id} /></motion.div>
+                        downloading && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal id={id} downloadOptionsStr={downloadOptionsStr} /></motion.div>
                     }
                 </motion.div>
             </motion.div>
@@ -671,126 +669,32 @@ const SideVideoSkeleton = () => {
     </>)
 }
 
-const DownloadModal = ({ id }: any) => {
+const DownloadModal = ({ id  , downloadOptionsStr}: any) => {
     const { downloading, setDownloading } = useContext(downloadContext) as any;
-    const [started, setStarted] = useState(false);
-    const [progressbar, setProgress] = useState(0);
-    const [disable, setDisable] = useState(false);
-    const [downloadId, setDownloadId] = useState(0);
+    const [downloadUrl, setDownloadUrl] = useState('');
 
-    const qualities = [
-        { id: 1, name: 'Full HD (1080p)', link: '1080' },
-        { id: 2, name: 'HD (720p)', link: '720' },
-        { id: 3, name: 'Standard (480p)', link: '480' },
-        { id: 4, name: 'Low (360p)', link: '360' },
-    ]
-
-    const beginDownload = async (downloadid: string) => {
-        setProgress(50);
-
-        try {
-            const options = {
-                method: 'GET',
-                url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/progress.php',
-                params: {
-                    id: downloadid
-                },
-                headers: {
-                    'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
-                    'X-RapidAPI-Host': 'youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com'
-                }
-            };
-
-            const interval = setInterval(async () => {
-
-                const response = await axios.request(options);
-
-                if (response.status === 200) {
-                    const { data } = response;
-                    const { success, text, download_url } = data;
-
-                    if (text === 'Initialising') setProgress(80);
-                    else if (text === 'Converting') setProgress(90);
-                    else if (text === 'Finished') setProgress(100);
-
-                    if (success === 1) {
-                        window.open(download_url, '_blank');
-                        setProgress(100);
-                        setStarted(false);
-                        setDownloading(false);
-                        setDisable(false);
-                        clearInterval(interval);
-                    }
-
-                }
-            }, 3000)
-
-            return;
-
-        } catch (error) {
-            setDisable(false);
-            setDownloading(false);
-            setProgress(0);
-            return;
-        }
-    }
-
-    const downloader = async () => {
-        setProgress(10);
-        setDisable(true);
-        setStarted(true);
-        const options = {
-            method: 'GET',
-            url: 'https://youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com/download.php',
-            params: {
-                format: qualities[downloadId - 1]?.link,
-                url: `https://www.youtube.com/watch?v=${id}`
-            },
-            headers: {
-                'X-RapidAPI-Key': '79f25e9d42mshed666ecd3dda012p1ed78ejsnaa144f427d4e',
-                'X-RapidAPI-Host': 'youtube-video-downloader-4k-and-8k-mp3.p.rapidapi.com'
-            }
-        };
-
-        try {
-            const response = await axios.request(options);
-
-            if (response.status === 200) {
-                const { data } = response;
-                const { id } = data;
-                setProgress(30);
-
-                await beginDownload(id);
-            }
-        } catch (error) {
-            console.log(error);
-            setProgress(0)
-            setDisable(false);
-            setDownloading(false);
-        }
-    }
+    const downloadOptions = JSON.parse(downloadOptionsStr);
 
     return <>
         <motion.div layout className="rounded-lg w-fit h-fit shadow-lg px-6 py-2 bg-white dark:bg-[#212121]">
             <motion.div layout className="my-2 dark:text-white text-black w-full text-lg">Download Quality</motion.div>
             <motion.div layout className="w-fit sm:w-[20rem] py-2">
                 {
-                    qualities.map((item: any, index: any) => {
-                        return <motion.div layout onClick={() => setDownloadId(item.id)}
-                            key={item.id} className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
-                            {item.id === downloadId ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
-                            <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{item.name}</motion.span>
+                    downloadOptions?.map((item: any, index: any) => {
+                        const { url , qualityLabel } = item;
+                        return <motion.div key={index} layout onClick={() => setDownloadUrl(url)}
+                            className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
+                            {url === downloadUrl ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
+                            <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{qualityLabel === '720p' ? 'HD (720p)' : qualityLabel === '360p' ? 'High (360p)' : qualityLabel}</motion.span>
                         </motion.div>
 
                     })
                 }
             </motion.div>
-            {started && <motion.div className="min-w-[100%] bg-white min-h-2 w-20 h-2 rounded-full">
-                <motion.div className={`min-w-[${progressbar}%] w-0 duration-[1.5s] bg-[#3ea6ff] min-h-2 h-2 rounded-full`}></motion.div>
-            </motion.div>}
+
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>
-                <motion.button disabled={disable || downloadId == 0} onClick={() => downloader()} className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadId !== 0 && !disable) ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</motion.button>
+                <Link href={(downloadUrl == '') ? '#' : downloadUrl} target='_blank' type='download' className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadUrl !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</Link>
             </motion.div>
         </motion.div>
     </>
