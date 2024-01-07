@@ -50,7 +50,7 @@ import { usePathname } from 'next/navigation';
 
 const downloadContext = createContext<any>(null);
 
-const Videopage = ({downloadOptionsStr, id, channelId }: any) => {
+const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
     const { slide, setslide } = useContext(slideContext) as any;
     const { setpage } = useContext(pageContext) as any;
   
@@ -184,7 +184,7 @@ const Videopage = ({downloadOptionsStr, id, channelId }: any) => {
             <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all relative overflow-y-scroll pb-8">
                 <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
                     <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
-                    <SideRow loading={loading} related={related} />
+                    <SideRow loading={loading} relatedStr={relatedStr} />
                     {
                         downloading && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal id={id} downloadOptionsStr={downloadOptionsStr} /></motion.div>
                     }
@@ -607,7 +607,8 @@ const Comment = ({ item }: any) => {
     </motion.div>
 }
 
-const SideRow = ({ loading, related }: any) => {
+const SideRow = ({ loading, relatedStr }: any) => {
+    const related = JSON.parse(relatedStr);
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
@@ -627,20 +628,22 @@ const SideRow = ({ loading, related }: any) => {
 
 const SideVideo = ({ item }: any) => {
 
+    const {id,title,published , author , short_view_count_text , view_count , length_seconds , thumbnails} = item;
+
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className=" flex flex-wrap w-fulljustify-between mb-3 px-3 md:px-0">
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%] mr-2 h-full">
-                <Link href={`/channel/${item?.channelId}/video/${item?.videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
-                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={item?.thumbnail[0]?.url || item?.thumbnail[1]?.url} />
+                <Link href={`/channel/${author?.id}/video/${id}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
+                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={thumbnails[1]?.url || thumbnails[0]?.url} />
                 </Link>
             </motion.div>
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[60%] pt-1 overflow-hidden ">
-                <Link href={`/channel/${item?.channelId}/video/${item?.videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{item?.title}</Link>
+                <Link href={`/channel/${author?.id}/video/${id}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{title}</Link>
                 <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap flex-col">
-                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${item?.channelId}`}>{item?.channelTitle}</Link></motion.p>
-                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm ">{CountConverter(item?.viewCount)}  &bull; {item?.publishedTimeText}</motion.p>
+                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${author.id}`}>{author.name}</Link></motion.p>
+                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm ">{short_view_count_text || CountConverter(view_count)}  &bull; {published}</motion.p>
                 </motion.div>
             </motion.div>
 
@@ -681,11 +684,11 @@ const DownloadModal = ({ id  , downloadOptionsStr}: any) => {
             <motion.div layout className="w-fit sm:w-[20rem] py-2">
                 {
                     downloadOptions?.map((item: any, index: any) => {
-                        const { url , qualityLabel } = item;
+                        const { url , qualityLabel , quality } = item;
                         return <motion.div key={index} layout onClick={() => setDownloadUrl(url)}
                             className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
                             {url === downloadUrl ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
-                            <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{qualityLabel === '720p' ? 'HD (720p)' : qualityLabel === '360p' ? 'High (360p)' : qualityLabel}</motion.span>
+                            <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{qualityLabel === '720p' ? 'HD (720p)' : qualityLabel === '360p' ? 'Medium (360p)' : `${qualityLabel || quality}`}</motion.span>
                         </motion.div>
 
                     })

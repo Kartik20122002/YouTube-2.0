@@ -8,12 +8,11 @@ const VideoPage = async ({ params }: any) => {
 
   // const videoDetails = videoData.videoDetails;
   const downloadOptions = videoData.formats.filter((format)=>{ return (format.hasAudio && format.hasVideo)});
+  
   // const channelDetails = videoData.videoDetails.author;
-  // const relatedVideos = videoData.related_videos;
+  const relatedVideos = videoData.related_videos;
 
-  // console.log(relatedVideos[0]);
-
-  return <Videopage downloadOptionsStr={JSON.stringify(downloadOptions)} id={id} channelId={channelId} />
+  return <Videopage relatedStr={JSON.stringify(relatedVideos)} downloadOptionsStr={JSON.stringify(downloadOptions)} id={id} channelId={channelId} />
 }
 
 export default VideoPage;
