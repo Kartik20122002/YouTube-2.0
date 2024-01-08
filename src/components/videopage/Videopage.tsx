@@ -21,38 +21,14 @@ import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
 
-/*
-    id ,
-    channelId,
-    videoDetails : {
-        id , 
-        title,
-        thumbnails,
-        description,
-        likeCount,
-        Rating,
-        commentCount,
-        comments,
-        downloadUrls,
-    },
-    channelDetails : {
-        id ,
-        title,
-        thumbnails,
-        isSubscribed,
-        subscribeCount,
-    },
-    relatedVideos : {
-        bring all
-    }
-*/
 
-
-const downloadContext = createContext<any>(null);
+const dataContext = createContext<any>(null);
 
 const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
-    const { slide, setslide } = useContext(slideContext) as any;
+    const { status, data: session } = useSession();
+    const { setslide } = useContext(slideContext) as any;
     const { setpage } = useContext(pageContext) as any;
+    const { setIsLarge } = useContext(isLargeContext) as any;
   
     setpage(true);
     setslide(-1);
@@ -60,9 +36,10 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
     const [videoDetails, setVideoDetails] = useState<any>({});
     const [channelDetails, setChannelDetails] = useState<any>({});
     const [loading, setLoading] = useState(true);
-    const { status, data: session } = useSession();
+    const [loading2,setLoading2] = useState(true);
     const [downloading, setDownloading] = useState<boolean>(false);
-    const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
+    const [related , setRelated] = useState([]);
+    const [links , setLinks] = useState([]);
 
     const wrapperRef = useRef(null);
     useOutsideAlerter(wrapperRef);
@@ -171,28 +148,57 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
         }
     }
 
+    const relatedDownloads = async ()=>{
+        try {
+            const res = await fetch(`/api/video/${id}/reldowns`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }),
+                next: { revalidate: 300 }
+            })
+
+            if (res.status != 404 && res.status != 500) {
+                const { linksStr, relatedVideosStr } = await res.json();
+                
+                const Links = JSON.parse(linksStr)
+                setLinks(Links);
+                const relatedVideos = JSON.parse(relatedVideosStr);
+                setRelated(relatedVideos);
+    
+                setLoading2(false);
+            }
+
+        }
+        catch (err) {
+            setLoading2(false);
+            console.log(err);
+        }
+    }
+
     useEffect(() => {
         getDetails();
+        relatedDownloads()
         setIsLarge(false);
     }, [])
 
     return (<>
-        <downloadContext.Provider value={{ downloading, setDownloading }}>
+        <dataContext.Provider value={{id,channelId, video : videoDetails , channel : channelDetails , loading , loading2 , links , related,  downloading, setDownloading }}>
             <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all relative overflow-y-scroll pb-8">
                 <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
-                    <VideoSection video={videoDetails} channel={channelDetails} channelId={channelId} loading={loading} id={id} />
-                    <SideRow relatedStr={relatedStr} />
+                    <VideoSection />
+                    <SideRow />
                     {
-                        downloading && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal id={id} downloadOptionsStr={downloadOptionsStr} /></motion.div>
+                        ( downloading) && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal /></motion.div>
                     }
                 </motion.div>
             </motion.div>
-        </downloadContext.Provider>
+        </dataContext.Provider>
     </>)
 }
 
-const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
+const VideoSection = () => {
 
+    const { video, channel, loading, id, channelId } = useContext(dataContext);
     const { status, data: session } = useSession();
 
     const commentsCount = video?.statistics?.commentCount || 0;
@@ -208,32 +214,32 @@ const VideoSection = ({ video, channel, loading, id, channelId }: any) => {
 
             <motion.h3 className="px-1 md:px-0 pt-4  truncate-1 dark:text-white text-[1.2rem] font-semibold w-full">{loading ? <Sekelton height={'h-6'} width={'w-[95%] md:w-full'} className="mx-auto  md:mx-0" /> : video?.snippet?.title}</motion.h3>
 
-            {loading ? <VideoInfoSkeleton /> : <VideoInfo id={id} channelId={channelId} video={video} channel={channel} loading={loading} />}
+            {loading ? <VideoInfoSkeleton /> : <VideoInfo />}
 
             <motion.div layout transition={{ duration: 0.5 }} className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
-                {loading ? <Sekelton height={'h-24'} className="mb-4" /> : <Description loading={loading} video={video} />}
+            {loading ? <Sekelton height={'h-24'} className="mb-4" /> : <Description />}
 
-                {loading ? <Sekelton width="min-w-[20%] max-w-[20%]" className="my-1" /> : <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>}
+            {loading ? <Sekelton width="min-w-[20%] max-w-[20%]" className="my-1" /> : 
+            <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>}
 
-                {status == 'authenticated' &&
-                    <CommentForm img={session?.user?.image} id={id} channelId={channelId} />
-                }
+            {   status == 'authenticated' &&
+                <CommentForm img={session?.user?.image} id={id} channelId={channelId} />
+            }
 
-                <Comments id={id} />
+            <Comments id={id} />
 
             </motion.div>
         </motion.div>
     </>)
 }
 
-const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
+const VideoInfo = () => {
     const [rate, setRate] = useState<any>(0)
     const [sub, setSub] = useState<any>(false);
     const [subId, setSubId] = useState<any>('');
-    const link = usePathname();
     const { status, data: session } = useSession();
-    const { downloading, setDownloading } = useContext(downloadContext);
+    const { id, channelId, video, channel, loading , loading2 , downloading, setDownloading } = useContext(dataContext);
 
     const getAuthDetails = async () => {
         try {
@@ -401,7 +407,7 @@ const VideoInfo = ({ id, channelId, video, channel, loading }: any) => {
                 {/* <motion.button onClick={() => copyLink()} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineShareAlt className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Share</motion.button> */}
                 {/* <motion.button className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 md:mr-1 my-1'> <AiOutlineSave className='mr-2 text-[1.2rem] md:text-[1.5rem]'/> Save</motion.button> */}
 
-                <motion.button layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'>
+                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className='flex items-center dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1'>
                     <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
                 </motion.button>
 
@@ -456,8 +462,9 @@ const VideoInfoSkeleton = () => {
     </motion.div>
 }
 
-const Description = ({ loading, video }: any) => {
+const Description = () => {
     const [largeDesc, setLargeDesc] = useState(false);
+    const { loading, video } = useContext(dataContext);
 
     return (<> <motion.div layout transition={{ duration: 0.5 }} onClick={() => { if (!largeDesc) { setLargeDesc(true) } }} className={`py-3 px-3 dark:bg-[#6c6c6c57] bg-[#cfcfcf57] ${!largeDesc && 'cursor-pointer'} rounded-lg w-full h-fit-content mb-4`}>
         <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-wrap">
@@ -589,9 +596,13 @@ const Comment = ({ item }: any) => {
                 <Image width={45} height={45} src={item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className='rounded-full dark:bg-[#202324] bg-[#b8b8b8]' loading='lazy' alt='commentImg' />
             </Link>
         </motion.div>
+        
 
         <motion.div layout transition={{ duration: 0.5 }} className="basis-[95%] grow ml-3 flex flex-col">
-            <motion.div layout transition={{ duration: 0.5 }} className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link> <span className='ml-3 font-[500] text-[#959595cd] text-'>{DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</span></motion.div>
+            <motion.div layout transition={{ duration: 0.5 }} className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link> 
+            <motion.span layout transition={{ duration: 0.5 }} className='ml-3 font-[500] text-[#959595cd] text-'>
+                {DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</motion.span>
+            </motion.div>
 
             <motion.div layout transition={{ duration: 0.5 }} onClick={() => { setReadmore(!readmore) }} className={`text-[0.95rem] ${!readmore && 'truncate-5'} mt-1 font-[500]`}>{parse(item?.snippet?.topLevelComment?.snippet?.textDisplay)}</motion.div>
 
@@ -604,11 +615,14 @@ const Comment = ({ item }: any) => {
     </motion.div>
 }
 
-const SideRow = ({ relatedStr }: any) => {
-    const related = JSON.parse(relatedStr);
+const SideRow = () => {
+    const {related , loading2} = useContext(dataContext);
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
+                loading2 ? Array.from({ length: 10 }, (_, index) => {
+                    return <SideVideoSkeleton key={index} />;
+                }):
                 related?.map((item: any, index: any) => {
                     return <SideVideo key={index} item={item} />
                 })
@@ -663,18 +677,16 @@ const SideVideoSkeleton = () => {
     </>)
 }
 
-const DownloadModal = ({ id  , downloadOptionsStr}: any) => {
-    const { downloading, setDownloading } = useContext(downloadContext) as any;
+const DownloadModal = () => {
+    const { setDownloading , links  } = useContext(dataContext) as any;
     const [downloadUrl, setDownloadUrl] = useState('');
-
-    const downloadOptions = JSON.parse(downloadOptionsStr);
 
     return <>
         <motion.div layout className="rounded-lg w-fit h-fit shadow-lg px-6 py-2 bg-white dark:bg-[#212121]">
             <motion.div layout className="my-2 dark:text-white text-black w-full text-lg">Download Quality</motion.div>
             <motion.div layout className="w-fit sm:w-[20rem] py-2">
                 {
-                    downloadOptions?.map((item: any, index: any) => {
+                    links?.map((item: any, index: any) => {
                         const { url , qualityLabel , quality } = item;
                         return <motion.div key={index} layout onClick={() => setDownloadUrl(url)}
                             className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
