@@ -20,6 +20,7 @@ import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import { usePathname } from 'next/navigation';
+import { useSWRConfig } from 'swr';
 
 
 const dataContext = createContext<any>(null);
@@ -159,12 +160,10 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
 
             if (res.status != 404 && res.status != 500) {
                 const { linksStr, relatedVideosStr } = await res.json();
-                
                 const Links = JSON.parse(linksStr)
                 setLinks(Links);
                 const relatedVideos = JSON.parse(relatedVideosStr);
                 setRelated(relatedVideos);
-    
                 setLoading2(false);
             }
 
@@ -235,6 +234,7 @@ const VideoSection = () => {
 }
 
 const VideoInfo = () => {
+    const { mutate } = useSWRConfig()
     const [rate, setRate] = useState<any>(0)
     const [sub, setSub] = useState<any>(false);
     const [subId, setSubId] = useState<any>('');
@@ -290,6 +290,7 @@ const VideoInfo = () => {
                     setSubId(data);
                     if (flag) setSub(true)
                 }
+                mutate('subs');
             }
 
         }
