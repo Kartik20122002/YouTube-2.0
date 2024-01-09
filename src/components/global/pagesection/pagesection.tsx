@@ -25,9 +25,7 @@ const dataFetcher = async (page:any, filter : any) =>{
       return videos;
     }
   
-    return [];
   } catch(error){
-    return [];
   }
   
 }
@@ -59,9 +57,9 @@ const PageSection = ({ page }: any) => {
 
   const {data : items , error , isLoading : loading} = useSWR([page,filter],()=>dataFetcher(page,filter),{
     refreshInterval : 1800000 , // 30 minutes
-    dedupingInterval : re ,
-    revalidateOnReconnect: true,
     revalidateIfStale: true,
+    revalidateOnReconnect: true,
+    dedupingInterval : re ,
   });
 
 
