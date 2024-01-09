@@ -9,11 +9,40 @@ import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
 import { usePathname } from 'next/navigation';
+import useSWR from 'swr';
 
 const videoImg = 'https://i.ytimg.com/img/no_thumbnail.jpg'
 
-const PlaylistPage = ({ id }: any) => {
+const playlistInfoFetcher = async (id : any) => {
+    const res = await fetch(`/api/playlist/${id}/info`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id })
+    });
+    if (res.status != 404 && res.status != 500) {
+        const { data } = await res.json();
+        return data;
+    }
+    return {};
+}
 
+const playlistItemFetcher = async (id : any) => {
+    const res = await fetch(`/api/playlist/${id}/items`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id })
+    });
+    if (res.status != 404 && res.status != 500) {
+        const { data } = await res.json();
+        return data;
+    }
+}
+
+const PlaylistPage = ({ id }: any) => {
 
     const [first, setFirst] = useState<any>(null);
 
@@ -28,8 +57,6 @@ const PlaylistPage = ({ id }: any) => {
 }
 
 const PlayListInfo = ({ id, first }: any) => {
-    const [info, setInfo] = useState<any>({});
-    const [loading, setLoading] = useState(true);
     const link = usePathname();
 
     const copyLink = async () => {
@@ -37,25 +64,12 @@ const PlayListInfo = ({ id, first }: any) => {
         alert('Link Copied Successfully');
     }
 
-    const getDetails = async () => {
-        const res = await fetch(`/api/playlist/${id}/info`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id }),
-            next: { revalidate: 300 }
-        });
-        if (res.status != 404 && res.status != 500) {
-            const { data } = await res.json();
-            setInfo(data);
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        getDetails();
-    }, []);
+    const {data : info , error , isLoading : loading} = useSWR(['playlist',id],()=>playlistInfoFetcher(id),{
+        refreshInterval : 3600000 , // 60 minutes
+        dedupingInterval : 900000, // 15 minutes
+        revalidateOnReconnect: true,
+        revalidateIfStale: true,
+    })
 
     return <motion.div layout transition={{ duration: 0.5 }} className="basis-full md:basis-[30%] grow min-w-[20rem] max-h-full overflow-y-scroll md:px-4">
 
@@ -130,29 +144,19 @@ const PlayListInfo = ({ id, first }: any) => {
 
 const PlayListItems = ({ id, setfirst }: any) => {
 
-    const [items, setItems] = useState<any>([]);
-    const [loading, setLoading] = useState(true);
-    const getDetails = async () => {
-        const res = await fetch(`/api/playlist/${id}/items`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id }),
-            next: { revalidate: 300 },
-            cache: 'force-cache'
-        });
-        if (res.status != 404 && res.status != 500) {
-            const { data } = await res.json();
-            setfirst(`/channel/${data[0]?.snippet?.channelId}/video/${data[0]?.contentDetails?.videoId}`);
-            setItems(data);
-            setLoading(false);
-        }
-    }
+    const {data : items , error , isLoading : loading} = useSWR(['playlistitems',id],()=>playlistItemFetcher(id),{
+        refreshInterval : 3600000 , // 60 minutes
+        dedupingInterval : 900000, // 15 minutes
+        revalidateOnReconnect: true,
+        revalidateIfStale: true,
+    })
 
     useEffect(() => {
-        getDetails();
-    }, []);
+        if(items){
+            setfirst(`/channel/${items[0]?.snippet?.channelId}/video/${items[0]?.contentDetails?.videoId}`);
+        }
+    }, [items]);
+
 
     return <>
         <motion.div layout transition={{ duration: 0.5 }} className="mt-4 mb-2 ml-2 md:hidden font-bold text-2xl">Playlist Items</motion.div>
