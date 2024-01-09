@@ -9,8 +9,73 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { RiPlayListLine } from "react-icons/ri";
 import { useSession } from "next-auth/react";
+import useSWR from "swr";
 const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
+
+const LibraryUserFetcher = async () => {
+  const results = await fetch(`/api/library/user`)
+
+  if (results.status !== 404 && results.status != 500) {
+    const { data } = await results.json();
+    return data;
+  }
+}
+
+const LibraryDetailsFetcher =  async (id : any , email : any) => {
+  try {
+    if(id === 'history'){
+      if (typeof window !== "undefined") {
+        let historyStr = localStorage.getItem('history');
+
+        if (!historyStr) {
+          const res = await fetch(`/api/history`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email }),
+            next: { tags: ['history'] }
+          });
+
+          if (res.status != 500 && res.status != 404) {
+            const { videoItems } = await res.json();
+            localStorage.setItem('history', JSON.stringify(videoItems));
+            return videoItems;
+          }
+        } else {
+          let historyItems = JSON.parse(historyStr);
+          return historyItems;
+        }
+      } else {
+        const res = await fetch(`/api/history`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email }),
+          next: { tags: ['history'] }
+        });
+
+        if (res.status != 500 && res.status != 404) {
+          const { videoItems } = await res.json();
+          return videoItems;
+        }
+      }
+    }
+    else{
+      const results = await fetch(`/api/library/${id}`)
+    
+      if (results.status !== 404 && results.status != 500) {
+        const { data } = await results.json();
+        return data;
+      } else { return [] }
+    }
+   
+  } catch (error) {
+    return [];
+  }
+}
 
 const LibraryPage = () => {
 
@@ -30,24 +95,12 @@ const LibraryPage = () => {
 }
 
 const UserDetails = () => {
-  const [info, setInfo] = useState<any>({});
-  const [loading, setLoading] = useState(true);
-
-  const getDetails = async () => {
-    const results = await fetch(`/api/library/user`, {
-      next: { revalidate: 300 },
-    })
-
-    if (results.status !== 404 && results.status != 500) {
-      const { data } = await results.json();
-      setInfo(data);
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getDetails()
-  }, [])
+  const {data :info , error , isLoading : loading} = useSWR('libUser',()=>LibraryUserFetcher(),{
+    refreshInterval : 3600000 , // 60 minutes
+    dedupingInterval : 900000, // 15 minutes
+    revalidateOnReconnect: true,
+    revalidateIfStale: true,
+  })
 
   return <motion.div layout transition={{ duration: 0.5 }} className="basis-[20%] min-h-max grow-0 items-center pt-[4rem] md:flex flex-col bg-[3red]">
     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col items-center">
@@ -83,79 +136,12 @@ const VideoSection = ({ id }: any) => {
     setSee(!see);
   }
 
-  const [items, setItems] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
-
-  const getDetails = async () => {
-    const results = await fetch(`/api/library/${id}`, {
-      next: { revalidate: 300 },
-    })
-
-    if (results.status !== 404 && results.status != 500) {
-      const { data } = await results.json();
-      setItems(data);
-      setLoading(false);
-    }
-  }
-  const fetchHistory = async () => {
-    try {
-      if (typeof window !== "undefined") {
-        let historyStr = localStorage.getItem('history');
-
-        if (!historyStr) {
-          const res = await fetch(`/api/history`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: session?.user?.email }),
-            next: { tags: ['history'] }
-          });
-
-          if (res.status != 500 && res.status != 404) {
-            const { videoItems } = await res.json();
-            setItems(videoItems);
-            setLoading(false);
-            localStorage.setItem('history', JSON.stringify(videoItems));
-          }
-        } else {
-          let historyItems = JSON.parse(historyStr);
-          setItems(historyItems);
-          setLoading(false)
-        }
-      } else {
-        const res = await fetch(`/api/history`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: session?.user?.email }),
-          next: { tags: ['history'] }
-        });
-
-        if (res.status != 500 && res.status != 404) {
-          const { videoItems } = await res.json();
-          setItems(videoItems);
-          setLoading(false);
-        }
-      }
-
-    }
-    catch (error) {
-      console.log('page error', error);
-      setItems([]);
-      setLoading(false);
-    }
-
-  }
-  useEffect(() => {
-    if (id === 'history') {
-      fetchHistory();
-    }
-    else {
-      getDetails()
-    }
-  }, [])
+  const {data : items , error , isLoading : loading} = useSWR(['libUser',id],()=>LibraryDetailsFetcher(id,session?.user?.email),{
+    refreshInterval : 3600000 , // 60 minutes
+    dedupingInterval : 900000, // 15 minutes
+    revalidateOnReconnect: true,
+    revalidateIfStale: true,
+  })
 
 
   return <>

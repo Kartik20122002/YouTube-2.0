@@ -3,34 +3,33 @@ import Link from "next/link";
 import { RiPlayListLine } from 'react-icons/ri';
 import SekeltonImg from "../global/skeletonComponents/ImgSkeleton";
 import SekeltonText from "../global/skeletonComponents/TextSkeleton";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
-import { pageContext } from "@/app/layout";
+import useSWR from "swr";
+
+const SearchFetcher =  async (query : any) => {
+    const res = await fetch(`/api/search`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+        next: { revalidate: 300 }
+    });
+    if (res.status != 404 && res.status != 500) {
+        const { data } = await res.json();
+        return data;
+    }
+}
 
 const SearchPage = ({ query }: any) => {
 
-    const [items, setItems] = useState<any>([]);
-    const [loading, setLoading] = useState(true);
-    const getDetails = async () => {
-        const res = await fetch(`/api/search`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query }),
-            next: { revalidate: 300 },
-            cache: 'force-cache'
-        });
-        if (res.status != 404 && res.status != 500) {
-            const { data } = await res.json();
-            setItems(data);
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        getDetails();
-    }, [query]);
+    const {data : items , error , isLoading : loading} = useSWR(['search',query],()=>SearchFetcher(query),{
+        refreshInterval : 3600000 , // 60 minutes
+        dedupingInterval : 900000, // 15 minutes
+        revalidateOnReconnect: true,
+        revalidateIfStale: true,
+    })
 
     return <>
         <div className="flex flex-col  overflow-y-scroll h-[90vh] pb-[1rem] w-full">

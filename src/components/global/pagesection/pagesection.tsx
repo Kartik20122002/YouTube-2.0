@@ -5,21 +5,41 @@ import { motion } from "framer-motion"
 import { isLargeContext, pageContext } from "@/app/layout"
 import { useContext, useEffect, useState } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
-import { signOut } from "next-auth/react"
 import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
+import useSWR from "swr"
+
+const dataFetcher = async (page:any, filter : any) =>{
+  try{
+    const res = await fetch(`/api/page/${page}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ filter })
+    });
+  
+    if (res.status != 500 && res.status != 404) {
+      const { videos, ptoken, ntoken } = await res.json();
+      return videos;
+    }
+  
+    return [];
+  } catch(error){
+    return [];
+  }
+  
+}
 
 
 const PageSection = ({ page }: any) => {
-  const { isLarge, setIsLarge } = useContext(isLargeContext) as any;
+  const { isLarge } = useContext(isLargeContext) as any;
   const { setpage } = useContext(pageContext) as any;
-  const [items, setItems] = useState<any>([]);
-  const [imgs, setImgs] = useState([]);
-  const [token, setToken] = useState('');
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState(0);
   setpage(false);
+
+  const re = (page === 'popular') ? 1800000 : 300000
 
   const filters = [
     { name: 'All', id: 0 },
@@ -37,34 +57,12 @@ const PageSection = ({ page }: any) => {
     { name: 'Howto & Style', id: 26 },
   ]
 
-  const fetchData = async () => {
-    try {
-
-      const res = await fetch(`/api/page/${page}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ filter }),
-        next: { revalidate: 300 },
-        cache: 'force-cache'
-      });
-
-      if (res.status != 500 && res.status != 404) {
-        const { videos, ptoken, ntoken } = await res.json();
-        setItems(videos);
-        setToken(ntoken);
-        setLoading(false);
-      }
-      else throw new Error('Error loading videos')
-
-    }
-    catch (error) {
-      console.log('page error', error);
-      signOut();
-    }
-
-  }
+  const {data : items , error , isLoading : loading} = useSWR([page,filter],()=>dataFetcher(page,filter),{
+    refreshInterval : 1800000 , // 30 minutes
+    dedupingInterval : re ,
+    revalidateOnReconnect: true,
+    revalidateIfStale: true,
+  });
 
 
   const [mapOfChannels, setMapOfChannels] = useState<any>({});
@@ -104,11 +102,6 @@ const PageSection = ({ page }: any) => {
   }, [items]);
 
 
-  useEffect(() => {
-    setLoading(true);
-    fetchData();
-  }, [filter])
-
   return <>
     {page == 'popular' &&
       <div className="w-full flex dark:text-white dark:bg-black bg-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
@@ -125,7 +118,7 @@ const PageSection = ({ page }: any) => {
 
           <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap justify-evenly w-full">
             {items?.map((item: any, index: any) => {
-              return <VideoContainer index={index} imgs={imgs} key={index} mapOfChannels={mapOfChannels} isLarge={isLarge} item={item} />
+              return <VideoContainer index={index} key={index} mapOfChannels={mapOfChannels} isLarge={isLarge} item={item} />
             })}
           </motion.div>
         </motion.div>

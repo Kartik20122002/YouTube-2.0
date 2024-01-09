@@ -3,73 +3,72 @@ import Image from "next/legacy/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { isLargeContext } from "@/app/layout"
-import { useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import PageSkeleton from "@/components/global/pagesection/loading";
 import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { useSession } from "next-auth/react"
+import useSWR from "swr"
 
+
+const fetchData = async (email : any) => {
+    try {
+        if (typeof window !== "undefined") {
+            let historyStr = localStorage.getItem('history');
+
+            if (!historyStr) {
+                const res = await fetch(`/api/history`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email }),
+                    next: { tags: ['history'] }
+                });
+
+                if (res.status != 500 && res.status != 404) {
+                    const { videoItems } = await res.json();
+                    localStorage.setItem('history', JSON.stringify(videoItems));
+                    return videoItems;;
+                }
+            } else {
+                let historyItems = JSON.parse(historyStr);
+                return historyItems;
+            }
+        } else {
+            const res = await fetch(`/api/history`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email }),
+                next: { tags: ['history'] }
+            });
+
+            if (res.status != 500 && res.status != 404) {
+                const { videoItems } = await res.json();
+                return videoItems;
+            }
+        }
+
+    }
+    catch (error) {
+        console.log('page error', error);
+        return []
+    }
+
+}
 
 
 const History = () => {
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
     const { data: session } = useSession();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (typeof window !== "undefined") {
-                    let historyStr = localStorage.getItem('history');
+    const email = session?.user?.email;
 
-                    if (!historyStr) {
-                        const res = await fetch(`/api/history`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ email: session?.user?.email }),
-                            next: { tags: ['history'] }
-                        });
-
-                        if (res.status != 500 && res.status != 404) {
-                            const { videoItems } = await res.json();
-                            setItems(videoItems);
-                            setLoading(false);
-                            localStorage.setItem('history', JSON.stringify(videoItems));
-                        }
-                    } else {
-                        let historyItems = JSON.parse(historyStr);
-                        setItems(historyItems);
-                        setLoading(false)
-                    }
-                } else {
-                    const res = await fetch(`/api/history`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ email: session?.user?.email }),
-                        next: { tags: ['history'] }
-                    });
-
-                    if (res.status != 500 && res.status != 404) {
-                        const { videoItems } = await res.json();
-                        setItems(videoItems);
-                        setLoading(false);
-                    }
-                }
-
-            }
-            catch (error) {
-                console.log('page error', error);
-                setItems([]);
-                setLoading(false);
-            }
-
-        }
-        fetchData();
-    }, [session])
+    const {data : items , error , isLoading : loading} = useSWR([email],()=>fetchData(email),{
+        revalidateOnReconnect: true,
+        revalidateIfStale: true,
+    });
 
 
     return <>

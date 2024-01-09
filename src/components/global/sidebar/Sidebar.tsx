@@ -2,6 +2,7 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import useSWR from 'swr';
 
 import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineHistory, AiOutlineDown } from "react-icons/ai";
 import { MdLibraryAdd, MdOutlineLibraryAdd } from 'react-icons/md';
@@ -13,7 +14,24 @@ import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
 import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 
-// export const dynamic = 'force-dynamic'
+const subFetcher = async ()=>{
+    const res = await fetch('/api/subs');
+    const { subs, ptoken, ntoken } = await res.json();
+    return subs;
+}
+
+const playlistFetcher = async () => {
+  try {
+    const res = await fetch('/api/library/playlists');
+    const { data } = await res.json();
+    return data;
+  }
+
+  catch (err) {
+    console.log(err);
+    return [];
+  }
+}
 
 const links = [
   {
@@ -42,60 +60,24 @@ const links = [
   },
 ];
 
-const Sub = ({ item, isLarge , index }: any) => {
-  return <motion.div
-    whileTap={{scale : 0.9}}
-    initial={{opacity: 0 }}
-    whileInView={{opacity: 1  , transition: {duration: 0.5 , delay: (1/100)*index + 0.05 }}}
-    viewport={{once: true}}
-   layout transition={{ duration: 0.5 }} >
-    <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]`}>
-      <motion.div layout transition={{ duration: 0.5 }} className="flex min-w-[2rem] w-[2rem] items-center">
-        <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className={`rounded-full bg-[#5a5a5a]`} loading="lazy" alt="img" />
-      </motion.div>
-      {isLarge && <motion.p layout transition={{ duration: 0.5 }} className="ml-[20px] truncate-1">{item?.snippet?.title || 'unknown channel'}</motion.p>}
-    </Link>
-  </motion.div>
-}
-
-const SubSkeleton = ({ isLarge }: any) => {
-  return <motion.div layout initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="subscribed-list w-full pl-[3%] pb-[15%]">
-    {isLarge &&
-      <motion.h3 layout transition={{ duration: 0.5 }} initial={{ opacity: isLarge ? 0 : 1 }} animate={{ opacity: isLarge ? 1 : 0 }} className="text-[18px] dark:text-white ml-2 my-5 text-[#5a5a5a]">Subscriptions</motion.h3>
-    }
-
-    {
-      Array.from({ length: 7 }, (_, index) => {
-        return <SubsSkeleton key={index} isLarge={isLarge} />
-      })
-    }
-
-  </motion.div>
-}
-
-const SideLinks = ({ item, isLarge, index }: any) => {
-  const { slide } = useContext(slideContext) as any;
-
-  return <motion.div layout
-    whileTap={{scale : 0.9}}
-    transition={{ duration: 0.5 }} className="relative cursor-pointer">
-    <Link href={item.link} className={`w-full ${slide != index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
-      <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
-      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
-    </Link>
-
-    {slide == index && <motion.div className="activeLink" layoutId="underline" />}
-  </motion.div>
-}
-
 const Sidebar = ({ isLarge, IsVideoPage }: any) => {
   const { status, data: session } = useSession();
-  const [subs, setSubs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loading1, setLoading1] = useState(true);
-  const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
+
+  const { data : subs, error : isError, isLoading : loading } = useSWR(status === 'authenticated' ? 'subs' : null,()=>subFetcher(),{
+    refreshInterval : 3600000 , // 60 minutes
+    dedupingInterval : 3600000,
+    revalidateOnReconnect: true,
+    revalidateIfStale: true,
+  })
+
+  const {data : list , error , isLoading : loading1} = useSWR(status === 'authenticated' ? 'sideplaylists' : null,()=>playlistFetcher(),{
+    refreshInterval : 3600000 , // 60 minutes
+    dedupingInterval : 900000, // 15 minutes
+    revalidateOnReconnect: true,
+    revalidateIfStale: true,
+  })
+
 
   useEffect(() => {
     const getHistory = async () => {
@@ -118,42 +100,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
       }
     }
 
-    const playlists = async () => {
-      try {
-        const res = await fetch('/api/library/playlists', { next: { revalidate: 300 }, cache: 'default' });
-        const { data } = await res.json();
-        setList(data);
-        setLoading1(false);
-      }
-
-      catch (err) {
-        console.log(err);
-        setList([]);
-        setLoading1(false);
-      }
-    }
-
-    const fun = async () => {
-
-      try {
-
-        const res = await fetch('/api/subs', { next: { revalidate: 300 } });
-        const { subs, ptoken, ntoken } = await res.json();
-        setSubs(subs);
-        setLoading(false);
-      }
-
-      catch (err) {
-        console.log(err);
-        setSubs([]);
-        signOut();
-      }
-    }
-
-
     if (status == 'authenticated') {
-      fun();
-      playlists();
       getHistory();
     }
   }, [status])
@@ -181,12 +128,10 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
               {
                 <motion.div className={`${!show && 'max-h-0'} overflow-y-hidden`}>
-                  {loading1 ? <>
-                    <SubsSkeleton isLarge={isLarge} />
-                    <SubsSkeleton isLarge={isLarge} />
-                    <SubsSkeleton isLarge={isLarge} />
-                    <SubsSkeleton isLarge={isLarge} />
-                  </> :
+                  {loading1 ? 
+                  Array.from({ length: 4 }, (_, index) => {
+                    return <SubItemSkeleton key={index} isLarge={isLarge} />
+                  }):
                     <>
                       {
                         list?.map((item: any, index: any) => {
@@ -234,9 +179,54 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
   </motion.div>
 }
 
-export default Sidebar;
+const SideLinks = ({ item, isLarge, index }: any) => {
+  const { slide } = useContext(slideContext) as any;
 
-const SubsSkeleton = ({ isLarge }: any) => {
+  return <motion.div layout
+    whileTap={{scale : 0.9}}
+    transition={{ duration: 0.5 }} className="relative cursor-pointer">
+    <Link href={item.link} className={`w-full ${slide != index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+      <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
+      <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
+    </Link>
+
+    {slide == index && <motion.div className="activeLink" layoutId="underline" />}
+  </motion.div>
+}
+
+const Sub = ({ item, isLarge , index }: any) => {
+  return <motion.div
+    whileTap={{scale : 0.9}}
+    initial={{opacity: 0 }}
+    whileInView={{opacity: 1  , transition: {duration: 0.5 , delay: (1/100)*index + 0.05 }}}
+    viewport={{once: true}}
+   layout transition={{ duration: 0.5 }} >
+    <Link href={`/channel/${item?.snippet?.resourceId?.channelId}`} className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]`}>
+      <motion.div layout transition={{ duration: 0.5 }} className="flex min-w-[2rem] w-[2rem] items-center">
+        <Image src={item?.snippet?.thumbnails?.default?.url} width={isLarge ? 35 : 40} height={isLarge ? 35 : 40} className={`rounded-full bg-[#5a5a5a]`} loading="lazy" alt="img" />
+      </motion.div>
+      {isLarge && <motion.p layout transition={{ duration: 0.5 }} className="ml-[20px] truncate-1">{item?.snippet?.title || 'unknown channel'}</motion.p>}
+    </Link>
+  </motion.div>
+}
+
+const SubSkeleton = ({ isLarge }: any) => {
+  return <motion.div layout initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="subscribed-list w-full pl-[3%] pb-[15%]">
+    {isLarge &&
+      <motion.h3 layout transition={{ duration: 0.5 }} initial={{ opacity: isLarge ? 0 : 1 }} animate={{ opacity: isLarge ? 1 : 0 }} className="text-[18px] dark:text-white ml-2 my-5 text-[#5a5a5a]">Subscriptions</motion.h3>
+    }
+
+    {
+      Array.from({ length: 7 }, (_, index) => {
+        return <SubItemSkeleton key={index} isLarge={isLarge} />
+      })
+    }
+
+  </motion.div>
+}
+
+const SubItemSkeleton = ({ isLarge }: any) => {
   return <motion.div layout transition={{ duration: 0.5 }} >
     <motion.div className={`w-full dark:text-white flex items-center flex-nowrap p-[5%] ${isLarge ? 'mb-1' : 'mb-3 justify-center'} overflow-hidden rounded-xl font-[350] hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]`}>
       <motion.div layout transition={{ duration: 0.5 }} className="flex w-fit items-center">
@@ -246,3 +236,6 @@ const SubsSkeleton = ({ isLarge }: any) => {
     </motion.div>
   </motion.div>
 }
+
+
+export default Sidebar;

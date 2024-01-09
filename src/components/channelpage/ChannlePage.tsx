@@ -10,8 +10,64 @@ import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
 import { signIn, useSession } from 'next-auth/react';
+import useSWR, { useSWRConfig } from 'swr';
 
 const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
+
+const channelFetcher = async (id : any) => {
+    try{
+        const results = await fetch('/api/channel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id })
+        })
+    
+        if (results.status !== 404 && results.status != 500) {
+            const { channelDetails, isSub, subIdres } = await results.json();
+    
+            return {
+                sub: isSub,
+                subId: subIdres,
+                channel : channelDetails,
+            }
+        }
+        else return {
+            sub : false,
+            subId : '',
+            channel : {}
+        }
+    }
+    catch(error){
+        return {
+            sub : false,
+            subId : '',
+            channel : {}
+        }
+    }
+}
+
+const ChannelVideosFetcher = async (id : any ,type : any) => {
+    try{
+        const results = await fetch(`/api/channel/${type}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id })
+        })
+    
+        if (results.status !== 404 && results.status != 500) {
+            const { data } = await results.json();
+            return data;
+        }
+        return [];
+    }
+    catch(err){
+        return [];
+    }
+}
 
 const ChannelPage = ({ channelId }: any) => {
 
@@ -27,9 +83,17 @@ const ChannelPage = ({ channelId }: any) => {
 const ChannelInfo = ({ id }: any) => {
     const [sub, setSub] = useState<any>(false);
     const [subId, setSubId] = useState('');
-    const [channel, setChannel] = useState<any>({});
-    const [loading, setLoading] = useState(true);
     const { status } = useSession();
+    const { mutate } = useSWRConfig()
+
+    const {data , error , isLoading : loading} = useSWR(id,()=>channelFetcher(id))
+
+    useEffect(()=>{
+        if(data){
+            setSub(data?.sub);
+            setSubId(data?.subId);
+        }
+    },[data]);
 
     const toggleSub = () => {
         if (status == 'authenticated') {
@@ -45,8 +109,7 @@ const ChannelInfo = ({ id }: any) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: id, subId: subId, toSub: !sub }),
-                next: { revalidate: 300 }
+                body: JSON.stringify({ id: id, subId: subId, toSub: !sub })
             })
 
             if (res.status === 200) {
@@ -59,6 +122,7 @@ const ChannelInfo = ({ id }: any) => {
                     setSubId(data);
                     if (flag) setSub(true)
                 }
+                mutate('subs')
             }
 
         }
@@ -67,28 +131,7 @@ const ChannelInfo = ({ id }: any) => {
         }
     }
 
-    const getDetails = async () => {
-        const results = await fetch('/api/channel', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id }),
-            cache: 'force-cache'
-        })
 
-        if (results.status !== 404 && results.status != 500) {
-            const { channelDetails, isSub, subIdres } = await results.json();
-            setSub(isSub);
-            if (subIdres) setSubId(subIdres)
-            setChannel(channelDetails);
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        getDetails()
-    }, [])
 
     return <>
         <motion.div layout transition={{ duration: 0.5 }} className="flex relative flex-wrap dark:bg-black bg-white md:mt-6">
@@ -97,24 +140,24 @@ const ChannelInfo = ({ id }: any) => {
                 <motion.div layout transition={{ duration: 0.5 }} className="w-full h-full md:relative md:pb-[100%] pb-[40%] overflow-hidden">
                     <motion.div layout transition={{ duration: 0.5 }} className="absolute w-full h-full top-0 md:right-0 md:bottom-0 md:left-0">
                         {loading ? <SekeltonImg className='md:!rounded-full' /> :
-                            <Image className='md:rounded-full dark:bg-[#202324] bg-[#b8b8b8] md:!min-h-full md:!h-full !h-[10%]' src={channel?.snippet?.thumbnails?.medium?.url} layout='fill' alt='channelImg' loading='lazy' />}
+                            <Image className='md:rounded-full dark:bg-[#202324] bg-[#b8b8b8] md:!min-h-full md:!h-full !h-[10%]' src={data?.channel?.snippet?.thumbnails?.medium?.url} layout='fill' alt='channelImg' loading='lazy' />}
                     </motion.div>
                 </motion.div>
             </motion.div>
 
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[60%] shrink-0 mt-2 md:mt-0 flex min-w-min pl-3 md:pl-0 flex-col justify-center items-start grow">
-                <motion.div layout transition={{ duration: 0.5 }} className="text-[2rem] w-full">{!loading ? channel?.snippet?.title : <SekeltonText height={'min-h-[2rem]'} width={'w-3/4'} />}</motion.div>
+                <motion.div layout transition={{ duration: 0.5 }} className="text-[2rem] w-full">{!loading ? data?.channel?.snippet?.title : <SekeltonText height={'min-h-[2rem]'} width={'w-3/4'} />}</motion.div>
                 {loading ? <SekeltonText /> : <>
                     <motion.div layout transition={{ duration: 0.5 }} className="mb-2 mt-1 md:mt-0 flex flex-wrap text-[0.9rem]">
-                        <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{channel?.snippet?.customUrl || <SekeltonText />}</motion.div>
-                        <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] mr-3 text-center">{CountConverter(channel?.statistics?.subscriberCount)} Subcribers</motion.div>
-                        <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] mr-3 text-center">{CountConverter(channel?.statistics?.videoCount)} Videos</motion.div>
+                        <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] mr-3 hover:text-[#c0bebe] cursor-pointer font-semibold">{data?.channel?.snippet?.customUrl || <SekeltonText />}</motion.div>
+                        <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] mr-3 text-center">{CountConverter(data?.channel?.statistics?.subscriberCount)} Subcribers</motion.div>
+                        <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] mr-3 text-center">{CountConverter(data?.channel?.statistics?.videoCount)} Videos</motion.div>
                     </motion.div>
                 </>}
 
                 {loading ? <SekeltonText /> :
-                    <Link href={`/channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">{channel?.snippet?.description} </Link>
+                    <Link href={`/channel/${id}`} className="text-[0.9rem] whitespace-normal truncate-1 max-w-[100vw] w-full text-[#979696] hover:text-[#c0bebe] flex items-center">{data?.channel?.snippet?.description} </Link>
                 }
             </motion.div>
 
@@ -133,30 +176,16 @@ const VideoSection = ({ id, type }: any) => {
     const [see, setSee] = useState(false);
     const heading = type == 'activities' ? 'Recently Upload' : 'Playlists';
     const icon = type == 'activities' ? <AiOutlineHistory /> : <RiPlayListLine />
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const getDetails = async () => {
-        const results = await fetch(`/api/channel/${type}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id }),
-            next: { revalidate: 300 }
-        })
 
-        if (results.status !== 404 && results.status != 500) {
-            const { data } = await results.json();
-            setItems(data);
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        getDetails()
-    }, [])
+    const {data : items , error , isLoading : loading} = useSWR([id,type],()=>ChannelVideosFetcher(id,type),{
+        refreshInterval : 900000 , // 15 minutes
+        dedupingInterval : 900000,
+        revalidateOnReconnect: true,
+        revalidateIfStale: true,
+    })
 
     const toggleSee = () => { setSee(!see) }
+
     return <>
 
         {(loading || items?.length > 0) && <>
