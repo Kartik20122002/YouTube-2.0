@@ -37,7 +37,7 @@ const PageSection = ({ page }: any) => {
   const [filter, setFilter] = useState(0);
   setpage(false);
 
-  const re = (page === 'popular') ? 1800000 : 300000
+  const re = (page !== 'popular') ? 1800000 : 300000
 
   const filters = [
     { name: 'All', id: 0 },
@@ -131,7 +131,7 @@ const VideoContainer = ({ item, isLarge, mapOfChannels }: any) => {
 
   return <>
 
-    <motion.div initial={{opacity : 0 }} whileInView={{opacity : 1  , transition : {duration : 0.3}}} viewport={{once : true}} whileTap={{scale : 0.9}} layout
+    <motion.div whileTap={{scale : 0.9}} layout
       transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
 
       <Link className={`w-full overflow-hidden relative pt-[56.25%] md:rounded-xl`} href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>

@@ -65,7 +65,7 @@ const History = () => {
 
     const email = session?.user?.email;
 
-    const {data : items , error , isLoading : loading} = useSWR([email],()=>fetchData(email),{
+    const {data : items , error , isLoading : loading} = useSWR(email ? 'history' : null,()=>fetchData(email),{
         revalidateOnReconnect: true,
         revalidateIfStale: true,
     });

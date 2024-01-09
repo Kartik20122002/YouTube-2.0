@@ -19,7 +19,7 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR, { mutate } from 'swr';
 
 
 const videoDetailsFetcher = async (id : any , channelId : any) => {
@@ -45,7 +45,30 @@ const videoDetailsFetcher = async (id : any , channelId : any) => {
         console.log(err);
     }
 }
+const videoAuthDetailsFetcher = async (id : any , channelId : any) => {
+    try {
+        const res = await fetch(`/api/video/auth/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, channelId })
+        })
 
+        if (res.status != 404 && res.status != 500) {
+            const { rating, subscription } = await res.json();
+
+            return {
+                rateRes : rating[0].rating === 'none' ? 0 : rating[0].rating == 'like' ? 1 : -1,
+                subRes : subscription.length > 0 ? true : false,
+                subIdRes : subscription.length > 0 ? subscription[0]?.id : null,
+            }
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 const relativeDownloadFetcher = async (id : any)=>{
     try {
         const res = await fetch(`/api/video/${id}/reldowns`, {
@@ -70,6 +93,25 @@ const relativeDownloadFetcher = async (id : any)=>{
         console.log(err);
     }
 }
+const commentsFetcher = async (id : any) => {
+    try {
+        const res = await fetch(`/api/video/${id}/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id })
+        })
+
+        if (res.status != 404 && res.status != 500) {
+            const { data } = await res.json();
+            return data;
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 
 const dataContext = createContext<any>(null);
 
@@ -80,8 +122,9 @@ const Videopage = ({id, channelId }: any) => {
     const { setIsLarge } = useContext(isLargeContext) as any;
   
     setpage(true);
-    setIsLarge(false);
     setslide(-1);
+
+    useEffect(()=>setIsLarge(false),[]);
   
     const [downloading, setDownloading] = useState<boolean>(false);
 
@@ -242,113 +285,92 @@ const VideoSection = () => {
 }
 
 const VideoInfo = () => {
-    const { mutate } = useSWRConfig()
     const [rate, setRate] = useState<any>(0)
     const [sub, setSub] = useState<any>(false);
     const [subId, setSubId] = useState<any>('');
     const { status } = useSession();
     const { id, channelId, video, channel, loading , loading2 , downloading, setDownloading } = useContext(dataContext);
+    mutate('history');
 
-    const getAuthDetails = async () => {
-        try {
-            const res = await fetch(`/api/video/auth/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id, channelId }),
-                next: { revalidate: 300 }
-            })
+    const {data : authData , error : videoError , isLoading : authLoading} = useSWR(status === 'authenticated' ? ['authvideo',id] : null,()=>videoAuthDetailsFetcher(id,channelId),{
+        revalidateIfStale: true,
+        revalidateOnReconnect: true,
+        refreshInterval : 900000,
+        dedupingInterval : 900000 ,
+    });
 
-            if (res.status != 404 && res.status != 500) {
-                const { rating, subscription } = await res.json();
-                if (rating[0].rating == 'none') setRate(0);
-                if (rating[0].rating == 'like') setRate(1);
-                if (rating[0].rating == 'dislike') setRate(-1);
-                if (subscription.length > 0) {
-                    setSub(true);
-                    const id = subscription[0]?.id;
-                    if (id) setSubId(id);
-                }
-            }
+    const {rateRes , subRes , subIdRes} = authData || {rateRes : 0,subRes : false,subIdRes : ''};
+
+    useEffect(()=>{
+        if(authData){
+            setRate(rateRes);
+            setSubId(subIdRes);
+            setSub(subRes);
         }
-        catch (err) {
-            console.log(err);
-        }
-    }
+    },[authData]);
 
-    const subscribe = async () => {
-        try {
-            const res = await fetch(`/api/subscribe`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: channelId, subId: subId, toSub: !sub }),
-                next: { revalidate: 300 }
-            });
 
-            if (res.status === 200) {
-                if (sub) {
-                    const { flag, data } = await res.json();
-                    if (flag) setSub(false);
-                }
-                else {
-                    const { flag, data } = await res.json();
-                    setSubId(data);
-                    if (flag) setSub(true)
-                }
-                mutate('subs');
-            }
-
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-
-    const rateit = async (torate: any) => {
-        try {
-            const res = await fetch(`/api/rate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: id, rating: torate }),
-                next: { revalidate: 300 }
-            })
-
-            if (res.status === 200) {
-                const { flag } = await res.json();
-                if (flag) {
-                    if (torate == 'none') setRate(0);
-                    if (torate == 'like') setRate(1);
-                    if (torate == 'dislike') setRate(-1);
-                }
-            }
-
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-
-    useEffect(() => {
+    const toggleSub = async () => {
         if (status == 'authenticated') {
-            getAuthDetails();
-        }
-    }, [status])
-
-    const toggleSub = () => {
-        if (status == 'authenticated') {
-            subscribe();
+            try {
+                const res = await fetch(`/api/subscribe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: channelId, subId: subId, toSub: !sub }),
+                    next: { revalidate: 300 }
+                });
+    
+                if (res.status === 200) {
+                    if (sub) {
+                        const { flag, data } = await res.json();
+                        if (flag) setSub(false);
+                    }
+                    else {
+                        const { flag, data } = await res.json();
+                        setSubId(data);
+                        if (flag) setSub(true)
+                    }
+                    mutate(['authvideo',id])
+                    mutate('subs');
+                }
+    
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
         else signIn("google");
     }
 
-    const toggleRate = (rating: any) => {
+    const toggleRate = async (rating: any) => {
         if (status == 'authenticated') {
-            rateit(rating);
+            try {
+                const res = await fetch(`/api/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: id, rating: rating }),
+                    next: { revalidate: 300 }
+                })
+    
+                if (res.status === 200) {
+                    const { flag } = await res.json();
+                    if (flag) {
+                        if (rating == 'none') setRate(0);
+                        if (rating == 'like') setRate(1);
+                        if (rating == 'dislike') setRate(-1);
+                    }
+                    mutate(['liked',0]);
+                    mutate(['authvideo',id]);
+                }
+    
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
         else signIn("google");
     }
@@ -427,11 +449,10 @@ const VideoInfo = () => {
 
 const VideoInfoSkeleton = () => {
 
-    const loading = true;
     return <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col flex-wrap md:flex-row md:items-center justify-center mt-5 text-[#5a5a5a] w-full">
 
         <motion.div layout transition={{ duration: 0.5 }} className="flex md:basis-[40%] grow md:text-md text-xs basis-full mb-2 px-2">
-            <motion.div layout transition={{ duration: 0.5 }} className={`flex items-center ${loading && 'w-1/3'}`}>
+            <motion.div layout transition={{ duration: 0.5 }} className={`flex items-center w-1/3`}>
                 <motion.div layout transition={{ duration: 0.5 }} className="min-w-[45px] min-h-[45px]">
                     <SekeltonImg width={'min-w-[45px]'} height={'min-h-[45px]'} circle />
                 </motion.div>
@@ -490,9 +511,6 @@ const Description = () => {
         <motion.div onClick={() => setLargeDesc(!largeDesc)} layout transition={{ duration: 0.5 }} className={`${!largeDesc ? 'h-4' : 'h-fit'} hidden md:block overflow-hidden mt-1`}>
             {parse(video?.snippet?.description)}
         </motion.div>
-        {/* {largeDesc && 
-    <motion.div layout transition={{duration : 0.5}} onClick={()=>setLargeDesc(false)} className="mt-3 text-white hover:opacity-80 cursor-pointer">Show Less</motion.div>
-    } */}
 
     </motion.div>
     </>)
@@ -514,6 +532,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
             if (res.status === 200) {
                 setComment('');
+                setTimeout(()=>mutate(['comments',id]),30000);
             }
 
         }
@@ -554,39 +573,17 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
 const Comments = ({ id }: any) => {
 
-    const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    const getDetails = async () => {
-        try {
-            const res = await fetch(`/api/video/${id}/comments`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id }),
-                next: { revalidate: 300 }
-            })
-
-            if (res.status != 404 && res.status != 500) {
-                const { data } = await res.json();
-                setComments(data);
-                setLoading(false);
-            }
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-
-    useEffect(() => {
-        getDetails();
-    }, []);
+    const {data : comments , error : videoError , isLoading : loading} = useSWR(['comments',id],()=>commentsFetcher(id),{
+        revalidateIfStale: true,
+        revalidateOnReconnect: true,
+        refreshInterval : 900000,
+        dedupingInterval : 900000 ,
+    });
 
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="hidden md:block pb-2">
             {
-                loading ? <></> :
+                loading ? null :
                     comments?.map((item: any, index: any) => {
                         return <Comment key={index} item={item} />
                     })
