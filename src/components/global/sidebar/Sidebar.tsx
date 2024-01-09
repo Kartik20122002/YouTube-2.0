@@ -66,7 +66,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
 
   const { data : subs, error : isError, isLoading : loading } = useSWR(status === 'authenticated' ? 'subs' : null,()=>subFetcher(),{
     refreshInterval : 3600000 , // 60 minutes
-    dedupingInterval : 3600000,
+    dedupingInterval : 300000, // 5 minutes
     revalidateOnReconnect: true,
     revalidateIfStale: true,
   })
