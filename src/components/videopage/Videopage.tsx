@@ -19,28 +19,71 @@ import { DateConverter } from "@/utils/Functions/Converters/DateConverter";
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
-import { usePathname } from 'next/navigation';
-import { useSWRConfig } from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 
+
+const videoDetailsFetcher = async (id : any , channelId : any) => {
+    try {
+        const res = await fetch(`/api/video/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, channelId })
+        })
+
+        if (res.status != 404 && res.status != 500) {
+            const { video, channel } = await res.json();
+            return {
+               video , 
+               channel
+            }
+
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
+const relativeDownloadFetcher = async (id : any)=>{
+    try {
+        const res = await fetch(`/api/video/${id}/reldowns`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        })
+
+        if (res.status != 404 && res.status != 500) {
+            const { linksStr, relatedVideosStr } = await res.json();
+            const Links = JSON.parse(linksStr)
+            const relatedVideos = JSON.parse(relatedVideosStr);
+        
+            return {
+                related : relatedVideos,
+                links : Links,
+            }
+        }
+
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 
 const dataContext = createContext<any>(null);
 
-const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
+const Videopage = ({id, channelId }: any) => {
     const { status, data: session } = useSession();
     const { setslide } = useContext(slideContext) as any;
     const { setpage } = useContext(pageContext) as any;
     const { setIsLarge } = useContext(isLargeContext) as any;
   
     setpage(true);
+    setIsLarge(false);
     setslide(-1);
   
-    const [videoDetails, setVideoDetails] = useState<any>({});
-    const [channelDetails, setChannelDetails] = useState<any>({});
-    const [loading, setLoading] = useState(true);
-    const [loading2,setLoading2] = useState(true);
     const [downloading, setDownloading] = useState<boolean>(false);
-    const [related , setRelated] = useState([]);
-    const [links , setLinks] = useState([]);
 
     const wrapperRef = useRef(null);
     useOutsideAlerter(wrapperRef);
@@ -121,67 +164,32 @@ const Videopage = ({relatedStr, downloadOptionsStr, id, channelId }: any) => {
 
     }
 
-    const getDetails = async () => {
-        try {
-            const res = await fetch(`/api/video/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id, channelId }),
-                next: { revalidate: 300 }
-            })
+    const {data : videoData , error : videoError , isLoading : loading} = useSWR(['video',id],()=>videoDetailsFetcher(id,channelId),{
+        revalidateIfStale: true,
+        revalidateOnReconnect: true,
+        refreshInterval : 900000,
+        dedupingInterval : 900000 ,
+    });
 
-            if (res.status != 404 && res.status != 500) {
-                const { video, channel } = await res.json();
-                setVideoDetails(video);
-                setChannelDetails(channel);
-                setLoading(false);
+    const {video , channel} = videoData || { video : {}, channel : {}};
 
-                if (status === "authenticated") {
-                    saveToHistory(video, channel);
-                }
 
-            }
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
+    const {data : relData , error , isLoading : loading2} = useSWR(['relDown',id],()=>relativeDownloadFetcher(id),{
+        revalidateIfStale: true,
+        revalidateOnReconnect: true,
+        refreshInterval : 3600000,
+        dedupingInterval : 3600000 ,
+    });
 
-    const relatedDownloads = async ()=>{
-        try {
-            const res = await fetch(`/api/video/${id}/reldowns`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id }),
-                next: { revalidate: 1000 }
-            })
+    const {related , links} = relData || { related : [] , links : []}
 
-            if (res.status != 404 && res.status != 500) {
-                const { linksStr, relatedVideosStr } = await res.json();
-                const Links = JSON.parse(linksStr)
-                setLinks(Links);
-                const relatedVideos = JSON.parse(relatedVideosStr);
-                setRelated(relatedVideos);
-                setLoading2(false);
-            }
 
-        }
-        catch (err) {
-            setLoading2(false);
-            console.log(err);
-        }
-    }
-
-    useEffect(() => {
-        getDetails();
-        relatedDownloads()
-        setIsLarge(false);
-    }, [])
+    useEffect(()=>{
+        if(videoData) saveToHistory(video,channel)
+    },[videoData])
 
     return (<>
-        <dataContext.Provider value={{id,channelId, video : videoDetails , channel : channelDetails , loading , loading2 , links , related,  downloading, setDownloading }}>
+        <dataContext.Provider value={{id,channelId, video  , channel , loading , loading2 , links , related,  downloading, setDownloading }}>
             <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all relative overflow-y-scroll pb-8">
                 <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
                     <VideoSection />
