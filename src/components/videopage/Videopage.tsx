@@ -705,7 +705,7 @@ const DownloadModal = () => {
 
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>
-                <Link href={(downloadUrl == '') ? '#' : downloadUrl} target='_blank' type='download' className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadUrl !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</Link>
+                <Link href={(downloadUrl == '') ? '#' : downloadUrl} target= {(downloadUrl == '') ? '_self' : '_blank'} type='download' className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadUrl !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</Link>
             </motion.div>
         </motion.div>
     </>
