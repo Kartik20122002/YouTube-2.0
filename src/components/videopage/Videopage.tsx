@@ -318,8 +318,7 @@ const VideoInfo = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ id: channelId, subId: subId, toSub: !sub }),
-                    next: { revalidate: 300 }
+                    body: JSON.stringify({ id: channelId, subId: subId, toSub: !sub })
                 });
     
                 if (res.status === 200) {
@@ -352,8 +351,7 @@ const VideoInfo = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ id: id, rating: rating }),
-                    next: { revalidate: 300 }
+                    body: JSON.stringify({ id: id, rating: rating })
                 })
     
                 if (res.status === 200) {
@@ -526,13 +524,12 @@ const CommentForm = ({ img, channelId, id }: any) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id, channelId, comment }),
-                next: { revalidate: 300 }
+                body: JSON.stringify({ id, channelId, comment })
             })
 
             if (res.status === 200) {
                 setComment('');
-                setTimeout(()=>mutate(['comments',id]),30000);
+                setTimeout(()=>mutate(['comments',id]),20000);
             }
 
         }
@@ -549,7 +546,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
     return (<>
 
-        <motion.form onSubmit={(e) => videoComment(e)} className="mt-4 hidden md:flex items-start">
+        <motion.form onSubmit={(e : any) => videoComment(e)} className="mt-4 hidden md:flex items-start">
 
             {
                 img ? <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full bg-grey' /> :
@@ -559,7 +556,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-auto w-full ml-6 flex flex-col">
 
-                <motion.input value={comment} autoComplete='off' onChange={(e) => setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:dark:border-white focus:border-black transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
+                <motion.input value={comment} autoComplete='off' onChange={(e : any) => setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:dark:border-white focus:border-black transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
 
                 <motion.div layout transition={{ duration: 0.5 }} className="btns w-full flex justify-end transition-colors mt-3">
                     <motion.button layout transition={{ duration: 0.5 }} onClick={() => setComment('')} type='reset' className='mr-4 opacity-90 hover:opacity-100'>Cancel</motion.button>
