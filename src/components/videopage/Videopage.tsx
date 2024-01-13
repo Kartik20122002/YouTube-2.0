@@ -581,7 +581,7 @@ const Comments = ({ id }: any) => {
     });
 
     return (<>
-        <motion.div layout transition={{ duration: 0.5 }} className="hidden md:block pb-2">
+        <motion.div layout transition={{ duration: 0.5 }} className="hidden w-full overflow-x-hidden md:block pb-2">
             {
                 loading ? null :
                     comments?.map((item: any, index: any) => {
