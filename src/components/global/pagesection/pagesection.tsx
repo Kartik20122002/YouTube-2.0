@@ -35,11 +35,12 @@ const PageSection = ({ page }: any) => {
   const { isLarge } = useContext(isLargeContext) as any;
   const { setpage, online } = useContext(pageContext) as any;
   const [filter, setFilter] = useState(0);
+  const { mutate } = useSWRConfig();
+  
   setpage(false);
 
   useEffect(()=>{
     if(online){
-      const { mutate } = useSWRConfig()
      mutate([page,filter])
     }
   },[online])
