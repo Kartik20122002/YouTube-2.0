@@ -36,22 +36,7 @@ export default function RootLayout({
   const [IsVideoPage, setPage] = useState(false);
   const [dark, setDark] = useState(true);
 
-  const [online, setOnline] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const handleOnline = () => setOnline(true);
-    const handleOffline = () => setOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-
+  const [online, setOnline] = useState(true);
 
   function toggle() {
     setIsLarge(!isLarge);
@@ -69,6 +54,17 @@ export default function RootLayout({
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js');
       }
+
+      const handleOnline = () => setOnline(true);
+      const handleOffline = () => setOnline(false);
+  
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+  
+      return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      };
   }, []);
 
   return (
