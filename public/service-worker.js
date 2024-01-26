@@ -13,25 +13,31 @@ self.addEventListener('install',(e)=>{
   }))
 });
 
-const cacheClone = async (e) => {
-  const res = await fetch(e.request);
-  const resClone = res.clone();
-  const cache = await caches.open(cacheName);
-  await cache.put(e.request, resClone);
-  return res;
-};
+self.addEventListener('fetch', event => {
+  const request = event.request;
 
-const fetchEvent = () => {
-  
-  self.addEventListener('fetch', (e) => {
-    const request = e.request;
-    
-    e.respondWith(
-      cacheClone(e)
-        .catch(() => caches.match(e.request))
-        .then((res) => res || fetch(e.request))
-    );
-  });
-};
+  console.log('Handling fetch for:', request.url);
 
-fetchEvent();
+  event.respondWith(
+     // Try to fetch the resource from the network
+     fetch(request).then(response => {
+        console.log('Network Response:', response);
+
+        // If the network request is successful, cache the response
+        const responseClone = response.clone();
+        caches.open('network-first-cache').then(cache => {
+           cache.put(request, responseClone);
+        });
+
+        return response;
+     }).catch(error => {
+        console.error('Fetch Error:', error);
+
+        // If the network request fails, try to get the resource from the cache
+        return caches.match(request).then(cachedResponse => {
+           console.log('Cache Response:', cachedResponse);
+           return cachedResponse || fetch(request);
+        });
+     })
+  );
+});
