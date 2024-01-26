@@ -8,7 +8,7 @@ import PageSkeleton from "@/components/global/pagesection/loading";
 import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
-import useSWR from "swr"
+import useSWR, { useSWRConfig } from "swr"
 
 const dataFetcher = async (page:any, filter : any) =>{
   try{
@@ -33,9 +33,16 @@ const dataFetcher = async (page:any, filter : any) =>{
 
 const PageSection = ({ page }: any) => {
   const { isLarge } = useContext(isLargeContext) as any;
-  const { setpage } = useContext(pageContext) as any;
+  const { setpage, online } = useContext(pageContext) as any;
   const [filter, setFilter] = useState(0);
   setpage(false);
+
+  useEffect(()=>{
+    if(online){
+      const { mutate } = useSWRConfig()
+     mutate([page,filter])
+    }
+  },[online])
 
   const re = (page !== 'popular') ? 1800000 : 300000
 

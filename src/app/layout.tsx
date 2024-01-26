@@ -36,6 +36,23 @@ export default function RootLayout({
   const [IsVideoPage, setPage] = useState(false);
   const [dark, setDark] = useState(true);
 
+  const [online, setOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+
+
   function toggle() {
     setIsLarge(!isLarge);
   }
@@ -70,7 +87,7 @@ export default function RootLayout({
       <body className={`w-screen h-screen dark:bg-black bg-white`}>
         <SessionProvider>
           <isLargeContext.Provider value={{ isLarge, setIsLarge }}>
-            <pageContext.Provider value={{ setpage } as any}>
+            <pageContext.Provider value={{ setpage , online } as any}>
               <slideContext.Provider value={{ slide, setslide } as any}>
                 <Header dark={dark} isLarge={isLarge} change={toggle} toggleTheme={() => setDark(!dark)} />
                 <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage} />
