@@ -13,10 +13,6 @@ self.addEventListener('install',(e)=>{
   }))
 });
 
-self.addEventListener('fetch',()=>{});
-
-
-
 const cacheClone = async (e) => {
   const res = await fetch(e.request);
   const resClone = res.clone();
@@ -26,11 +22,14 @@ const cacheClone = async (e) => {
 };
 
 const fetchEvent = () => {
+  
   self.addEventListener('fetch', (e) => {
+    const request = e.request;
+    
     e.respondWith(
       cacheClone(e)
         .catch(() => caches.match(e.request))
-        .then((res) => res)
+        .then((res) => res || fetch(e.request))
     );
   });
 };
