@@ -48,11 +48,11 @@ export default function RootLayout({
     setPage(val);
   }
 
-  useEffect(() => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
-      }
-    }, []);
+  // useEffect(() => {
+  //     if ('serviceWorker' in navigator) {
+  //       navigator.serviceWorker.register('/service-worker.js');
+  //     }
+  // }, []);
 
   return (
     <html lang="en" className={`${roboto.className} ${dark && 'dark'}`}>
