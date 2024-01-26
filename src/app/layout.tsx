@@ -3,6 +3,8 @@ import Header from '@/components/global/header/Header'
 import './globals.css'
 import { SessionProvider, useSession } from "next-auth/react"
 import Sidebar from '@/components/global/sidebar/Sidebar'
+import { Roboto } from 'next/font/google'
+import BottomBar from '@/components/global/bottombar/BottomBar'
 import { createContext, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
@@ -15,8 +17,6 @@ export const slideContext = createContext(-1);
 // @ts-ignore
 export const pageContext = createContext();
 
-import { Roboto } from 'next/font/google'
-import BottomBar from '@/components/global/bottombar/BottomBar'
 
 const roboto = Roboto({
   weight: '400',
@@ -48,11 +48,11 @@ export default function RootLayout({
     setPage(val);
   }
 
-  // useEffect(() => {
-  //     if ('serviceWorker' in navigator) {
-  //       navigator.serviceWorker.register('/service-worker.js');
-  //     }
-  // }, []);
+  useEffect(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+      }
+  }, []);
 
   return (
     <html lang="en" className={`${roboto.className} ${dark && 'dark'}`}>
