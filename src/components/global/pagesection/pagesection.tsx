@@ -43,6 +43,7 @@ const PageSection = ({ page }: any) => {
     if(online){
      mutate([page,filter])
     }
+    console.log(online)
   },[online])
 
   const re = (page !== 'popular') ? 1800000 : 300000
