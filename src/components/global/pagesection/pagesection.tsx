@@ -9,6 +9,7 @@ import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
 import useSWR, { useSWRConfig } from "swr"
+import { useRouter } from "next/navigation"
 
 const dataFetcher = async (page:any, filter : any) =>{
   try{
@@ -36,12 +37,13 @@ const PageSection = ({ page }: any) => {
   const { setpage, online } = useContext(pageContext) as any;
   const [filter, setFilter] = useState(0);
   const { mutate } = useSWRConfig();
+  const router = useRouter();
   
   setpage(false);
 
   useEffect(()=>{
     if(online){
-     mutate([page,filter])
+     router.refresh();
     }
     console.log(online)
   },[online])
