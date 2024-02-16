@@ -57,7 +57,7 @@ git clone https://github.com/Kartik20122002/YouTube-2.0.git
 Use code with caution. Learn more
 Install dependencies:
 
-```npm
+```bash
 npm install
 ```
 
@@ -94,4 +94,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any questions or inquiries, please reach out to [your email address or other contact information].
+For any questions or inquiries, please reach out to kartikhatwar98@gmail.com.
