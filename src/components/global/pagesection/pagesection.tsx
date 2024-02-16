@@ -37,16 +37,8 @@ const PageSection = ({ page }: any) => {
   const { setpage, online } = useContext(pageContext) as any;
   const [filter, setFilter] = useState(0);
   const { mutate } = useSWRConfig();
-  const router = useRouter();
   
   setpage(false);
-
-  useEffect(()=>{
-    if(online){
-     router.refresh();
-    }
-    console.log(online)
-  },[online])
 
   const re = (page !== 'popular') ? 1800000 : 300000
 
