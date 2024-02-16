@@ -642,7 +642,7 @@ const SideVideo = ({ item }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%] mr-2 h-full">
                 <Link href={`/channel/${author?.id}/video/${id}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
-                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." src={thumbnails[1]?.url || thumbnails[0]?.url} />
+                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={thumbnails[0]?.url || "@/images/noimg.png"}  src={thumbnails[1]?.url || thumbnails[0]?.url} />
                 </Link>
             </motion.div>
 
