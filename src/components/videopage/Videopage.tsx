@@ -506,7 +506,7 @@ const Description = () => {
             </motion.div>
         </motion.div>
 
-        <motion.div onClick={() => setLargeDesc(!largeDesc)} layout transition={{ duration: 0.5 }} className={`${!largeDesc ? 'h-4' : 'h-fit'} hidden md:block overflow-hidden mt-1`}>
+        <motion.div onClick={() => setLargeDesc(!largeDesc)} layout transition={{ duration: 0.5 }} className={`${!largeDesc ? 'h-6' : 'h-fit'} hidden md:block overflow-hidden mt-1`}>
             {parse(video?.snippet?.description)}
         </motion.div>
 
