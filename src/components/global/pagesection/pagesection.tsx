@@ -25,42 +25,28 @@ const dataFetcher = async (page:any, filter : any) =>{
       const { videos, ptoken, ntoken } = await res.json();
       return videos;
     }
-    
+  
   } catch(error){
-    return []
   }
   
 }
 
-const channelFetcher = async (channelIds : any)=>{
-  if(channelIds.length === 0) return [];
-
-  const channelsImgRes = await fetch(`/api/channels_for_page`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(channelIds),
-    cache: 'force-cache'
-  });
-
-  if(channelsImgRes.status != 500 && channelsImgRes.status != 404){
-    const channelsImgData = await channelsImgRes.json();
-    return channelsImgData;
-  }
-
-  return [];
-
-}
 
 const PageSection = ({ page }: any) => {
   const { isLarge } = useContext(isLargeContext) as any;
   const { setpage, online } = useContext(pageContext) as any;
-  const [channelIds,setChannelIds] = useState([]);
-  const [mapOfChannels, setMapOfChannels] = useState<any>({});
   const [filter, setFilter] = useState(0);
   const { mutate } = useSWRConfig();
+  const router = useRouter();
+  
   setpage(false);
+
+  useEffect(()=>{
+    if(online){
+     router.refresh();
+    }
+    console.log(online)
+  },[online])
 
   const re = (page !== 'popular') ? 1800000 : 300000
 
@@ -87,27 +73,43 @@ const PageSection = ({ page }: any) => {
     dedupingInterval : re ,
   });
 
-  const {data : channelImgs , error : channelError , isLoading : loading2} = useSWR('channelIds',()=>channelFetcher(channelIds))
 
-  useEffect(() => {
-    if (items?.length > 0){
-    let channelIdsTemp = [] as any;
-    items?.map((item: any, index: any) => { channelIdsTemp.push(item?.snippet.channelId) });
-    setChannelIds(channelIdsTemp);
-    }
-  }, [items]);
+  const [mapOfChannels, setMapOfChannels] = useState<any>({});
 
-  useEffect(()=>{ mutate('channelIds')},[channelIds])
+  const fun = async () => {
+    let channelIds = [] as any;
 
-  useEffect(()=>{
+    items?.map((item: any, index: any) => { channelIds.push(item?.snippet.channelId) });
+
+    const channelsImgRes = await fetch(`/api/channels_for_page`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(channelIds),
+      cache: 'force-cache'
+    });
+
+
+    const channelsImgData = await channelsImgRes.json();
+
     const mapOfChannelst = {} as any;
 
-    for (let j = 0; j < channelImgs?.length; j++) 
-    mapOfChannelst[channelImgs[j]?.id] = channelImgs[j]?.snippet?.thumbnails.default?.url;
-    
+    const channelInfo = channelsImgData.data;
+
+
+    for (let j = 0; j < channelInfo?.length; j++) {
+      mapOfChannelst[channelInfo[j]?.id] = channelInfo[j]?.snippet?.thumbnails.default?.url;
+    }
+
     setMapOfChannels(mapOfChannelst);
 
-  },[channelImgs])
+  }
+
+  useEffect(() => {
+    if (items?.length > 0) fun();
+  }, [items]);
+
 
   return <>
     {page == 'popular' &&
