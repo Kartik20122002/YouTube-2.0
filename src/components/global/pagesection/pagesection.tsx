@@ -105,13 +105,13 @@ const PageSection = ({ page }: any) => {
 
   return <>
     {page == 'popular' &&
-      <div className="w-full flex dark:text-white dark:bg-black bg-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
+      <motion.div layout className="w-full flex dark:text-white dark:bg-black bg-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
         {
           filters?.map((item: any) => {
-            return <div key={item.id} onClick={() => setFilter(item.id)} className={`${filter === item.id ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-[max-content] rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</div>
+            return <motion.div layout transition={{ duration: 0.5 }} key={item.id} onClick={() => setFilter(item.id)} className={`${filter === item.id ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-[max-content] rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</motion.div>
           })
         }
-      </div>
+      </motion.div>
     }
     {
       loading ? <PageSkeleton /> :
@@ -138,7 +138,7 @@ const VideoContainer = ({ item, isLarge, mapOfChannels }: any) => {
       transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
 
       <Link className={`w-full overflow-hidden relative pt-[56.25%] md:rounded-xl`} href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>
-        <Image src={item.snippet.thumbnails.medium.url} className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />
+        <Image src={item.snippet.thumbnails.medium.url} placeholder="blur" blurDataURL={item.snippet.thumbnails.default.url || "@/images/noimg.png"}  className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />
       </Link>
 
       <motion.div layout transition={{ duration: 0.5 }} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
