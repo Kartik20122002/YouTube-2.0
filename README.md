@@ -63,7 +63,12 @@ npm install
 
 Use code with caution.
 
-Create a .env.local file and add your environment variables (e.g., Google API keys, MongoDB connection string).
+Create a .env file and add your environment variables (e.g., Google API keys, MongoDB connection string).
+
+To know which keys you need, go to `/src/utils/secrets/secrets.ts` in the repo and put required keys in .env file.
+
+For Google API key and access token, allow all scopes for youtube and in access token setting, put localhost:3000 
+as authorised url and origin, you can easily take help of youtube for tutorial.
 
 Start the development server:
 
