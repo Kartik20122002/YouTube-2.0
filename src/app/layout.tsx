@@ -17,6 +17,8 @@ export const slideContext = createContext(-1);
 // @ts-ignore
 export const pageContext = createContext();
 
+export const playlistContext = createContext([]);
+
 
 const roboto = Roboto({
   weight: '400',
@@ -35,6 +37,7 @@ export default function RootLayout({
   const [slide, setSlide] = useState(-1);
   const [IsVideoPage, setPage] = useState(false);
   const [dark, setDark] = useState(true);
+  const [myPlaylists,setMyPlaylists] = useState([]);
 
   const [online, setOnline] = useState(true);
 
@@ -87,10 +90,10 @@ export default function RootLayout({
       <body className={`w-screen h-screen dark:bg-black bg-white`}>
         <SessionProvider>
           <isLargeContext.Provider value={{ isLarge, setIsLarge }}>
-            <pageContext.Provider value={{ setpage , online } as any}>
+            <pageContext.Provider value={{ setpage , online , myPlaylists } as any}>
               <slideContext.Provider value={{ slide, setslide } as any}>
                 <Header dark={dark} isLarge={isLarge} change={toggle} toggleTheme={() => setDark(!dark)} />
-                <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage} />
+                <Sidebar isLarge={isLarge} IsVideoPage={IsVideoPage} myPlaylists={myPlaylists} setMyPlaylists={(e : any)=>setMyPlaylists(e)} />
                 <motion.div layout transition={{ duration: 0.5 }}>
                   <motion.div layout transition={{ duration: 0.5 }} className={`${IsVideoPage ? 'md:px-8' : isLarge ? 'md:pl-[16%]' : 'md:pl-[7%]'} dark:bg-black bg-white w-full pt-[10vh] pb-[10vh] fixed h-[90vh] `}>
                     {children}

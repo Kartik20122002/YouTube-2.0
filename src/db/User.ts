@@ -15,12 +15,16 @@ const UserScheme = new Schema({
     },
     tokenTime: {
         type: Number,
-        returns: true,
+        required: true,
     },
     history: {
         type: String,
         defaultValue: JSON.stringify([]),
     },
+    playlists:{
+        type : String,
+        defaultValue: JSON.stringify([]),
+    }
 });
 
 const User = models?.user || model('user', UserScheme);

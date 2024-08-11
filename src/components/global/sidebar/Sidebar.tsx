@@ -20,11 +20,19 @@ const subFetcher = async ()=>{
     return subs;
 }
 
-const playlistFetcher = async () => {
+const playlistFetcher = async (email : string) => {
   try {
-    const res = await fetch('/api/library/playlists');
-    const { data } = await res.json();
-    return data;
+    const res = await fetch('/api/library/myPlaylists/list' , {
+      method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email })  
+    });
+
+    const { myPlaylists } = await res.json();
+    return myPlaylists;
+    
   }
 
   catch (err) {
@@ -60,7 +68,7 @@ const links = [
   },
 ];
 
-const Sidebar = ({ isLarge, IsVideoPage }: any) => {
+const Sidebar = ({ isLarge, IsVideoPage , setMyPlaylists }: any) => {
   const { status, data: session } = useSession();
   const [show, setShow] = useState(false);
 
@@ -71,13 +79,20 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
     revalidateIfStale: true,
   })
 
-  const {data : list , error , isLoading : loading1} = useSWR(status === 'authenticated' ? 'sideplaylists' : null,()=>playlistFetcher(),{
+  const {data : list , error , isLoading : loading1} = useSWR(status === 'authenticated' ? 'myPlaylists' : null,()=>playlistFetcher(session?.user?.email as string),{
     refreshInterval : 3600000 , // 60 minutes
     dedupingInterval : 900000, // 15 minutes
     revalidateOnReconnect: true,
     revalidateIfStale: true,
   })
 
+
+  useEffect(()=>{
+    console.log({list})
+    if(list && list.length > 0){
+      setMyPlaylists(list);
+    }
+  },[list]);
 
   useEffect(() => {
     const getHistory = async () => {
@@ -119,7 +134,7 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
             })
           }
 
-          {status == 'authenticated' &&
+          {status == 'authenticated' && list &&
             <>
               <motion.button whileTap={{scale : 0.9}} transition={{ duration: 0.5 }} onClick={() => { setShow(!show) }} className={`w-full dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)] flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col-reverse mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
                 <motion.div layout transition={{ duration: 0.5 }} > <AiOutlineDown /> </motion.div>
@@ -135,9 +150,9 @@ const Sidebar = ({ isLarge, IsVideoPage }: any) => {
                     <>
                       {
                         list?.map((item: any, index: any) => {
-                          return <Link key={index} href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className={`w-full ${'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+                          return <Link key={index} href={`#`} className={`w-full ${'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
                             <motion.div layout transition={{ duration: 0.5 }} > <RiPlayList2Line /> </motion.div>
-                            <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 truncate-1 text-center text-xs'}>{item?.snippet?.title}</motion.div>
+                            <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 truncate-1 text-center text-xs'}>{item?.name}</motion.div>
                           </Link>
                         })
                       }

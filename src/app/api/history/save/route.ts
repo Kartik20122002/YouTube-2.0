@@ -1,6 +1,4 @@
 
-import { getToken } from "next-auth/jwt";
-import { secret } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import ConnectDB from "@/db/ConnectDB";
 import User from "@/db/User";

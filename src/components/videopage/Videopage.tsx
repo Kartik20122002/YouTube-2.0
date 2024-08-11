@@ -20,9 +20,11 @@ import { CountConverter } from "@/utils/Functions/Converters/CountConverter";
 import { isLargeContext, pageContext, slideContext } from '@/app/layout';
 import parse from 'html-react-parser'
 import useSWR, { mutate } from 'swr';
+import { MdPlaylistAdd } from 'react-icons/md';
+import { internalMutate } from 'swr/_internal';
 
 
-const videoDetailsFetcher = async (id : any , channelId : any) => {
+const videoDetailsFetcher = async (id: any, channelId: any) => {
     try {
         const res = await fetch(`/api/video/${id}`, {
             method: 'POST',
@@ -35,8 +37,8 @@ const videoDetailsFetcher = async (id : any , channelId : any) => {
         if (res.status != 404 && res.status != 500) {
             const { video, channel } = await res.json();
             return {
-               video , 
-               channel
+                video,
+                channel
             }
 
         }
@@ -45,7 +47,7 @@ const videoDetailsFetcher = async (id : any , channelId : any) => {
         console.log(err);
     }
 }
-const videoAuthDetailsFetcher = async (id : any , channelId : any) => {
+const videoAuthDetailsFetcher = async (id: any, channelId: any) => {
     try {
         const res = await fetch(`/api/video/auth/${id}`, {
             method: 'POST',
@@ -59,9 +61,9 @@ const videoAuthDetailsFetcher = async (id : any , channelId : any) => {
             const { rating, subscription } = await res.json();
 
             return {
-                rateRes : rating[0].rating === 'none' ? 0 : rating[0].rating == 'like' ? 1 : -1,
-                subRes : subscription.length > 0 ? true : false,
-                subIdRes : subscription.length > 0 ? subscription[0]?.id : null,
+                rateRes: rating[0].rating === 'none' ? 0 : rating[0].rating == 'like' ? 1 : -1,
+                subRes: subscription.length > 0 ? true : false,
+                subIdRes: subscription.length > 0 ? subscription[0]?.id : null,
             }
         }
     }
@@ -69,7 +71,7 @@ const videoAuthDetailsFetcher = async (id : any , channelId : any) => {
         console.log(err);
     }
 }
-const relativeDownloadFetcher = async (id : any)=>{
+const relativeDownloadFetcher = async (id: any) => {
     try {
         const res = await fetch(`/api/video/${id}/reldowns`, {
             method: 'POST',
@@ -81,10 +83,10 @@ const relativeDownloadFetcher = async (id : any)=>{
             const { linksStr, relatedVideosStr } = await res.json();
             const Links = JSON.parse(linksStr)
             const relatedVideos = JSON.parse(relatedVideosStr);
-        
+
             return {
-                related : relatedVideos,
-                links : Links,
+                related: relatedVideos,
+                links: Links,
             }
         }
 
@@ -93,7 +95,7 @@ const relativeDownloadFetcher = async (id : any)=>{
         console.log(err);
     }
 }
-const commentsFetcher = async (id : any) => {
+const commentsFetcher = async (id: any) => {
     try {
         const res = await fetch(`/api/video/${id}/comments`, {
             method: 'POST',
@@ -115,18 +117,20 @@ const commentsFetcher = async (id : any) => {
 
 const dataContext = createContext<any>(null);
 
-const Videopage = ({id, channelId }: any) => {
+const Videopage = ({ id, channelId }: any) => {
     const { status, data: session } = useSession();
     const { setslide } = useContext(slideContext) as any;
-    const { setpage } = useContext(pageContext) as any;
+    const { setpage , myPlaylists } = useContext(pageContext) as any;
     const { setIsLarge } = useContext(isLargeContext) as any;
-  
+
     setpage(true);
     setslide(-1);
 
-    useEffect(()=>setIsLarge(false),[]);
-  
+    useEffect(() => setIsLarge(false), []);
+
     const [downloading, setDownloading] = useState<boolean>(false);
+    const [addToPlaylist, setAddToPlaylist] = useState<boolean>(false);
+    const [createPlaylist, setCreatePlaylist] = useState<boolean>(false);
 
     const wrapperRef = useRef(null);
     useOutsideAlerter(wrapperRef);
@@ -136,6 +140,7 @@ const Videopage = ({id, channelId }: any) => {
             function handleClickOutside(event: any) {
                 if (ref.current && !ref.current.contains(event.target)) {
                     setDownloading(false);
+                    setAddToPlaylist(false);
                 }
             }
             document.addEventListener("mouseup", handleClickOutside);
@@ -207,38 +212,46 @@ const Videopage = ({id, channelId }: any) => {
 
     }
 
-    const {data : videoData , error : videoError , isLoading : loading} = useSWR(['video',id],()=>videoDetailsFetcher(id,channelId),{
+    const { data: videoData, error: videoError, isLoading: loading } = useSWR(['video', id], () => videoDetailsFetcher(id, channelId), {
         revalidateIfStale: true,
         revalidateOnReconnect: true,
-        refreshInterval : 900000,
-        dedupingInterval : 900000 ,
+        refreshInterval: 900000,
+        dedupingInterval: 900000,
     });
 
-    const {video , channel} = videoData || { video : {}, channel : {}};
+    const { video, channel } = videoData || { video: {}, channel: {} };
 
 
-    const {data : relData , error , isLoading : loading2} = useSWR(['relDown',id],()=>relativeDownloadFetcher(id),{
+    const { data: relData, error, isLoading: loading2 } = useSWR(['relDown', id], () => relativeDownloadFetcher(id), {
         revalidateIfStale: true,
         revalidateOnReconnect: true,
-        refreshInterval : 3600000,
-        dedupingInterval : 3600000 ,
+        refreshInterval: 3600000,
+        dedupingInterval: 3600000,
     });
 
-    const {related , links} = relData || { related : [] , links : []}
+    const { related, links } = relData || { related: [], links: [] }
 
 
-    useEffect(()=>{
-        if(videoData) saveToHistory(video,channel)
-    },[videoData])
+    useEffect(() => {
+        if (videoData) saveToHistory(video, channel)
+    }, [videoData])
 
     return (<>
-        <dataContext.Provider value={{id,channelId, video  , channel , loading , loading2 , links , related,  downloading, setDownloading }}>
+        <dataContext.Provider value={{ id, channelId, video, channel, loading, loading2, links, related, downloading, setDownloading, addToPlaylist, setAddToPlaylist , createPlaylist , setCreatePlaylist , myPlaylists }}>
             <motion.div layout transition={{ duration: 0.5 }} className="h-screen transition-all relative overflow-y-scroll pb-8">
                 <motion.div layout transition={{ duration: 0.5 }} className="flex w-full flex-col md:flex-row justify-between">
                     <VideoSection />
                     <SideRow />
                     {
-                        ( downloading) && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal /></motion.div>
+                        (downloading) && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><DownloadModal /></motion.div>
+                    }
+
+                    {
+                        (addToPlaylist) && <motion.div ref={wrapperRef} className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><PlaylistModal /></motion.div>
+                    }
+
+                    {
+                        (createPlaylist) && <motion.div className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%]"><CreatePlaylistModal /></motion.div>
                     }
                 </motion.div>
             </motion.div>
@@ -268,16 +281,16 @@ const VideoSection = () => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="h-fit-content w-full px-2 md:px-0 mt-4 dark:text-white">
 
-            {loading ? <Sekelton height={'h-24'} className="mb-4" /> : <Description />}
+                {loading ? <Sekelton height={'h-24'} className="mb-4" /> : <Description />}
 
-            {loading ? <Sekelton width="min-w-[20%] max-w-[20%]" className="my-1" /> : 
-            <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>}
+                {loading ? <Sekelton width="min-w-[20%] max-w-[20%]" className="my-1" /> :
+                    <motion.h4 className='hidden md:block my-1'>{commentsCount} Comments</motion.h4>}
 
-            {   status == 'authenticated' &&
-                <CommentForm img={session?.user?.image} id={id} channelId={channelId} />
-            }
+                {status == 'authenticated' &&
+                    <CommentForm img={session?.user?.image} id={id} channelId={channelId} />
+                }
 
-            <Comments id={id} />
+                <Comments id={id} />
 
             </motion.div>
         </motion.div>
@@ -289,25 +302,25 @@ const VideoInfo = () => {
     const [sub, setSub] = useState<any>(false);
     const [subId, setSubId] = useState<any>('');
     const { status } = useSession();
-    const { id, channelId, video, channel, loading , loading2 , downloading, setDownloading } = useContext(dataContext);
+    const { id, channelId, video, channel, loading, loading2, addToPlaylist, setAddToPlaylist, downloading, setDownloading } = useContext(dataContext);
     mutate('history');
 
-    const {data : authData , error : videoError , isLoading : authLoading} = useSWR(status === 'authenticated' ? ['authvideo',id] : null,()=>videoAuthDetailsFetcher(id,channelId),{
+    const { data: authData, error: videoError, isLoading: authLoading } = useSWR(status === 'authenticated' ? ['authvideo', id] : null, () => videoAuthDetailsFetcher(id, channelId), {
         revalidateIfStale: true,
         revalidateOnReconnect: true,
-        refreshInterval : 900000,
-        dedupingInterval : 900000 ,
+        refreshInterval: 900000,
+        dedupingInterval: 900000,
     });
 
-    const {rateRes , subRes , subIdRes} = authData || {rateRes : 0,subRes : false,subIdRes : ''};
+    const { rateRes, subRes, subIdRes } = authData || { rateRes: 0, subRes: false, subIdRes: '' };
 
-    useEffect(()=>{
-        if(authData){
+    useEffect(() => {
+        if (authData) {
             setRate(rateRes);
             setSubId(subIdRes);
             setSub(subRes);
         }
-    },[authData]);
+    }, [authData]);
 
 
     const toggleSub = async () => {
@@ -320,7 +333,7 @@ const VideoInfo = () => {
                     },
                     body: JSON.stringify({ id: channelId, subId: subId, toSub: !sub })
                 });
-    
+
                 if (res.status === 200) {
                     if (sub) {
                         const { flag, data } = await res.json();
@@ -331,10 +344,10 @@ const VideoInfo = () => {
                         setSubId(data);
                         if (flag) setSub(true)
                     }
-                    mutate(['authvideo',id])
+                    mutate(['authvideo', id])
                     mutate('subs');
                 }
-    
+
             }
             catch (err) {
                 console.log(err);
@@ -353,7 +366,7 @@ const VideoInfo = () => {
                     },
                     body: JSON.stringify({ id: id, rating: rating })
                 })
-    
+
                 if (res.status === 200) {
                     const { flag } = await res.json();
                     if (flag) {
@@ -361,10 +374,10 @@ const VideoInfo = () => {
                         if (rating == 'like') setRate(1);
                         if (rating == 'dislike') setRate(-1);
                     }
-                    mutate(['liked',0]);
-                    mutate(['authvideo',id]);
+                    mutate(['liked', 0]);
+                    mutate(['authvideo', id]);
                 }
-    
+
             }
             catch (err) {
                 console.log(err);
@@ -433,11 +446,15 @@ const VideoInfo = () => {
 
                 </motion.div>
 
-            
+                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!addToPlaylist) { setAddToPlaylist(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1`}>
+                    <MdPlaylistAdd className='sm:mr-2 text-[1.2rem] md:text-[1.5rem]' /> <span className='hidden sm:flex'> Add to Playlist</span>
+                </motion.button>
+
+
                 <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1`}>
                     <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
                 </motion.button>
-                
+
 
             </motion.div>
 
@@ -478,6 +495,10 @@ const VideoInfoSkeleton = () => {
                     <AiOutlineDislike className='text-[1.2rem] text-transparent md:text-[1.5rem]' />
                 </motion.div>
 
+            </motion.div>
+
+            <motion.div className='cursor-default dark:bg-[#202324] bg-[#b8b8b8] skeletonUi flex items-center  text-transparent  text-xs md:text-md  rounded-full px-4 h-10 mr-3 mb-4'>
+                <MdPlaylistAdd className='sm:mr-2 text-[1.2rem] md:text-[1.5rem]' /> <span className='hidden sm:flex'> Add to Playlist</span>
             </motion.div>
 
             <motion.div className='cursor-default dark:bg-[#202324] bg-[#b8b8b8] skeletonUi flex items-center  text-transparent  text-xs md:text-md  rounded-full px-4 h-10 mr-3 mb-4'>
@@ -529,7 +550,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
             if (res.status === 200) {
                 setComment('');
-                setTimeout(()=>mutate(['comments',id]),20000);
+                setTimeout(() => mutate(['comments', id]), 20000);
             }
 
         }
@@ -546,7 +567,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
     return (<>
 
-        <motion.form onSubmit={(e : any) => videoComment(e)} className="mt-4 hidden md:flex items-start">
+        <motion.form onSubmit={(e: any) => videoComment(e)} className="mt-4 hidden md:flex items-start">
 
             {
                 img ? <Image src={img} width={45} height={45} alt={'commentImg'} className='rounded-full bg-grey' /> :
@@ -556,7 +577,7 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-auto w-full ml-6 flex flex-col">
 
-                <motion.input value={comment} autoComplete='off' onChange={(e : any) => setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:dark:border-white focus:border-black transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
+                <motion.input value={comment} autoComplete='off' onChange={(e: any) => setComment(e.target.value)} className='w-full bg-transparent text-lg focus:outline-none focus:dark:border-white focus:border-black transition-colors border-b border-[#5a5a5a]' type="text" name="commenttoadd" id="commenttoadd" placeholder="Write comments..." />
 
                 <motion.div layout transition={{ duration: 0.5 }} className="btns w-full flex justify-end transition-colors mt-3">
                     <motion.button layout transition={{ duration: 0.5 }} onClick={() => setComment('')} type='reset' className='mr-4 opacity-90 hover:opacity-100'>Cancel</motion.button>
@@ -570,11 +591,11 @@ const CommentForm = ({ img, channelId, id }: any) => {
 
 const Comments = ({ id }: any) => {
 
-    const {data : comments , error : videoError , isLoading : loading} = useSWR(['comments',id],()=>commentsFetcher(id),{
+    const { data: comments, error: videoError, isLoading: loading } = useSWR(['comments', id], () => commentsFetcher(id), {
         revalidateIfStale: true,
         revalidateOnReconnect: true,
-        refreshInterval : 900000,
-        dedupingInterval : 900000 ,
+        refreshInterval: 900000,
+        dedupingInterval: 900000,
     });
 
     return (<>
@@ -598,12 +619,12 @@ const Comment = ({ item }: any) => {
                 <Image width={45} height={45} src={item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className='rounded-full dark:bg-[#202324] bg-[#b8b8b8]' loading='lazy' alt='commentImg' />
             </Link>
         </motion.div>
-        
+
 
         <motion.div layout transition={{ duration: 0.5 }} className="basis-[95%] grow ml-3 flex flex-col">
-            <motion.div layout transition={{ duration: 0.5 }} className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link> 
-            <motion.span layout transition={{ duration: 0.5 }} className='ml-3 font-[500] text-[#959595cd] text-'>
-                {DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</motion.span>
+            <motion.div layout transition={{ duration: 0.5 }} className="flex text-[0.85rem] font-semibold"> <Link href={`/channel/${item?.snippet?.topLevelComment?.snippet?.authorChannelId?.value}`}>{item?.snippet?.topLevelComment?.snippet?.authorDisplayName}</Link>
+                <motion.span layout transition={{ duration: 0.5 }} className='ml-3 font-[500] text-[#959595cd] text-'>
+                    {DateConverter(item?.snippet?.topLevelComment?.snippet?.updatedAt)} ago</motion.span>
             </motion.div>
 
             <motion.div layout transition={{ duration: 0.5 }} onClick={() => { setReadmore(!readmore) }} className={`text-[0.95rem] ${!readmore && 'truncate-5'} mt-1 font-[500]`}>{parse(item?.snippet?.topLevelComment?.snippet?.textDisplay)}</motion.div>
@@ -618,16 +639,16 @@ const Comment = ({ item }: any) => {
 }
 
 const SideRow = () => {
-    const {related , loading2} = useContext(dataContext);
+    const { related, loading2 } = useContext(dataContext);
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
                 loading2 ? Array.from({ length: 10 }, (_, index) => {
                     return <SideVideoSkeleton key={index} />;
-                }):
-                related?.map((item: any, index: any) => {
-                    return <SideVideo key={index} item={item} />
-                })
+                }) :
+                    related?.map((item: any, index: any) => {
+                        return <SideVideo key={index} item={item} />
+                    })
             }
         </motion.div>
     </>)
@@ -635,14 +656,14 @@ const SideRow = () => {
 
 const SideVideo = ({ item }: any) => {
 
-    const {id,title,published , author , short_view_count_text , view_count , length_seconds , thumbnails} = item;
+    const { id, title, published, author, short_view_count_text, view_count, length_seconds, thumbnails } = item;
 
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className=" flex flex-wrap w-fulljustify-between mb-3 px-3 md:px-0">
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%] mr-2 h-full">
                 <Link href={`/channel/${author?.id}/video/${id}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
-                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={thumbnails[0]?.url || "@/images/noimg.png"}  src={thumbnails[1]?.url || thumbnails[0]?.url} />
+                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={thumbnails[0]?.url || "@/images/noimg.png"} src={thumbnails[1]?.url || thumbnails[0]?.url} />
                 </Link>
             </motion.div>
 
@@ -679,8 +700,102 @@ const SideVideoSkeleton = () => {
     </>)
 }
 
+const PlaylistModal = () => {
+    const { setAddToPlaylist, myPlaylists , setCreatePlaylist } = useContext(dataContext) as any;
+    const [selected, setSelected] = useState('');
+
+    return <>
+        <motion.div layout className="rounded-lg w-fit h-fit shadow-lg px-6 py-2 bg-white dark:bg-[#212121]">
+            <motion.div layout className="my-2 dark:text-white text-black w-full text-lg">Your Playlists</motion.div>
+            <motion.div layout className="w-fit sm:w-[20rem] py-2">
+                {
+                    myPlaylists?.map((item: any, index: any) => {
+                        const { name } = item;
+                        return <motion.div key={index} layout onClick={() => setSelected(name)}
+                            className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
+                            {name === selected ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
+                            <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{name}</motion.span>
+                        </motion.div>
+
+                    })
+                }
+            </motion.div>
+
+
+            <motion.div layout className="flex mt-2 justify-end dark:text-white">
+                <motion.div className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full mr-1 text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer`} onClick={()=>setCreatePlaylist(true)}>Create New</motion.div>
+                <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setAddToPlaylist(false)} >Cancel</motion.div>
+                <motion.div className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full mr-1 ${(selected !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Add</motion.div>
+            </motion.div>
+
+        </motion.div>
+    </>
+}
+
+const CreatePlaylistModal = () => {
+    const { setAddToPlaylist , setCreatePlaylist , myPlaylists } = useContext(dataContext) as any;
+    const { status, data: session } = useSession();
+    
+    setAddToPlaylist(false);
+    const [name ,setName] = useState("");
+
+    const createPlaylist = async ()=>{
+        
+
+        try {
+
+            myPlaylists.forEach((item: { name: string; }) => {
+                if(item.name === name){
+                    setName("");
+                    return;
+                }
+            });
+
+            const res = await fetch(`/api/library/myPlaylists/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name : name , email : session?.user?.email })
+            })
+
+            if (res.status === 200) {
+                setName("");
+                mutate('myPlaylists');
+                setCreatePlaylist(false);
+                setAddToPlaylist(true);
+            }
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+
+    }
+
+
+
+    return <>
+        <motion.div layout className="rounded-lg w-fit h-fit shadow-lg px-6 py-2 bg-white dark:bg-[#212121]">
+            <motion.div layout className="my-2 dark:text-white text-black w-full text-lg">Create Playlist</motion.div>
+            <motion.div layout className="w-fit sm:w-[20rem] py-2">
+
+                <input value={name} onChange={(e)=>setName(e.target.value)} type="text" placeholder='Title' className='w-full text-white bg-transparent px-2 py-1  outline-none border-white border-b-[0.1px]' />
+
+            </motion.div>
+
+
+            <motion.div layout className="flex mt-2 justify-end dark:text-white">
+                <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={()=>{setName(""); setCreatePlaylist(false); }} >Cancel</motion.div>
+                <motion.div className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full mr-1 ${name !== "" ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`} onClick={()=>createPlaylist()}>Create</motion.div>
+            </motion.div>
+
+        </motion.div>
+    </>
+}
+
 const DownloadModal = () => {
-    const { setDownloading , links  } = useContext(dataContext) as any;
+    const { setDownloading, links } = useContext(dataContext) as any;
     const [downloadUrl, setDownloadUrl] = useState('');
 
     return <>
@@ -689,7 +804,7 @@ const DownloadModal = () => {
             <motion.div layout className="w-fit sm:w-[20rem] py-2">
                 {
                     links?.map((item: any, index: any) => {
-                        const { url , qualityLabel , quality } = item;
+                        const { url, qualityLabel, quality } = item;
                         return <motion.div key={index} layout onClick={() => setDownloadUrl(url)}
                             className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
                             {url === downloadUrl ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
@@ -702,7 +817,7 @@ const DownloadModal = () => {
 
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setDownloading(false)} >Cancel</motion.div>
-                <Link href={(downloadUrl == '') ? '#' : downloadUrl} target= {(downloadUrl == '') ? '_self' : '_blank'} type='download' className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadUrl !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</Link>
+                <Link href={(downloadUrl == '') ? '#' : downloadUrl} target={(downloadUrl == '') ? '_self' : '_blank'} type='download' className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full  mr-1 ${(downloadUrl !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Download</Link>
             </motion.div>
         </motion.div>
     </>
