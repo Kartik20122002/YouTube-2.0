@@ -701,8 +701,53 @@ const SideVideoSkeleton = () => {
 }
 
 const PlaylistModal = () => {
-    const { setAddToPlaylist, myPlaylists , setCreatePlaylist } = useContext(dataContext) as any;
+    const { setAddToPlaylist, myPlaylists , setCreatePlaylist , id , video ,channelId } = useContext(dataContext) as any;
     const [selected, setSelected] = useState('');
+    const [loading , setLoading] = useState(false);
+    const {data : session} = useSession();
+
+    const addToPlaylist = async ()=>{
+
+        try {
+
+
+            const bodyData = {
+                videoId : id,
+                title : video?.snippet?.title,
+                img : video?.snippet?.thumbnails?.high?.url || video?.snippet?.thumbnails?.medium?.url ||  video?.snippet?.thumbnails?.default?.url || "",
+                channelTitle : video?.snippet?.channelTitle,
+                channelId : channelId,
+                publishedAt: video?.snippet?.publishedAt
+            }
+
+            setLoading(true);
+
+            const res = await fetch(`/api/library/myPlaylists/addItem`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ playlistId : selected , bodyData : bodyData , email : session?.user?.email })
+            })
+
+            if (res.status === 200) {
+                mutate('myPlaylists');
+                mutate(['libUser','myPlaylists/list'])
+                setAddToPlaylist(false);
+                setLoading(false)
+            }
+            else{
+                setLoading(false);
+            }
+
+        }
+        catch (err) {
+            setLoading(false);
+            console.log(err);
+        }
+
+    }
+    
 
     return <>
         <motion.div layout className="rounded-lg w-fit h-fit shadow-lg px-6 py-2 bg-white dark:bg-[#212121]">
@@ -710,10 +755,10 @@ const PlaylistModal = () => {
             <motion.div layout className="w-fit sm:w-[20rem] py-2">
                 {
                     myPlaylists?.map((item: any, index: any) => {
-                        const { name } = item;
-                        return <motion.div key={index} layout onClick={() => setSelected(name)}
+                        const { name  } = item;
+                        return <motion.div key={index} layout onClick={() => setSelected(item._id)}
                             className="w-full duration-[.4s] hover:bg-[#4645453f] rounded-lg px-2 h-fit py-3 mb-1 cursor-pointer dark:text-white flex items-center">
-                            {name === selected ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
+                            {item._id === selected ? <MdRadioButtonChecked className='text-[#3ea6ff] text-2xl' /> : <MdRadioButtonUnchecked className='text-2xl' />}
                             <motion.span className="ml-3 opacity-80 w-[80%] text-[0.9rem] h-fit">{name}</motion.span>
                         </motion.div>
 
@@ -725,7 +770,7 @@ const PlaylistModal = () => {
             <motion.div layout className="flex mt-2 justify-end dark:text-white">
                 <motion.div className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full mr-1 text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer`} onClick={()=>setCreatePlaylist(true)}>Create New</motion.div>
                 <motion.div className="px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full cursor-pointer hover:bg-[#cfcfcf73] hover:dark:bg-[rgba(255,255,255,0.2)] mr-3" onClick={() => setAddToPlaylist(false)} >Cancel</motion.div>
-                <motion.div className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full mr-1 ${(selected !== '') ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`}>Add</motion.div>
+                <motion.button className={`px-4 py-2 duration-[.4s] font-bold text-[0.9rem] rounded-full mr-1 ${(selected !== '' && !loading) ? 'text-[#3ea6ff] hover:dark:bg-[#263850] hover:bg-[#3ea5ff54] cursor-pointer' : 'text-[#5a5a5a] cursor-not-allowed'}`} disabled={selected === '' || loading} onClick={()=>addToPlaylist()}>Add</motion.button>
             </motion.div>
 
         </motion.div>

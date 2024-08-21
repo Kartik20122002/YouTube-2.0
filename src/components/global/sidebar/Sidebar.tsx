@@ -88,7 +88,6 @@ const Sidebar = ({ isLarge, IsVideoPage , setMyPlaylists }: any) => {
 
 
   useEffect(()=>{
-    console.log({list})
     if(list && list.length > 0){
       setMyPlaylists(list);
     }
@@ -150,7 +149,7 @@ const Sidebar = ({ isLarge, IsVideoPage , setMyPlaylists }: any) => {
                     <>
                       {
                         list?.map((item: any, index: any) => {
-                          return <Link key={index} href={`#`} className={`w-full ${'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+                          return <Link key={index} href={`/library/userplaylist/${item._id}`} className={`w-full ${'dark:text-white hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgb(255,255,255,0.05)]'} flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
                             <motion.div layout transition={{ duration: 0.5 }} > <RiPlayList2Line /> </motion.div>
                             <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 truncate-1 text-center text-xs'}>{item?.name}</motion.div>
                           </Link>

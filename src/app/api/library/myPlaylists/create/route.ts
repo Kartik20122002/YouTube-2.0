@@ -4,6 +4,7 @@ import { secret } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import ConnectDB from "@/db/ConnectDB";
 import User from "@/db/User";
+import Playlist from "@/db/Playlist";
 
 export async function POST(req: any) {
     const body = await req.text();
@@ -13,36 +14,38 @@ export async function POST(req: any) {
 
         const saveObj = {
             name : name,
-            timestamp: Date.now(),
-            items : [],
+            email : email,
+            updatedAt: Date.now(),
+            items : JSON.stringify([]),
         }
 
         await ConnectDB();
-        const dbUser = await User.findOne({ email: email });
-        if (dbUser) {
-            const playlists = dbUser?.playlists as string;
+        const dbUserPromise = User.findOne({ email: email });
+        const isAvialablePromise = Playlist.findOne({email : email , name : name});
 
-            if (playlists) {
-                let playlistsOld = JSON.parse(playlists) as Array<any>;
-                let playlistsNew = [] as any;
+        const [dbUser , isAvialable] = await Promise.all([dbUserPromise,isAvialablePromise]);
 
-                playlistsNew.push(saveObj);
-                playlistsOld?.forEach((item: { name: string; }) => { playlistsNew.push(item); });
+        if (dbUser && !isAvialable) {
 
-                dbUser.playlists = JSON.stringify(playlistsNew);
-                await dbUser.save();
-                return NextResponse.json({ status: 200 });
-            } else {
-                let playlists = [saveObj]
+            const res = await Playlist.create(saveObj);
+
+            if(res){
+                const playlistsOldstr = dbUser?.playlists || [];
+                console.log(playlistsOldstr)
+                let playlistsOld = JSON.parse(playlistsOldstr);
+
+                const playlists = playlistsOld.length > 0 ? [res._id,...playlistsOld] : [res._id];
                 dbUser.playlists = JSON.stringify(playlists);
-                const resp = await dbUser.save();
-                console.log(resp)
-                return NextResponse.json({ status: 200 });
+                await dbUser.save();
+                return NextResponse.json({status :200});
+            }
+            else{
+                return NextResponse.json({status : 404});
             }
 
         } else {
-            console.log("User not found now cannot save Playlist....\n")
-            console.log(email);
+            if(isAvialable) console.log("Two Playlist cannot have same name");
+            else console.log("User not found now cannot save Playlist....\n")
         }
         return NextResponse.json({ status: 404 });
 

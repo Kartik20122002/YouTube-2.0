@@ -21,7 +21,7 @@ const UserScheme = new Schema({
         type: String,
         defaultValue: JSON.stringify([]),
     },
-    playlists:{
+    playlists: {
         type : String,
         defaultValue: JSON.stringify([]),
     }

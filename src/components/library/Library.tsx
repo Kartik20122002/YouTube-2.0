@@ -11,7 +11,7 @@ import { RiPlayListLine } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 const img = 'https://yt3.googleusercontent.com/ytc/AOPolaQygjiMgnSw5zUP1F_PyEkcGBmfaE8HMq7S_xu_=s176-c-k-c0x00ffffff-no-rj';
-const videoImg = 'https://i.ytimg.com/vi/fsNrgCivsZg/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBjTNa2oj9zdcd0gdxGRYylfpzalA'
+const videoImg = 'https://i.ytimg.com/img/no_thumbnail.jpg'
 
 const LibraryUserFetcher = async () => {
   const results = await fetch(`/api/library/user`)
@@ -63,6 +63,19 @@ const LibraryDetailsFetcher =  async (id : any , email : any) => {
         }
       }
     }
+    else if(id === 'myPlaylists/list'){
+      const results = await fetch(`/api/library/${id}`,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({ email })
+      })
+
+    
+      if (results.status !== 404 && results.status != 500) {
+        const {myPlaylists}  = await results.json();
+        return myPlaylists;
+      } else { return [] }
+    }
     else{
       const results = await fetch(`/api/library/${id}`)
     
@@ -83,8 +96,9 @@ const LibraryPage = () => {
     <motion.div layout transition={{ duration: 0.5 }} className='md:pl-3 h-[90vh] pb-10 overflow-y-scroll flex flex-col-reverse md:flex-row dark:text-white'>
       <motion.div layout transition={{ duration: 0.5 }} className="basis-[80%] grow">
 
+        <VideoSection key={4} id="myPlaylists/list"/>
         <VideoSection key={1} id="playlists" />
-        <VideoSection key={1} id="history" />
+        <VideoSection key={2} id="history" />
         <VideoSection key={3} id="liked" />
 
       </motion.div>
@@ -129,7 +143,7 @@ const UserDetails = () => {
 
 const VideoSection = ({ id }: any) => {
   const { data: session } = useSession();
-  const title = id == 'history' ? 'History' : id == 'liked' ? 'Liked Videos' : 'Playlists';
+  const title = id == 'history' ? 'History' : id == 'liked' ? 'Liked Videos' : id === 'playlists' ? 'Youtube Playlists' : 'Playlists';
   const icon = id == 'history' ? <AiOutlineHistory /> : id == 'liked' ? <AiOutlineLike /> : <RiPlayListLine />
   const [see, setSee] = useState(false);
   const toggleSee = () => {
@@ -158,38 +172,39 @@ const VideoSection = ({ id }: any) => {
               <motion.span layout transition={{ duration: 0.5 }} className='mr-2 text-[1.7rem] '>{icon}</motion.span>
               {title}
             </motion.div>
+            {items.length > 3 ?
             <motion.div layout transition={{ duration: 0.5 }} className="actions">
               <motion.button layout transition={{ duration: 0.5 }} onClick={() => toggleSee()} className='flex items-center text-sm md:text-md hover:dark:bg-[#1e2d40] hover:bg-[#2c65b0] text-[#45aeff] rounded-full px-3 py-[0.1rem] md:h-10 mr-3 md:mr-1 my-1'>See All</motion.button>
-            </motion.div>
+            </motion.div> : null}
           </motion.div>
         }
 
         <motion.div layout transition={{ duration: 0.5 }} className={`flex w-screen md:w-full md:overflow-x-auto ${see && 'justify-evenly flex-wrap'} overflow-x-scroll md:justify-evenly md:flex-wrap`}>
 
-          {loading ? <>
+          { loading ? <>
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
-            <SkeletonCard />
-          </> : id !== 'playlists' ?
-            id === 'history' ?
-              items?.map((item: any, index: any) => {
-                return <>
-                  {see ? <HistoryCard key={index} item={item} /> : index < 5 ? <HistoryCard key={index} item={item} /> : <></>}
-                </>
-              }
-              )
-              :
-              items?.map((item: any, index: any) => {
-                return <>
-                  {see ? <VideoCard key={index} item={item} /> : index < 5 ? <VideoCard key={index} item={item} /> : <></>}
-                </>
-              }
-              ) :
-            items?.map((item: any, index: any) => {
-              return <PlaylistCard key={index} item={item} />
+            </> :
+
+            id === 'playlists' ? items?.map((item: any, index: any) => {
+              return <>{ see ? <PlaylistCard key={`play_${index}`} item={item} /> : index < 4 ? <PlaylistCard key={index} item={item} /> : <></>}</> 
+            }) :
+
+            id === 'history' ? items?.map((item: any, index: any) => {
+                return <> {see ? <HistoryCard key={`hist_${index}`} item={item} /> : index < 4 ? <HistoryCard key={index} item={item} /> : <></>}</>
+            }) :
+
+            id === 'myPlaylists/list' ? items?.map((item:any,index:any)=>{
+              return <>{see ? <UserPlaylistCard key={`userPlay_${index}`} item={item} /> : index < 4 ? <UserPlaylistCard key={index} item={item} /> : <></>} </>
             })
+              :
+
+            items?.map((item: any, index: any) => {
+              return <> {see ? <VideoCard key={`liked_${index}`} item={item} /> : index < 4 ? <VideoCard key={index} item={item} /> : <></>}</>
+            }) 
+            
           }
 
         </motion.div>
@@ -279,9 +294,31 @@ const PlaylistCard = ({ item }: any) => {
         </Link>
       </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">
-        <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title}</Link>
-        <Link href={`/channel/${item?.snippet?.channelId}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link>
+        <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{item?.snippet?.title || item?.name}</Link>
+        {/* <Link href={`/channel/${item?.snippet?.channelId}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link> */}
         <motion.div layout transition={{ duration: 0.5 }} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {item?.contentDetails?.itemCount} Items &bull; {DateConverter(item?.snippet?.publishedAt)} ago</motion.div>
+      </motion.div>
+    </motion.div>
+
+  </>
+}
+
+const UserPlaylistCard = ({ item }: any) => {
+  const {name , updatedAt} = item;
+  const items = JSON.parse(item?.items || "[]");
+  
+  return <>
+
+    <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
+      <motion.div layout transition={{ duration: 0.5 }} className="relative w-full h-full pt-[56.25%] overflow-hidden">
+        <Link href={`/library/userplaylist/${item?._id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
+          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.thumbnail || videoImg} layout='fill' alt='videocardImg' />
+        </Link>
+      </motion.div>
+      <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">
+        <Link href={`/library/userplaylist/${item?._id}`} className="truncate-2 font-[650] text-[0.8rem] md:text-[0.9rem] whitespace-normal">{name}</Link>
+        {/* <Link href={`/channel/${item?.snippet?.channelId}`} className="truncate-1 font-[550] text-grey text-[0.7rem] md:text-[0.8rem] whitespace-normal mt-2">{item?.snippet?.channelTitle}</Link> */}
+        <motion.div layout transition={{ duration: 0.5 }} className="text-grey font-[500] text-[0.5rem] md:text-[0.8rem]"> {items?.length} Items &bull; {DateConverter(Number(updatedAt))} ago</motion.div>
       </motion.div>
     </motion.div>
 
