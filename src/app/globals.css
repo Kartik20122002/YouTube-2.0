@@ -189,6 +189,9 @@ body {
   left: 0;
   right: 0;
   height: 100%;
+  border-top: solid rgba(255, 254, 254, 0.1) .01rem;
+  border-bottom: solid rgba(255, 254, 254, 0.1) .01rem;
+  box-shadow: white;
   border-radius: 0.75rem;
   background: rgb(0, 0, 0, 0.05);
 }
