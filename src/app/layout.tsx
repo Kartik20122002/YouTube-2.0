@@ -41,9 +41,6 @@ export default function RootLayout({
 
   const [online, setOnline] = useState(true);
 
-  
-  const handleOnline = () => setOnline(true);
-  const handleOffline = () => setOnline(false);
 
   function toggle() {
     setIsLarge(!isLarge);
@@ -63,16 +60,6 @@ export default function RootLayout({
       }
   }, []);
 
-  useEffect(()=>{
-  
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
-  
-      return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
-      };
-  })
 
   return (
     <html lang="en" className={`${roboto.className} ${dark && 'dark'}`}>

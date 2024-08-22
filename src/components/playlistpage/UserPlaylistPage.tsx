@@ -23,7 +23,6 @@ const playlistInfoFetcher = async (id : any) => {
     });
     if (res.status != 404 && res.status != 500) {
         const { playlist } = await res.json();
-        console.log({playlist})
         return playlist;
     }
     return {};
@@ -53,7 +52,6 @@ const UserPlaylistPage = ({ id }: any) => {
 const PlayListInfo = ({ playlist , loading }: any) => {
     const link = usePathname();
 
-    console.log(playlist)
 
     const copyLink = async () => {
         await navigator.clipboard.writeText(`https://youtubepro.vercel.app${link}`);
@@ -89,14 +87,14 @@ const PlayListInfo = ({ playlist , loading }: any) => {
                             <motion.div layout transition={{ duration: 0.5 }} className="text-[1.15rem] font-semibold text-white truncate-2">{playlist.name}</motion.div>
                         }
                         <motion.div layout transition={{ duration: 0.5 }} className="mt-2">
-                            {loading ? <SekeltonText width="min-w-[50%] max-w-[50%]" className="mb-2" /> :
+                            {/* {loading ? <SekeltonText width="min-w-[50%] max-w-[50%]" className="mb-2" /> :
                                 <Link href={`/channel/${firstItem.channelId}`} className="truncate-1 text-white text-sm hover:opacity-70 font-semibold">{firstItem.channelTitle}</Link>
-                            }
+                            } */}
                             <div className="flex text-[#b9b9b9] mt-1 font text-[0.8rem]">
                                 {loading ? <SekeltonText width="min-w-[60%] max-w-[60%]" /> :
                                     <>
-                                        <motion.div layout transition={{ duration: 0.5 }} className="mr-4">{0 || playlist.length} videos</motion.div>
-                                        <motion.div layout transition={{ duration: 0.5 }} className="">Last updated {DateConverter(playlist.updatedAt)} ago</motion.div>
+                                        <motion.div layout transition={{ duration: 0.5 }} className="mr-4">{0 || items.length} videos</motion.div>
+                                        <motion.div layout transition={{ duration: 0.5 }} className="">Last updated {DateConverter(Number(playlist.updatedAt))} ago</motion.div>
                                     </>
                                 }
                             </div>
@@ -163,6 +161,7 @@ const PlayListItems = ({ loading, playlist }: any) => {
 const PlayListItem = ({ index, item }: any) => {
 
     const {videoId , title , img , channelTitle , channelId , publishedAt} = item;
+
     return <>
         <Link href={`/channel/${channelId}/video/${videoId}`} className="flex flex-col md:items-center md:flex-row w-full max-w-full overflow-x-hidden py-2 mb-2">
             <motion.div layout transition={{ duration: 0.5 }} className="hidden md:flex items-center justify-center basis-[4%]">{index}</motion.div>
