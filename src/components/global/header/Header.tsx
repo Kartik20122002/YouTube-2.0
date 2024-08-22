@@ -84,14 +84,14 @@ const Header = ({ change, toggleTheme, dark }: any) => {
 
         <div className={`hidden h-full basis-[70%] grow md:max-w-[600px] md:flex items-center`}>
 
-          <form onSubmit={(e) => searchOps(e)} className="border-2 dark:border-[#353535] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
+          <form onSubmit={(e) => searchOps(e)} className="border-x-[0.01rem] border-b-[0.1rem] dark:border-[#5958586b] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
 
             <div className="basis-[90%] h-full rounded-l-[25px]">
-              <input required type="text" className="px-[12px] w-full h-full rounded-l-full border-0 outline-0 focus:border-0 dark:bg-black dark:text-white" placeholder="Search" value={searchquery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <input required type="text" className="px-[12px] w-full h-full rounded-l-full border-0 outline-0 focus:border-0 dark:bg-[#2a292972] dark:text-white" placeholder="Search" value={searchquery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
 
-            <div className="grow basis-[10%] h-full p-0 flex justify-center rounded-r-[25px] bg-[rgb(0,0,0,0.05)] border-0 border-l-2 border-l-[rgba(103,103,103,0.68)] hover:bg-[rgb(0,0,0,0.1)]" >
-              <button className="border-r-[0px] h-full dark:bg-black dark:hover:bg-[#585858fe] rounded-r-[25px] cursor-pointer w-full border-0 flex items-center justify-center" type="submit">
+            <div className="grow basis-[10%] h-full p-0 flex justify-center rounded-r-[25px] bg-[rgb(0,0,0,0.05)] border-0 border-l-2 border-l-[#5958586b] hover:bg-[rgb(0,0,0,0.1)]" >
+              <button className="border-r-[0px] h-full dark:bg-[#2a292972] dark:hover:bg-[#585858fe] rounded-r-[25px] cursor-pointer w-full border-0 flex items-center justify-center" type="submit">
                 <FaMagnifyingGlass className="text-black dark:text-white" />
               </button>
             </div>

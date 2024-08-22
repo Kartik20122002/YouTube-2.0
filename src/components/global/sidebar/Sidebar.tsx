@@ -197,9 +197,9 @@ const SideLinks = ({ item, isLarge, index }: any) => {
   const { slide } = useContext(slideContext) as any;
 
   return <motion.div layout
-    whileTap={{scale : 0.9}}
+    whileTap={{scale : 0.95}}
     transition={{ duration: 0.5 }} className="relative cursor-pointer">
-    <Link href={item.link} className={`w-full ${slide != index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)]'} dark:text-white  flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
+    <Link href={item.link} className={`w-full ${slide != index && 'hover:bg-[rgb(0,0,0,0.05)] dark:hover:bg-[rgba(255,254,254,0.16)] dark:hover:border-[rgba(255,254,254,0.16)]'} dark:text-white dark:border-y-[0.01rem] dark:border-transparent flex flex-nowrap items-center  ${!isLarge && 'justify-center flex-col mb-5'} p-[5%] mb-1 overflow-hidden rounded-xl font-[350] `}>
       <motion.div layout transition={{ duration: 0.5 }} > {slide == index ? item.icon1 : item.icon2} </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className={isLarge ? 'ml-5' : 'mt-1 text-center text-xs'}>{item.name}</motion.div>
     </Link>
