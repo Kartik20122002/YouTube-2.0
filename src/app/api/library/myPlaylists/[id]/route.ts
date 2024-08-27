@@ -15,7 +15,6 @@ export async function POST(req: any) {
         if (tokens && tokens?.access_token) {
             ConnectDB();
             const list = await Playlist.findOne({ _id: id });
-            console.log(list)
             return NextResponse.json({ playlist : list });
         }
         else {

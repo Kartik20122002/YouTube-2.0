@@ -71,6 +71,7 @@ const videoAuthDetailsFetcher = async (id: any, channelId: any) => {
         console.log(err);
     }
 }
+
 const relativeDownloadFetcher = async (id: any) => {
     try {
         const res = await fetch(`/api/video/${id}/reldowns`, {
@@ -411,7 +412,7 @@ const VideoInfo = () => {
 
                 <motion.div layout transition={{ duration: 0.5 }} className="w-min items-center justify-center flex">
                     {sub == true ?
-                        <motion.button onClick={() => toggleSub()} className='bg-[#cfcfcf57] dark:text-[#959595cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
+                        <motion.button onClick={() => toggleSub()} className='bg-[#cfcfcf57] border-[0.01rem] dark:border-[#cfcfcf40] dark:text-[#c7c7c7cd] py-1 px-4 rounded-full text-lg text-black font-semibold hover:opacity-70'>Subscribed</motion.button>
                         :
                         <motion.button onClick={() => toggleSub()} className='dark:bg-white bg-black py-1 px-4 rounded-full text-lg dark:text-black text-white font-semibold hover:opacity-70'>Subscribe</motion.button>
                     }
@@ -424,11 +425,11 @@ const VideoInfo = () => {
 
                     {
                         rate == 1 ?
-                            <motion.div onClick={() => toggleRate('none')} layout transition={{ duration: 0.5 }} className='flex border-r dark:border-[#ffffff28] dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
+                            <motion.div onClick={() => toggleRate('none')} layout transition={{ duration: 0.5 }} className='flex dark:border dark:border-[#6262624a] dark:!border-r-[#ffffff28] dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
                                 <AiFillLike className='text-[1.2rem] md:text-[1.5rem]' />
                                 <motion.span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</motion.span>
                             </motion.div> :
-                            <motion.div onClick={() => toggleRate('like')} layout transition={{ duration: 0.5 }} className='flex  border-r dark:border-[#ffffff23] dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
+                            <motion.div onClick={() => toggleRate('like')} layout transition={{ duration: 0.5 }} className='flex dark:border dark:border-[#6262624a] dark:!border-r-[#ffffff23] dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pr-2 pl-4 h-full rounded-l-full items-center'>
                                 <AiOutlineLike className='text-[1.2rem] md:text-[1.5rem]' />
                                 <motion.span className='px-3'>{CountConverter(video?.statistics?.likeCount || 0)}</motion.span>
                             </motion.div>
@@ -436,22 +437,22 @@ const VideoInfo = () => {
 
                     {
                         rate == -1 ?
-                            <motion.div onClick={() => toggleRate('none')} layout transition={{ duration: 0.5 }} className='flex dark:bg-[#6c6c6c57] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
+                            <motion.div onClick={() => toggleRate('none')} layout transition={{ duration: 0.5 }} className='flex dark:bg-[#6c6c6c57] dark:border-[0.01rem] dark:border-[#6262624a] cursor-pointer bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
                                 <AiFillDislike className='text-[1.2rem] md:text-[1.5rem]' />
                             </motion.div> :
-                            <motion.div onClick={() => toggleRate('dislike')} layout transition={{ duration: 0.5 }} className='flex cursor-pointer dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
+                            <motion.div onClick={() => toggleRate('dislike')} layout transition={{ duration: 0.5 }} className='flex cursor-pointer dark:bg-[#6c6c6c57] dark:border-[0.01rem] dark:border-[#6262624a] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] pl-2 pr-4  h-10 rounded-r-full items-center'>
                                 <AiOutlineDislike className='text-[1.2rem] md:text-[1.5rem]' />
                             </motion.div>
                     }
 
                 </motion.div>
 
-                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!addToPlaylist) { setAddToPlaylist(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1`}>
+                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!addToPlaylist) { setAddToPlaylist(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] dark:border-[0.01rem] dark:border-[#6262624a] rounded-full px-4 h-10 mr-3 my-1`}>
                     <MdPlaylistAdd className='sm:mr-2 text-[1.2rem] md:text-[1.5rem]' /> <span className='hidden sm:flex'> Add to Playlist</span>
                 </motion.button>
 
 
-                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] rounded-full px-4 h-10 mr-3 my-1`}>
+                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] dark:border-[0.01rem] dark:border-[#6262624a] rounded-full px-4 h-10 mr-3 my-1`}>
                     <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
                 </motion.button>
 

@@ -30,8 +30,8 @@ export async function POST(req: any) {
                 historyItems.push(saveObj);
                 historyItemsOld?.forEach(item => { if (item.id !== id) historyItems.push(item); })
                 while (historyItems.length > 24) historyItems.pop();
-
                 dbUser.history = JSON.stringify(historyItems);
+
                 await dbUser.save();
                 return NextResponse.json({ status: 200 });
             } else {
@@ -43,7 +43,6 @@ export async function POST(req: any) {
 
         } else {
             console.log("User not found now cannot save history....\n")
-            console.log(email);
         }
         return NextResponse.json({ status: 404 });
 

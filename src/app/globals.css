@@ -5,11 +5,11 @@
 
 :root {
   background-color: white;
-  --loader-background-color: #EEEEEE;
-  --loader-highlight-color: #DEDEDE;
+  --loader-background-color: #eeeeee;
+  --loader-highlight-color: #dedede;
   --loader-highlight-color-dark: #323434;
-  --loader-background-color-dark : #202324;
-  
+  --loader-background-color-dark: #202324;
+
   /* --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255; */
@@ -37,6 +37,15 @@
     display: none;
     visibility: hidden;
     width: 0px;
+  }
+
+  .glassmorphism {
+    background: rgba(27, 27, 27, 0.45);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.2px);
+    -webkit-backdrop-filter: blur(6.2px);
+    border: 1px solid rgba(27, 27, 27, 0.58);
   }
 }
 
@@ -152,28 +161,34 @@ body {
   animation: skeleton-loading 1s infinite;
 }
 
-.skeletonUi{
-    background: linear-gradient(90deg, var(--loader-background-color) 25%, 
-                                       var(--loader-highlight-color) 50%, 
-                                       var(--loader-background-color) 75%);
-    background-size: 200% 100%;
-    animation: loading 2s infinite ease-in-out;
+.skeletonUi {
+  background: linear-gradient(
+    90deg,
+    var(--loader-background-color) 25%,
+    var(--loader-highlight-color) 50%,
+    var(--loader-background-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 2s infinite ease-in-out;
 }
 
-.dark .skeletonUi{
-  background: linear-gradient(90deg, var(--loader-background-color-dark) 25%, 
-  var(--loader-highlight-color-dark) 50%, 
-  var(--loader-background-color-dark) 75%);
+.dark .skeletonUi {
+  background: linear-gradient(
+    90deg,
+    var(--loader-background-color-dark) 25%,
+    var(--loader-highlight-color-dark) 50%,
+    var(--loader-background-color-dark) 75%
+  );
   background-size: 200% 100%;
-  animation: loading 2s  infinite ease-in-out;
+  animation: loading 2s infinite ease-in-out;
 }
 
 @keyframes loading {
   0% {
-      background-position: 200% 0;
+    background-position: 200% 0;
   }
   100% {
-      background-position: -200% 0;
+    background-position: -200% 0;
   }
 }
 
@@ -189,8 +204,8 @@ body {
   left: 0;
   right: 0;
   height: 100%;
-  border-top: solid rgba(255, 254, 254, 0.1) .01rem;
-  border-bottom: solid rgba(255, 254, 254, 0.1) .01rem;
+  border-top: solid rgba(255, 254, 254, 0.1) 0.01rem;
+  border-bottom: solid rgba(255, 254, 254, 0.1) 0.01rem;
   box-shadow: white;
   border-radius: 0.75rem;
   background: rgb(0, 0, 0, 0.05);

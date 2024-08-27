@@ -84,15 +84,15 @@ const Header = ({ change, toggleTheme, dark }: any) => {
 
         <div className={`hidden h-full basis-[70%] grow md:max-w-[600px] md:flex items-center`}>
 
-          <form onSubmit={(e) => searchOps(e)} className="border-x-[0.01rem] border-b-[0.1rem] dark:border-[#5958586b] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
+          <form onSubmit={(e) => searchOps(e)} className="border-x-[0.01rem] border-b-[0.1rem] duration-100 border-t-[0.1rem] dark:border-t-0 hover:dark:border-t-[0.1rem] hover:dark:border-b-0 dark:border-[#5958586b] w-full h-[40px] rounded-[25px] mx-2 flex items-center">
 
             <div className="basis-[90%] h-full rounded-l-[25px]">
-              <input required type="text" className="px-[12px] w-full h-full rounded-l-full border-0 outline-0 focus:border-0 dark:bg-[#2a292972] dark:text-white" placeholder="Search" value={searchquery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <input required type="text" className="px-[12px] w-full h-full rounded-l-full border-0 outline-0 focus:border-0 focus:dark:border-1 dark:bg-[#2a292972] dark:text-white" placeholder="Search" value={searchquery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
 
-            <div className="grow basis-[10%] h-full p-0 flex justify-center rounded-r-[25px] bg-[rgb(0,0,0,0.05)] border-0 border-l-2 border-l-[#5958586b] hover:bg-[rgb(0,0,0,0.1)]" >
-              <button className="border-r-[0px] h-full dark:bg-[#2a292972] dark:hover:bg-[#585858fe] rounded-r-[25px] cursor-pointer w-full border-0 flex items-center justify-center" type="submit">
-                <FaMagnifyingGlass className="text-black dark:text-white" />
+            <div className="grow basis-[10%] h-full p-0 flex justify-center rounded-r-[25px] bg-[rgb(0,0,0,0.05)] border-0 border-l-2 dark:border-l-[#5958586b] hover:bg-[rgb(0,0,0,0.1)]" >
+              <button className="border-r-[0px] h-full dark:bg-[#2a292972] dark:hover:bg-[#585858fe] rounded-r-[25px] cursor-pointer w-full border-0  flex items-center justify-center" type="submit">
+                <FaMagnifyingGlass className="text-black hover:scale-110 duration-300 dark:text-white" />
               </button>
             </div>
 
@@ -119,7 +119,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
               <motion.div layout initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }} ref={wrapperRef} className={`user-actions text-[0.65rem] sm:text-[1rem] dark:text-black absolute shadow-lg translate-x-[-90%] sm:translate-x-[-80%] lg:translate-y-[-5%] w-max min-w-[150px] sm:min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all dark:bg-[#282828] bg-white dark:shadow-[rgb(255,255,255,0.1)]`}>
+                transition={{ duration: 0.3 }} ref={wrapperRef} className={`user-actions text-[0.65rem] sm:text-[1rem] dark:bg-black/75 bg-white/20 shadow-lg backdrop-blur-md border-t-[0.01rem] border-x-[0.01rem] dark:border-white/20 border-white/30 absolute translate-x-[-90%] sm:translate-x-[-80%] lg:translate-y-[-5%] w-max min-w-[150px] sm:min-w-[250px] rounded-md py-2 px-[1rem] flex flex-col transition-all `}>
 
                 <div className={`p-0 pb-[5%] mt-1 sm:flex ${status === "unauthenticated" && 'flex'} cursor-pointer relative w-full rounded-[8px] dark:text-white items-center`}>
 

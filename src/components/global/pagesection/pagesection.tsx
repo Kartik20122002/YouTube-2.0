@@ -8,8 +8,8 @@ import PageSkeleton from "@/components/global/pagesection/loading";
 import ImgSkeleton from '@/components/global/skeletonComponents/ImgSkeleton';
 import { DateConverter } from "@/utils/Functions/Converters/DateConverter"
 import { CountConverter } from "@/utils/Functions/Converters/CountConverter"
-import useSWR, { useSWRConfig } from "swr"
-import { useRouter } from "next/navigation"
+import useSWR from "swr"
+import { useSession } from "next-auth/react"
 
 const dataFetcher = async (page:any, filter : any) =>{
   try{
@@ -31,12 +31,32 @@ const dataFetcher = async (page:any, filter : any) =>{
   
 }
 
+const pdataFetcher = async (email : any) =>{
+  try{
+    const res = await fetch(`/api/page/user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email})
+    });
+  
+    if (res.status != 500 && res.status != 404) {
+      const { videoItems } = await res.json();
+      return videoItems;
+    }
+  
+  } catch(error){
+  }
+  
+}
+
 
 const PageSection = ({ page }: any) => {
   const { isLarge } = useContext(isLargeContext) as any;
   const { setpage, online } = useContext(pageContext) as any;
   const [filter, setFilter] = useState(0);
-  const { mutate } = useSWRConfig();
+  const { status , data: session } = useSession();
   
   setpage(false);
 
@@ -64,6 +84,14 @@ const PageSection = ({ page }: any) => {
     revalidateOnReconnect: true,
     dedupingInterval : re ,
   });
+
+  const {data : personalitems , error : perror , isLoading : ploading} = useSWR(status ==="authenticated" && !filter && page == 'popular' ? 'pitems' : null,
+     ()=>  pdataFetcher(session?.user?.email)  ,{
+    refreshInterval : 1800000 , // 30 minutes
+    revalidateIfStale: true,
+    revalidateOnReconnect: true,
+    dedupingInterval : re ,
+  } ); 
 
 
   const [mapOfChannels, setMapOfChannels] = useState<any>({});
@@ -108,7 +136,7 @@ const PageSection = ({ page }: any) => {
       <motion.div layout className="w-full flex dark:text-white dark:bg-black bg-white overflow-x-scroll mb-3 mx-1 md:mx-0 snap-x">
         {
           filters?.map((item: any) => {
-            return <motion.div layout transition={{ duration: 0.5 }} key={item.id} onClick={() => setFilter(item.id)} className={`${filter === item.id ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)] border-t-[0.01rem] border-x-[0.01rem] border-[rgba(255,254,254,0.1)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-[max-content] rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</motion.div>
+            return <motion.div layout transition={{ duration: 0.5 }} key={item.id} onClick={() => setFilter(item.id)} className={`${filter === item.id ? 'dark:bg-white bg-black dark:text-black text-white' : 'bg-[rgb(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.14)] dark:bg-[rgba(255,254,254,0.16)] dark:hover:bg-[rgba(255,254,254,0.22)] duration-500 border-t-[0.01rem] hover:border-b-[0.01rem] hover:border-t-0 border-x-[0.01rem] border-[rgba(255,254,254,0.1)]'}  snap-start transition-colors duration-300 font-semibold text-[0.9rem] cursor-pointer min-w-[max-content] rounded-md px-3 py-[0.3rem] text-center mx-2`}>{item.name}</motion.div>
           })
         }
       </motion.div>
@@ -118,12 +146,50 @@ const PageSection = ({ page }: any) => {
         <motion.div layout transition={{ duration: 0.5 }} className="flex  flex-wrap justify-evenly h-[95vh] overflow-y-scroll pt-5 pb-[10%] dark:bg-black bg-white" id="mainpage">
 
           <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap justify-evenly w-full">
+            {ploading ? null :
+            personalitems?.map((item:any , index : any)=>{
+              return <PVideoContainer index={index} key={index} isLarge={isLarge} item={item} />
+            })}
             {items?.map((item: any, index: any) => {
               return <VideoContainer index={index} key={index} mapOfChannels={mapOfChannels} isLarge={isLarge} item={item} />
             })}
           </motion.div>
         </motion.div>
     }
+  </>
+}
+
+const PVideoContainer = ({ item, isLarge }: any) => {
+
+  return <>
+
+    <motion.div whileTap={{scale : 0.9}} layout
+      transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
+
+      <Link className={`w-full overflow-hidden relative pt-[56.25%] md:rounded-xl`} href={`/channel/${item?.author?.id}/video/${item?.id}`}>
+        <Image src={item?.thumbnails[item?.thumbnails?.length-1].url} placeholder="blur" blurDataURL={item.thumbnails[0].url || "@/images/noimg.png"}  className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />
+      </Link>
+
+      <motion.div layout transition={{ duration: 0.5 }} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
+
+        <Link href={`/channel/${item?.author?.id}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]">
+          {item?.author?.id ?
+            <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={item?.author?.thumbnails[0].url} loading="lazy" alt="channelImg" />
+            :
+            <ImgSkeleton className="w-[40px] h-[40px] rounded-full" />
+          }
+        </Link>
+
+        <motion.div layout transition={{ duration: 0.5 }} className="text-sm w-full">
+          <Link className="text-black dark:text-white font-semibold text-[15px] mb-[5px] truncate-2" href={`/channel/${item?.author?.id}/video/${item?.id}`}>{item?.title}</Link>
+          <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap md:flex-col w-full">
+            <Link className="text-grey mr-2 basis-auto shrink truncate-1 hover:text-[#c0bebe]" href={`/channel/${item?.author?.id}`}> <p>{item?.author?.name}</p></Link>
+            <motion.div layout transition={{ duration: 0.5 }} className="text-grey flex flex-wrap grow truncate-1 whitespace-normal"> <span className="mr-1">{item?.short_view_count_text} Views</span> &bull; <span className="ml-1">{item?.published}</span></motion.div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+
   </>
 }
 

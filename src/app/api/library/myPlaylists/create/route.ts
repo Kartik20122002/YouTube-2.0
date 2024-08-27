@@ -31,7 +31,6 @@ export async function POST(req: any) {
 
             if(res){
                 const playlistsOldstr = dbUser?.playlists || [];
-                console.log(playlistsOldstr)
                 let playlistsOld = JSON.parse(playlistsOldstr);
 
                 const playlists = playlistsOld.length > 0 ? [res._id,...playlistsOld] : [res._id];

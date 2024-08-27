@@ -2,7 +2,6 @@ import { clientId, clientSecret } from "../secrets/secrets"
 
 export const refreshedToken = async (refreshToken : any)=>{
   try{
-    console.log('reached')
     const url =
     "https://oauth2.googleapis.com/token?" +
     new URLSearchParams({

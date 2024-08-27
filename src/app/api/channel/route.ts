@@ -42,7 +42,6 @@ export async function POST(req : any ) {
       }
     }
 else{ 
-  console.log('using api key');
  oauth2client.credentials = {
   access_token : '' as string, 
   refresh_token : '' as string
