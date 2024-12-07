@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {getInfo} from 'ytdl-core';
+import ytdl, {chooseFormat, getInfo} from 'ytdl-core';
 
 
 export async function POST(req : NextRequest ) {
@@ -12,9 +12,9 @@ export async function POST(req : NextRequest ) {
 
   try{
 
-    const videoData = await getInfo(`https://www.youtube.com/watch?v=${id}`);
+    const videoData = await getInfo(id);
 
-    Links = videoData?.formats?.filter((format)=>{ return (format?.hasAudio && format?.hasVideo)}) || [];
+    Links = videoData?.formats?.filter((format , i)=>{ return (format?.hasVideo && i < 5)}) || [];
 
     relatedVideos = videoData?.related_videos || [];
 
@@ -28,7 +28,8 @@ catch(err){
     console.log('fetch error' , err);
     return NextResponse.json({
         linksStr : Links?.length > 0 ? JSON.stringify(Links) : JSON.stringify([]),
-        relatedVideosStr : relatedVideos?.length > 0 ? JSON.stringify(relatedVideos) : JSON.stringify([])
+        relatedVideosStr : relatedVideos?.length > 0 ? JSON.stringify(relatedVideos) : JSON.stringify([]),
+        err : err
     });
 
 }
