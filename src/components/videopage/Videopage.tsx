@@ -641,6 +641,7 @@ const Comment = ({ item }: any) => {
 
 const SideRow = () => {
     const { related, loading2 } = useContext(dataContext);
+
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className="md:basis-[33%] mt-6 md:mt-0 basis-full h-[89vh] overflow-y-scroll flex flex-col px-1">
             {
@@ -657,22 +658,28 @@ const SideRow = () => {
 
 const SideVideo = ({ item }: any) => {
 
-    const { id, title, published, author, short_view_count_text, view_count, length_seconds, thumbnails } = item;
+    const {
+         id, videoId, title, published,publishedTimeText, author, short_view_count_text, view_count,viewCount, thumbnails,
+         thumbnail, channelId, channelTitle
+        } = item;
 
+    const imgurl = thumbnail || thumbnails;
+    const channel_id = channelId || author?.id;
+    const channel_name = channelTitle || author?.name;
     return (<>
         <motion.div layout transition={{ duration: 0.5 }} className=" flex flex-wrap w-fulljustify-between mb-3 px-3 md:px-0">
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%] mr-2 h-full">
-                <Link href={`/channel/${author?.id}/video/${id}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
-                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={thumbnails[0]?.url || "@/images/noimg.png"} src={thumbnails[1]?.url || thumbnails[0]?.url} />
+                <Link href={`/channel/${channel_id}/video/${id || videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
+                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={imgurl[0]?.url || "@/images/noimg.png"} src={imgurl[1]?.url || thumbnails[0]?.url} />
                 </Link>
             </motion.div>
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[60%] pt-1 overflow-hidden ">
-                <Link href={`/channel/${author?.id}/video/${id}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{title}</Link>
+                <Link href={`/channel/${channel_id}/video/${id || videoId}`} className="text-md w-full dark:text-white md:text-lg md:leading-5 mb-1 truncate-2">{title}</Link>
                 <motion.div layout transition={{ duration: 0.5 }} className="flex flex-wrap flex-col">
-                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${author.id}`}>{author.name}</Link></motion.p>
-                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm ">{short_view_count_text || CountConverter(view_count)}  &bull; {published}</motion.p>
+                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm"><Link className='hover:text-[#888888] mr-1' href={`/channel/${channel_id}`}>{channel_name}</Link></motion.p>
+                    <motion.p layout transition={{ duration: 0.5 }} className="text-[#606060] font-medium text-sm ">{short_view_count_text || CountConverter(view_count || viewCount)}  &bull; {published || publishedTimeText}</motion.p>
                 </motion.div>
             </motion.div>
 

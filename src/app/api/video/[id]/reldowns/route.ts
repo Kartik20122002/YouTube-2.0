@@ -1,38 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server'
-import ytdl, {chooseFormat, getInfo} from 'ytdl-core';
+// import { getInfo } from 'ytdl-core';
+import axios from 'axios';
+import { rapidapi } from '@/utils/secrets/secrets';
 
+export async function POST(req: NextRequest) {
 
-export async function POST(req : NextRequest ) {
-  
   const body = await req.text();
-  const {id} = JSON.parse(body);
+  const { id } = JSON.parse(body);
 
-  let Links: any[] = []
-  let relatedVideos: any [] = []
+  try {
 
-  try{
 
-    const videoData = await getInfo(id);
+    const options = {
+      method: 'GET',
+      url: 'https://yt-api.p.rapidapi.com/related',
+      params: {id: id},
+      headers: {
+        'x-rapidapi-key': rapidapi,
+        'x-rapidapi-host': 'yt-api.p.rapidapi.com'
+      }
+    };
+    
+      const response = await axios.request(options);
+    
+      return NextResponse.json({
+        linksStr: JSON.stringify([]),
+        relatedVideosStr: response?.statusText === 'OK' ? JSON.stringify(response.data?.data || []) : JSON.stringify([]) // 
+      });
 
-    Links = videoData?.formats?.filter((format , i)=>{ return (format?.hasVideo && i < 5)}) || [];
+    // const videoData = await getInfo(id);
 
-    relatedVideos = videoData?.related_videos || [];
+    // Links = videoData?.formats?.filter((format, i) => { return (format?.hasVideo && i < 5) }) || [];
 
-    return NextResponse.json({
-        linksStr : JSON.stringify(Links),
-        relatedVideosStr : JSON.stringify(relatedVideos)
-    });
+    // relatedVideos = videoData?.related_videos || [];
+
+    // return NextResponse.json({
+    //   linksStr: JSON.stringify(Links),
+    //   relatedVideosStr: JSON.stringify(relatedVideos)
+    // });
   }
 
-catch(err){
-    console.log('fetch error' , err);
+  catch (err) {
+    console.log('fetch error', err);
     return NextResponse.json({
-        linksStr : Links?.length > 0 ? JSON.stringify(Links) : JSON.stringify([]),
-        relatedVideosStr : relatedVideos?.length > 0 ? JSON.stringify(relatedVideos) : JSON.stringify([]),
-        err : err
+      linksStr: JSON.stringify([]),
+      relatedVideosStr: JSON.stringify([]),
+      err: err
     });
 
-}
+  }
 }
 
 
