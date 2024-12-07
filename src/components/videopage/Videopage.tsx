@@ -452,9 +452,9 @@ const VideoInfo = () => {
                 </motion.button>
 
 
-                <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] dark:border-[0.01rem] dark:border-[#6262624a] rounded-full px-4 h-10 mr-3 my-1`}>
+                {/* <motion.button disabled={loading2} layout transition={{ duration: 0.5 }} onClick={() => { if (!downloading) { setDownloading(true) } }} className={`flex items-center ${loading2 && 'skeletonUi text-transparent cursor-progress'} dark:bg-[#6c6c6c57] bg-[#cfcfcf57] hover:dark:bg-[#6c6c6c68] hover:bg-[#cfcfcf73] dark:border-[0.01rem] dark:border-[#6262624a] rounded-full px-4 h-10 mr-3 my-1`}>
                     <AiOutlineDownload className='mr-2 text-[1.2rem] md:text-[1.5rem]' /> Download
-                </motion.button>
+                </motion.button> */}
 
 
             </motion.div>
@@ -528,9 +528,9 @@ const Description = () => {
             </motion.div>
         </motion.div>
 
-        <motion.div onClick={() => setLargeDesc(!largeDesc)} layout transition={{ duration: 0.5 }} className={`${!largeDesc ? 'h-6' : 'h-fit'} hidden md:block overflow-hidden mt-1`}>
+        <motion.pre onClick={() => setLargeDesc(!largeDesc)} layout transition={{ duration: 0.5 }} className={`${!largeDesc ? 'h-6' : 'h-fit'} hidden md:block overflow-hidden mt-1`}>
             {parse(video?.snippet?.description)}
-        </motion.div>
+        </motion.pre>
 
     </motion.div>
     </>)
