@@ -45,7 +45,7 @@ export async function POST(req : NextRequest ) {
         let videoData: any[] = []; // Array of videos
         let remainingData: any[] = []; // Array of array of videos
 
-        videoDataArrays.forEach(videoArray =>{ videoData.push(videoArray[0]); remainingData.push(videoArray.slice(1));});
+        videoDataArrays?.forEach(videoArray =>{ if(videoArray?.length > 0) {videoData.push(videoArray[0]); remainingData.push(videoArray.slice(1));}});
 
         while(remainingData.length > 0 || videoData.length < 50){
             for(let i = remainingData.length-1 ; i >= 0; i--){
