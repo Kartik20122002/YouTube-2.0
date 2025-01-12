@@ -7,13 +7,11 @@ import SekeltonText from '@/components/global/skeletonComponents/TextSkeleton';
 
 const ChannelPageSkeleton = () => {
 
-    return (<>
-        <motion.div layout transition={{ duration: 0.5 }} className='overflow-y-scroll h-screen pb-[10rem] dark:bg-black bg-white dark:text-white'>
+    return <motion.div layout transition={{ duration: 0.5 }} className='overflow-y-scroll h-screen pb-[10rem] dark:bg-black bg-white dark:text-white'>
             <ChannelInfoSkeleton />
             <VideoSectionSkeleton />
             <VideoSectionSkeleton />
         </motion.div>
-    </>)
 }
 
 const ChannelInfoSkeleton = () => {
@@ -45,7 +43,7 @@ const ChannelInfoSkeleton = () => {
 
 const VideoSectionSkeleton = () => {
 
-    return <>
+    return ( <>
 
             <motion.hr layout transition={{ duration: 0.5 }} className='my-6 border-none h-[0.1px] bg-[#69696945]' />
 
@@ -59,7 +57,7 @@ const VideoSectionSkeleton = () => {
 
             </motion.div>
         </>
-        
+        )
 }
 
 const SkeletonGallery = () => {
@@ -90,7 +88,7 @@ const SkeletonCard = ({ index }: any) => {
             </motion.div>
             <motion.div layout transition={{ duration: 0.5 }} className="mt-1 w-full">
                 <motion.div layout transition={{ duration: 0.5 }} className="truncate-2 text-[0.9rem] md:text-[1rem] whitespace-normal "><SekeltonText /></motion.div>
-                <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] w-1/2 text-[0.8rem] md:text-[1rem]"><SekeltonText width={'min-w-[50%]'} /></motion.div>
+                <motion.div layout transition={{ duration: 0.5 }} className="text-[#979696] w-[50%] text-[0.8rem] md:text-[1rem]"><SekeltonText width={'min-w-[50%]'} /></motion.div>
             </motion.div>
         </motion.div>
     </>
