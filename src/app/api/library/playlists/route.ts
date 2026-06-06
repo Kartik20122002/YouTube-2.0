@@ -10,7 +10,7 @@ export async function GET(req: any) {
 
   try {
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
 
     const tokens = await getToken({ req, secret });
 

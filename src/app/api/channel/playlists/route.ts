@@ -10,7 +10,7 @@ export async function POST(req : any ) {
   const {id} = JSON.parse(body);
 
   try{
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
     const tokens = await getToken({ req, secret });
 

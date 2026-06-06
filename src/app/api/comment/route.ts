@@ -11,7 +11,7 @@ export async function POST(req : any ) {
 
   try{
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
     const tokens = await getToken({ req, secret });
 

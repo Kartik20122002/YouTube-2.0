@@ -40,7 +40,7 @@ const authOptions: NextAuthOptions = {
   events: {
     signIn: async ({ user, account }: any) => {
 
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
 
       if (account?.refresh_token) {
         await ConnectDB();
@@ -90,8 +90,8 @@ const authOptions: NextAuthOptions = {
 
     }
     ,
-    signOut: () => {
-      const cookieStore = cookies();
+    signOut: async () => {
+      const cookieStore = await cookies();
       cookieStore.delete('aToken');
       cookieStore.delete('rToken');
     },

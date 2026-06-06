@@ -13,7 +13,7 @@ export async function POST(req : NextRequest ) {
 
   try{
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
     const tokens = await getToken({ req, secret });
 
