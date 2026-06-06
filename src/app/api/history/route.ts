@@ -12,7 +12,7 @@ export async function POST(req: any) {
         const tokens = await getToken({ req, secret });
 
         if (tokens && tokens?.access_token) {
-            ConnectDB();
+            await ConnectDB();
             const user = await User.findOne({ email: email });
             if (!user) return NextResponse.json({ videoItems: [] });
             const historyStr = user?.history as string;

@@ -12,7 +12,7 @@ export async function POST(req: any) {
         const tokens = await getToken({ req, secret });
 
         if (tokens && tokens?.access_token) {
-            ConnectDB();
+            await ConnectDB();
             const list = await Playlist.find({ email: email });
             return NextResponse.json({ myPlaylists: list });
         }
