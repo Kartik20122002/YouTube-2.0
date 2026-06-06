@@ -7,7 +7,12 @@ const nextConfig = {
       },
     images : {
         unoptimized : true,
-        domains: ['i.ytimg.com' , 'lh3.googleusercontent.com' ,'yt3.ggpht.com','yt3.googleusercontent.com'],
+        remotePatterns: [
+            { protocol: 'https', hostname: 'i.ytimg.com' },
+            { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+            { protocol: 'https', hostname: 'yt3.ggpht.com' },
+            { protocol: 'https', hostname: 'yt3.googleusercontent.com' },
+        ],
     }
 }
 

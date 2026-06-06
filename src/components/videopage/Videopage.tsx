@@ -214,19 +214,21 @@ const Videopage = ({ id, channelId }: any) => {
     }
 
     const { data: videoData, error: videoError, isLoading: loading } = useSWR(['video', id], () => videoDetailsFetcher(id, channelId), {
-        revalidateIfStale: true,
-        revalidateOnReconnect: true,
-        refreshInterval: 900000,
-        dedupingInterval: 900000,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 0,
+        dedupingInterval: 3600000,
     });
 
     const { video, channel } = videoData || { video: {}, channel: {} };
 
 
     const { data: relData, error, isLoading: loading2 } = useSWR(['relDown', id], () => relativeDownloadFetcher(id), {
-        revalidateIfStale: true,
-        revalidateOnReconnect: true,
-        refreshInterval: 3600000,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 0,
         dedupingInterval: 3600000,
     });
 
@@ -307,10 +309,11 @@ const VideoInfo = () => {
     mutate('history');
 
     const { data: authData, error: videoError, isLoading: authLoading } = useSWR(status === 'authenticated' ? ['authvideo', id] : null, () => videoAuthDetailsFetcher(id, channelId), {
-        revalidateIfStale: true,
-        revalidateOnReconnect: true,
-        refreshInterval: 900000,
-        dedupingInterval: 900000,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 0,
+        dedupingInterval: 3600000,
     });
 
     const { rateRes, subRes, subIdRes } = authData || { rateRes: 0, subRes: false, subIdRes: '' };
@@ -593,10 +596,11 @@ const CommentForm = ({ img, channelId, id }: any) => {
 const Comments = ({ id }: any) => {
 
     const { data: comments, error: videoError, isLoading: loading } = useSWR(['comments', id], () => commentsFetcher(id), {
-        revalidateIfStale: true,
-        revalidateOnReconnect: true,
-        refreshInterval: 900000,
-        dedupingInterval: 900000,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 0,
+        dedupingInterval: 3600000,
     });
 
     return (<>

@@ -8,6 +8,8 @@ export async function POST(req: NextRequest) {
   const body = await req.text();
   const { id } = JSON.parse(body);
 
+  if (!id) return NextResponse.json({ linksStr: JSON.stringify([]), relatedVideosStr: JSON.stringify([]) });
+
   try {
 
 

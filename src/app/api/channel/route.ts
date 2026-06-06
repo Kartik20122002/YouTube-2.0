@@ -1,8 +1,7 @@
-import { getToken } from "next-auth/jwt";
+﻿import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
@@ -66,9 +65,9 @@ const [results , subs] = await Promise.all([channelPromise,subPromise]);
   if(results.status !== 200) 
   return NextResponse.error()
 
-  const channelDetails = results?.data?.items[0];
-  const isSub = (subs?.data?.pageInfo?.totalResults > 0) ? true : false;
-  const subIdres = subs?.data?.items[0]?.id ;
+  const channelDetails = results?.data?.items?.[0];
+  const isSub = ((subs?.data?.pageInfo?.totalResults ?? 0) > 0) ? true : false;
+  const subIdres = subs?.data?.items?.[0]?.id;
 
   return  NextResponse.json({channelDetails,isSub,subIdres});
 }
@@ -77,7 +76,7 @@ else{
   if(result.status != 200)
   return NextResponse.error();
 
-  const channelDetails = result?.data?.items[0];
+  const channelDetails = result?.data?.items?.[0];
   const isSub = false;
 
   return NextResponse.json({channelDetails,isSub,subIdres:''});
@@ -87,7 +86,6 @@ else{
 }
 catch(err){
     console.log('fetch error' , err);
-    signOut();
     return NextResponse.json(err);
 }
 }

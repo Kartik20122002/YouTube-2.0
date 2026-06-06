@@ -2,19 +2,16 @@ import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
-import { revalidateTag } from "next/cache";
-
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: any) {
   const body = await req.text();
   const { id, channelId } = JSON.parse(body);
 
-  try {
+  if (!id || !channelId) return NextResponse.json({ video: {}, channel: {} });
 
-    revalidateTag('history');
+  try {
 
     const cookieStore = cookies();
 
@@ -75,7 +72,6 @@ export async function POST(req: any) {
   }
   catch (err) {
     console.log('fetch error', err);
-    signOut();
     return NextResponse.json(err);
 
   }

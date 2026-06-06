@@ -1,8 +1,7 @@
-import { getToken } from "next-auth/jwt";
+﻿import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 
 export async function POST(req: any) {
@@ -68,7 +67,6 @@ export async function POST(req: any) {
     const results = await youtube.videos.list(config);
 
     if (results.status == 401) {
-      signOut();
     }
 
     if (results.status !== 200) {
@@ -83,7 +81,6 @@ export async function POST(req: any) {
   }
   catch (err) {
     console.log('fetch error', err);
-    signOut();
     return NextResponse.json({});
   }
 }

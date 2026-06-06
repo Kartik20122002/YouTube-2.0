@@ -1,8 +1,7 @@
-import { getToken } from "next-auth/jwt";
+﻿import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
 
@@ -51,7 +50,7 @@ export async function POST(req: any) {
     if (toSub) {
 
       const res = await youtube.subscriptions.insert({
-        part: 'snippet',
+        part: ['snippet'],
         requestBody: {
           snippet: {
             resourceId: {
@@ -81,7 +80,6 @@ export async function POST(req: any) {
   }
   catch (err) {
     console.log('fetch error', err);
-    signOut();
     return NextResponse.json(err);
 
   }

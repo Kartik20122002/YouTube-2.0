@@ -2,7 +2,6 @@ import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextRequest, NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signIn, signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
@@ -26,7 +25,7 @@ export async function POST(req : NextRequest ) {
       const refreshToken = rData?.value;
 
       if (!aData || !accessToken) {
-        if (!rData) signIn();
+        if (!rData) return NextResponse.json({}, { status: 401 });
         oauth2client.setCredentials({ refresh_token: refreshToken });
         
         const newToken = await oauth2client.refreshAccessToken()
@@ -41,9 +40,8 @@ export async function POST(req : NextRequest ) {
         oauth2client.setCredentials({ access_token: accessToken, });
       }
     }
-else{ 
-signIn();
-return;
+else{
+return NextResponse.json({}, { status: 401 });
 }
 
 if(tokens && tokens?.access_token){
@@ -70,7 +68,6 @@ if(tokens && tokens?.access_token){
 }
 catch(err){
     console.log('fetch error' , err);
-    signOut();
     return NextResponse.json(err);
 
 }

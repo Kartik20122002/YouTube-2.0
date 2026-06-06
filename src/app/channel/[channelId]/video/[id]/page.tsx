@@ -2,7 +2,7 @@ import Videopage from "@/components/videopage/Videopage";
 
 
 const VideoPage = async ({ params }: any) => {
-  const {id , channelId} = params;
+  const {id , channelId} = await params;
 
 
   return <Videopage id={id} channelId={channelId} />

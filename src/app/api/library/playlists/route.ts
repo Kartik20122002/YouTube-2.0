@@ -1,8 +1,7 @@
-import { getToken } from "next-auth/jwt";
+﻿import { getToken } from "next-auth/jwt";
 import { secret, ytApi } from "@/utils/secrets/secrets";
 import { NextResponse } from 'next/server'
 import { oauth2client, youtube } from "@/utils/auth/youtube";
-import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic'
@@ -54,7 +53,6 @@ export async function GET(req: any) {
   }
   catch (err) {
     console.log('fetch error', err);
-    signOut();
     return NextResponse.json(err);
 
   }
