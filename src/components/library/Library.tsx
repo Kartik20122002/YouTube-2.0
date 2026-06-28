@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { AiOutlineHistory, AiOutlineLike } from "react-icons/ai";
 import SekeltonImg from "../global/skeletonComponents/ImgSkeleton";
 import SekeltonText from "../global/skeletonComponents/TextSkeleton";
@@ -244,7 +244,7 @@ const VideoCard = ({ item }: any) => {
     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
       <motion.div layout transition={{ duration: 0.5 }} className="relative w-full pt-[56.25%] overflow-hidden">
         <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} fill alt='videocardImg' />
         </Link>
       </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">
@@ -271,7 +271,7 @@ const HistoryCard = ({ item }: any) => {
     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
       <motion.div layout transition={{ duration: 0.5 }} className="relative w-full pt-[56.25%] overflow-hidden">
         <Link href={url} className="h-full absolute top-0 right-0 left-0 bottom-0">
-          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={videoImg} layout='fill' alt='videocardImg' />
+          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={videoImg} fill alt='videocardImg' />
         </Link>
       </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">
@@ -290,7 +290,7 @@ const PlaylistCard = ({ item }: any) => {
     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
       <motion.div layout transition={{ duration: 0.5 }} className="relative w-full h-full pt-[56.25%] overflow-hidden">
         <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} fill alt='videocardImg' />
         </Link>
       </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">
@@ -312,7 +312,7 @@ const UserPlaylistCard = ({ item }: any) => {
     <motion.div layout transition={{ duration: 0.5 }} className="flex flex-col mx-4 md:mx-[0.1rem] my-2 max-w-[13rem] min-w-[13rem] w-[13rem]">
       <motion.div layout transition={{ duration: 0.5 }} className="relative w-full h-full pt-[56.25%] overflow-hidden">
         <Link href={`/library/userplaylist/${item?._id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.thumbnail || videoImg} layout='fill' alt='videocardImg' />
+          <Image className='rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.thumbnail || videoImg} fill alt='videocardImg' />
         </Link>
       </motion.div>
       <motion.div layout transition={{ duration: 0.5 }} className="mt-2 pr-6">

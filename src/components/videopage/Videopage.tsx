@@ -10,7 +10,7 @@ import { AiFillDislike } from '@react-icons/all-files/ai/AiFillDislike';
 import { AiOutlineLike } from '@react-icons/all-files/ai/AiOutlineLike';
 import { AiOutlineDownload } from '@react-icons/all-files/ai/AiOutlineDownload';
 
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { signIn, useSession } from 'next-auth/react';
 import Sekelton from '../global/skeletonComponents/TextSkeleton';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
@@ -124,10 +124,7 @@ const Videopage = ({ id, channelId }: any) => {
     const { setpage , myPlaylists } = useContext(pageContext) as any;
     const { setIsLarge } = useContext(isLargeContext) as any;
 
-    setpage(true);
-    setslide(-1);
-
-    useEffect(() => setIsLarge(false), []);
+    useEffect(() => { setpage(true); setslide(-1); setIsLarge(false); }, []);
 
     const [downloading, setDownloading] = useState<boolean>(false);
     const [addToPlaylist, setAddToPlaylist] = useState<boolean>(false);
@@ -675,7 +672,7 @@ const SideVideo = ({ item }: any) => {
 
             <motion.div layout transition={{ duration: 0.5 }} className="basis-[35%] mr-2 h-full">
                 <Link href={`/channel/${channel_id}/video/${id || videoId}`} className="flex w-full h-full relative pt-[56.25%] overflow-hidden justify-center items-center">
-                    <Image layout='fill' className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={imgurl[0]?.url || "@/images/noimg.png"} src={imgurl[1]?.url || thumbnails[0]?.url} />
+                    <Image fill className='dark:bg-[#202324] bg-[#b8b8b8] absolute top-0 right-0 left-0 bottom-0 h-full w-full rounded-md' loading="lazy" alt="." placeholder="blur" blurDataURL={imgurl[0]?.url || "@/images/noimg.png"} src={imgurl[1]?.url || thumbnails[0]?.url} />
                 </Link>
             </motion.div>
 
@@ -792,9 +789,9 @@ const PlaylistModal = () => {
 const CreatePlaylistModal = () => {
     const { setAddToPlaylist , setCreatePlaylist , myPlaylists } = useContext(dataContext) as any;
     const { status, data: session } = useSession();
-    
-    setAddToPlaylist(false);
     const [name ,setName] = useState("");
+
+    useEffect(() => { setAddToPlaylist(false); }, []);
 
     const createPlaylist = async ()=>{
         

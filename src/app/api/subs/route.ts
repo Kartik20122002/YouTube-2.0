@@ -23,7 +23,7 @@ export async function GET(req: any) {
       const refreshToken = rData?.value;
 
       if (!accessToken) {
-        if (!refreshToken) throw new Error("Invalid Tokens Refresh Token is required");
+        if (!refreshToken) return NextResponse.json({ tokenError: true, subs: [], ptoken: '', ntoken: '' });
 
         oauth2client.setCredentials({ refresh_token: refreshToken });
 

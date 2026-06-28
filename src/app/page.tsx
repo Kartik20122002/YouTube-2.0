@@ -12,7 +12,8 @@ export default function Home() {
   const { status } = useSession();
 
   const { slide, setslide } = useContext(slideContext) as any;
-  setslide(0);
+
+  useEffect(() => { setslide(0); }, []);
 
   return (
     <>

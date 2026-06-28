@@ -23,7 +23,7 @@ export async function POST(req: any) {
         const rData = cookieStore.get('rToken') || null;
         const refreshToken = rData?.value;
 
-        if (!refreshToken) throw new Error("Invalid Tokens Refresh Token bhi nahi hai");
+        if (!refreshToken) return NextResponse.json({ tokenError: true });
         oauth2client.setCredentials({ refresh_token: refreshToken });
         
         const newToken = await oauth2client.refreshAccessToken();

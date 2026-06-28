@@ -1,5 +1,5 @@
 'use client'
-import Image from "next/legacy/image"
+import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { isLargeContext, pageContext } from "@/app/layout"
@@ -22,8 +22,13 @@ const dataFetcher = async (page:any, filter : any) =>{
     });
   
     if (res.status != 500 && res.status != 404) {
-      const { videos, ptoken, ntoken } = await res.json();
-      return videos;
+      const data = await res.json();
+      if (data.tokenError) {
+        const { signOut } = await import('next-auth/react');
+        await signOut({ callbackUrl: '/' });
+        return [];
+      }
+      return data.videos;
     }
   
   } catch(error){
@@ -57,8 +62,8 @@ const PageSection = ({ page }: any) => {
   const { setpage, online } = useContext(pageContext) as any;
   const [filter, setFilter] = useState(0);
   const { status , data: session } = useSession();
-  
-  setpage(false);
+
+  useEffect(() => { setpage(false); }, []);
 
   const re = (page !== 'popular') ? 1800000 : 300000
 
@@ -167,14 +172,14 @@ const PVideoContainer = ({ item, isLarge }: any) => {
       transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
 
       <Link className={`w-full overflow-hidden relative pt-[56.25%] md:rounded-xl`} href={`/channel/${item?.author?.id}/video/${item?.id}`}>
-        <Image src={item?.thumbnails[item?.thumbnails?.length-1].url} placeholder="blur" blurDataURL={item.thumbnails[0].url || "@/images/noimg.png"}  className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />
+        <Image src={item?.thumbnails[item?.thumbnails?.length-1].url} placeholder="blur" blurDataURL={item.thumbnails[0].url || "@/images/noimg.png"}  className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" fill alt="video" />
       </Link>
 
       <motion.div layout transition={{ duration: 0.5 }} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
         <Link href={`/channel/${item?.author?.id}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]">
           {item?.author?.id ?
-            <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={item?.author?.thumbnails[0].url} loading="lazy" alt="channelImg" />
+            <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" width={40} height={40} src={item?.author?.thumbnails[0].url} loading="lazy" alt="channelImg" />
             :
             <ImgSkeleton className="w-[40px] h-[40px] rounded-full" />
           }
@@ -204,14 +209,14 @@ const VideoContainer = ({ item, isLarge, mapOfChannels }: any) => {
       transition={{ duration: 0.5 }} className={`px-0 w-full ${isLarge ? 'md:w-[19rem]' : 'md:w-[21rem]'} items-center mb-7 flex flex-col justify-between`}>
 
       <Link className={`w-full overflow-hidden relative pt-[56.25%] md:rounded-xl`} href={`/channel/${item?.snippet?.channelId}/video/${item?.id}`}>
-        <Image src={item.snippet.thumbnails.medium.url} placeholder="blur" blurDataURL={item.snippet.thumbnails.default.url || "@/images/noimg.png"}  className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" layout="fill" alt="video" />
+        <Image src={item.snippet.thumbnails.medium.url} placeholder="blur" blurDataURL={item.snippet.thumbnails.default.url || "@/images/noimg.png"}  className="md:rounded-xl !absolute !min-w-0 !min-h-0 !w-full !h-full !top-0 !right-0 !bottom-0 !left-0 dark:bg-[#202324] bg-[#b8b8b8]" fill alt="video" />
       </Link>
 
       <motion.div layout transition={{ duration: 0.5 }} className={`flex w-full md:items-start relative items-center px-2 mt-2`}>
 
         <Link href={`/channel/${item?.snippet?.channelId}`} className="mr-4 min-w-[40px] w-[40px] h-[40px]">
           {mapOfChannels[item?.snippet?.channelId] ?
-            <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" layout="responsive" width={40} height={40} src={mapOfChannels[item?.snippet?.channelId]} loading="lazy" alt="channelImg" />
+            <Image className="rounded-full h-[40px] dark:bg-[#202324] bg-[#b8b8b8]" width={40} height={40} src={mapOfChannels[item?.snippet?.channelId]} loading="lazy" alt="channelImg" />
             :
             <ImgSkeleton className="w-[40px] h-[40px] rounded-full" />
           }

@@ -12,7 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 import logo from '@/images/logo.png';
 import user from '@/images/user.png';
 
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 
 const Header = ({ change, toggleTheme, dark }: any) => {
@@ -31,7 +31,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
   const [userName, setUserName] = useState<any>(null);
   const [userEmail, setUserEmail] = useState<any>(null);
   const [search, setSearch] = useState(false);
-  const [profileUrl, setProfileUrl] = useState<any>('/images/user.png');
+  const [profileUrl, setProfileUrl] = useState<any>(user);
 
   const userBtn = () => {
     setUsermenu((val) => { return !val })
@@ -76,7 +76,7 @@ const Header = ({ change, toggleTheme, dark }: any) => {
           <AiOutlineMenu onClick={() => { change() }} className="text-[25px] dark:bg-black mx-4 dark:text-white opacity-60 hidden md:block cursor-pointer font-[10]" />
 
           <Link href="/" className="w-full md:w-[105px] block">
-            <Image src={logo} className="dark:brightness-[6]" loading="eager" layout="responsive" alt="logo" />
+            <Image src={logo} className="dark:brightness-[6]" loading="eager" priority alt="logo" />
           </Link>
 
         </div>

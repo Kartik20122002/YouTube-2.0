@@ -4,7 +4,7 @@ import { AiOutlineMore } from 'react-icons/ai';
 import { PiShareFatThin } from 'react-icons/pi'
 import { LiaDownloadSolid } from 'react-icons/lia'
 import { motion } from 'framer-motion';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
 import SekeltonText from '../global/skeletonComponents/TextSkeleton';
 import { DateConverter } from '@/utils/Functions/Converters/DateConverter';
@@ -74,7 +74,7 @@ const PlayListInfo = ({ id, first }: any) => {
     return <motion.div layout transition={{ duration: 0.5 }} className="basis-full md:basis-[30%] grow min-w-[20rem] max-h-full overflow-y-scroll md:px-4">
 
         <motion.div layout transition={{ duration: 0.5 }} className="relative max-h-full h-full w-full overflow-hidden md:rounded-[15px] p-6">
-            {!loading && <Image src={info?.snippet?.thumbnails?.default?.url || videoImg} layout='fill' loading='lazy' className='blur-[40px] !mb-auto !mt-0 !h-[99%] !min-h-[50%] opacity-80 z-0' alt='' />}
+            {!loading && <Image src={info?.snippet?.thumbnails?.default?.url || videoImg} fill loading='lazy' className='blur-[40px] !mb-auto !mt-0 !h-[99%] !min-h-[50%] opacity-80 z-0' alt='' />}
             <motion.div layout transition={{ duration: 0.5 }} className="relative max-h-full overflow-y-scroll">
                 {/* info */}
                 <motion.div layout transition={{ duration: 0.5 }} className="w-full flex flex-wrap md:flex-col">
@@ -84,7 +84,7 @@ const PlayListInfo = ({ id, first }: any) => {
                             <Link href={first || `/channel/${info?.snippet?.channelId}/playlist/${info?.id}`} className="absolute min-w-full flex items-center cursor-pointer justify-center text-transparent  hover:text-white top-0 min-h-full bg-transparent hover:bg-[#0000009c] z-10 rounded-[4%]">
                                 Play
                             </Link>
-                            <motion.div layout transition={{ duration: 0.5 }} className="absolute top-0 right-0 bottom-0 left-0 w-full h-full"> <Image src={loading ? videoImg : info?.snippet?.thumbnails?.medium?.url} layout='fill' className='rounded-[4%] dark:bg-[#202324] bg-[#b8b8b8]' loading='lazy' alt='playlistImg' /> </motion.div>
+                            <motion.div layout transition={{ duration: 0.5 }} className="absolute top-0 right-0 bottom-0 left-0 w-full h-full"> <Image src={loading ? videoImg : info?.snippet?.thumbnails?.medium?.url} fill className='rounded-[4%] dark:bg-[#202324] bg-[#b8b8b8]' loading='lazy' alt='playlistImg' /> </motion.div>
                         </motion.div>}
 
                     <motion.div layout transition={{ duration: 0.5 }} className="details mt-3 z-10">
@@ -181,7 +181,7 @@ const PlayListItem = ({ index, item }: any) => {
             <motion.div layout transition={{ duration: 0.5 }} className="hidden md:flex items-center justify-center basis-[4%]">{index}</motion.div>
             <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.contentDetails?.videoId}`} className="basis-[20%] shrink-0 h-full ">
                 <motion.div layout transition={{ duration: 0.5 }} className="w-full h-full relative pt-[56.25%] overflow-hidden">
-                    <Image src={item?.snippet?.thumbnails?.medium?.url || videoImg} loading='lazy' className='absolute md:rounded-lg top-0 dark:bg-[#202324] bg-[#b8b8b8] right-0 bottom-0 left-0 !w-full !h-full !min-w-0 !min-h-0' layout='fill' alt='itemImg' />
+                    <Image src={item?.snippet?.thumbnails?.medium?.url || videoImg} loading='lazy' className='absolute md:rounded-lg top-0 dark:bg-[#202324] bg-[#b8b8b8] right-0 bottom-0 left-0 !w-full !h-full !min-w-0 !min-h-0' fill alt='itemImg' />
                 </motion.div>
             </Link>
             <motion.div layout transition={{ duration: 0.5 }} className="grow shrink basis-[60%] ml-3 mb-auto">

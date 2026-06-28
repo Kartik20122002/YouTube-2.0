@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
@@ -8,7 +8,7 @@ import { AiFillHome, AiOutlineHome, AiFillLike, AiOutlineLike, AiOutlineHistory,
 import { MdLibraryAdd, MdOutlineLibraryAdd } from 'react-icons/md';
 import { RiPlayList2Line } from "react-icons/ri";
 
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { slideContext } from "@/app/layout";
 import Loader from "../loader/Loader";
 import Sekelton from "@/components/global/skeletonComponents/ImgSkeleton";
@@ -16,8 +16,12 @@ import SekeletonTxt from "@/components/global/skeletonComponents/TextSkeleton"
 
 const subFetcher = async ()=>{
     const res = await fetch('/api/subs');
-    const { subs, ptoken, ntoken } = await res.json();
-    return subs;
+    const data = await res.json();
+    if (data.tokenError) {
+        await signOut({ callbackUrl: '/' });
+        return [];
+    }
+    return data.subs;
 }
 
 const playlistFetcher = async (email : string) => {

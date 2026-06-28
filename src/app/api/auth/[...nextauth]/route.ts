@@ -16,6 +16,7 @@ const authOptions: NextAuthOptions = {
           scope: scopesStr as string,
           access_type: 'offline',
           response_type: "code",
+          prompt: 'consent',
         }
       }
     }),

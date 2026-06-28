@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AiOutlineHistory } from 'react-icons/ai';
 import { RiPlayListLine } from 'react-icons/ri'
 import { motion } from 'framer-motion';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { isLargeContext } from '@/app/layout';
 import { CountConverter } from '@/utils/Functions/Converters/CountConverter';
 import SekeltonImg from '../global/skeletonComponents/ImgSkeleton';
@@ -140,7 +140,7 @@ const ChannelInfo = ({ id }: any) => {
                 <motion.div layout transition={{ duration: 0.5 }} className="w-full h-full md:relative md:pb-[100%] pb-[40%] overflow-hidden">
                     <motion.div layout transition={{ duration: 0.5 }} className="absolute w-full h-full top-0 md:right-0 md:bottom-0 md:left-0">
                         {loading ? <SekeltonImg className='md:!rounded-full' /> :
-                            <Image className='md:rounded-full dark:bg-[#202324] bg-[#b8b8b8] md:!min-h-full md:!h-full !h-[10%]' src={data?.channel?.snippet?.thumbnails?.medium?.url} layout='fill' alt='channelImg' loading='lazy' />}
+                            <Image className='md:rounded-full dark:bg-[#202324] bg-[#b8b8b8] md:!min-h-full md:!h-full !h-[10%]' src={data?.channel?.snippet?.thumbnails?.medium?.url} fill alt='channelImg' loading='lazy' />}
                     </motion.div>
                 </motion.div>
             </motion.div>
@@ -266,7 +266,7 @@ const VideoCard = ({ index, item }: any) => {
         <motion.div layout transition={{ duration: 0.5, delay: !isLarge ? (index % 10) / 10 : 0 }} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
             <motion.div layout transition={{ duration: 0.5 }} className="relative w-full h-full pt-[56.25%] overflow-hidden">
                 <Link href={`/channel/${item?.snippet?.channelId}/${item?.snippet?.type === 'upload' ? `/video/${item?.contentDetails?.upload?.videoId}` : `/playlist/${item?.contentDetails?.playlistItem?.playlistId}`}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-                    <Image className='md:rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+                    <Image className='md:rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} fill alt='videocardImg' />
                 </Link>
             </motion.div>
             <motion.div layout transition={{ duration: 0.5 }} className="mt-1">
@@ -302,7 +302,7 @@ const PlayListCard = ({ index, item }: any) => {
             <motion.div layout transition={{ duration: 0.5, delay: !isLarge ? (index % 10) / 10 : 0 }} className="flex flex-col md:mx-2 my-2 md:max-w-[20rem] min-w-6 w-full">
                 <motion.div layout transition={{ duration: 0.5 }} className="relative w-full h-full pt-[56.25%] overflow-hidden">
                     <Link href={`/channel/${item?.snippet?.channelId}/playlist/${item?.id}`} className="w-full h-full absolute top-0 right-0 left-0 bottom-0">
-                        <Image className='md:rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} layout='fill' alt='videocardImg' />
+                        <Image className='md:rounded-lg dark:bg-[#202324] bg-[#b8b8b8]' src={item?.snippet?.thumbnails?.medium?.url || videoImg} fill alt='videocardImg' />
                     </Link>
                 </motion.div>
                 <motion.div layout transition={{ duration: 0.5 }} className="mt-1">

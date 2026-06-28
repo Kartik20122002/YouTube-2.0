@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 import { RiPlayListLine } from 'react-icons/ri';
 import SekeltonImg from "../global/skeletonComponents/ImgSkeleton";
@@ -54,7 +54,7 @@ const VideoCard = ({ item }: any) => {
         <Link href={`/channel/${item?.snippet?.channelId}/video/${item?.id?.videoId}`} className="md:w-[90%] md:max-w-[1200px] mx-auto mb-4 dark:text-white flex flex-col md:flex-row w-full">
             <div className="basis-[25%] shrink-0 md:min-w-[200px] grow">
                 <div className="w-full h-full relative overflow-hidden pt-[56.25%]">
-                    <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey md:rounded-lg !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" layout="fill" alt="videoImg" loading="lazy" />
+                    <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey md:rounded-lg !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" fill alt="videoImg" loading="lazy" />
                 </div>
             </div>
             <div className="basis-[75%] grow ml-1 md:ml-4 mt-1">
@@ -77,7 +77,7 @@ const PlaylistCard = ({ item }: any) => {
                     </div>
                 </div>
                 <div className="w-full h-full relative overflow-hidden pt-[56.25%]">
-                    <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey md:rounded-lg !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" layout="fill" alt="videoImg" loading="lazy" />
+                    <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey md:rounded-lg !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" fill alt="videoImg" loading="lazy" />
                 </div>
             </div>
             <div className="basis-[75%] grow ml-1 md:ml-4 mt-1">
@@ -97,7 +97,7 @@ const ChannelCard = ({ item }: any) => {
             <div className="basis-[25%] shrink-0 md:min-w-[200px] grow">
                 <div className="w-1/2 max-w-[200px] mx-auto">
                     <div className="w-full relative overflow-hidden pt-[100%]">
-                        <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey rounded-full !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" layout="fill" alt="videoImg" loading="lazy" />
+                        <Image src={item?.snippet?.thumbnails?.medium?.url} className="!absolute bg-grey rounded-full !min-w-0 !min-h-0 !w-full !h-full top-0 left-0 right-0 bottom-0" fill alt="videoImg" loading="lazy" />
                     </div>
                 </div>
             </div>
